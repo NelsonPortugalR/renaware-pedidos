@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pedidos Rena Ware</title>
+<meta name="robots" content="noindex,nofollow">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; color: #1a1a2e; font-size: 13px; }
+  .header { background: linear-gradient(135deg, #c0392b 0%, #8b0000 100%); color: white; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+  .header h1 { font-size: 20px; font-weight: 700; letter-spacing: 0.5px; }
+  .header .subtitle { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+  .header-right { text-align: right; font-size: 11px; opacity: 0.8; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; padding: 16px 24px 8px; }
+  .card { background: white; border-radius: 10px; padding: 14px 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); border-left: 4px solid #ccc; }
+  .card.red { border-left-color: #c0392b; } .card.blue { border-left-color: #2980b9; } .card.green { border-left-color: #27ae60; }
+  .card.orange { border-left-color: #e67e22; } .card.purple { border-left-color: #8e44ad; } .card.teal { border-left-color: #16a085; }
+  .card-label { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  .card-value { font-size: 22px; font-weight: 700; color: #1a1a2e; margin-top: 4px; }
+  .card-sub { font-size: 10px; color: #aaa; margin-top: 2px; }
+  .filters { background: white; margin: 0 24px 12px; border-radius: 10px; padding: 14px 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  .filters h3 { font-size: 11px; text-transform: uppercase; color: #888; letter-spacing: 0.5px; margin-bottom: 10px; font-weight: 600; }
+  .filter-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .filter-row input, .filter-row select { padding: 6px 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 12px; color: #333; outline: none; background: #fafafa; }
+  .filter-row input:focus, .filter-row select:focus { border-color: #c0392b; background: white; }
+  .filter-row input[type=text] { width: 220px; } .filter-row select { min-width: 140px; }
+  .btn-clear { padding: 6px 14px; background: #c0392b; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
+  .btn-clear:hover { background: #a93226; }
+  .result-count { font-size: 11px; color: #888; margin-left: auto; }
+  .table-wrap { margin: 0 24px 24px; background: white; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); overflow: hidden; }
+  .table-wrap table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .table-wrap th { background: #8b0000; color: white; padding: 9px 10px; text-align: left; font-weight: 600; font-size: 11px; white-space: nowrap; position: sticky; top: 0; z-index: 10; }
+  .table-wrap th.sortable { cursor: pointer; user-select: none; } .table-wrap th.sortable:hover { background: #a93226; }
+  .table-wrap td { padding: 8px 10px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+  .table-wrap tr:hover td { background: #fff8f8; }
+  .table-wrap tr.rechazada td { background: #ffe0e0; } .table-wrap tr.rechazada:hover td { background: #ffd0d0; }
+  .table-wrap tr.cancelado td { background: #fff3e0; } .table-wrap tr.cancelado:hover td { background: #ffe8c8; }
+  .table-scroll { max-height: 520px; overflow-y: auto; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; white-space: nowrap; }
+  .badge-entregada { background: #d5f5e3; color: #1e8449; } .badge-rechazada { background: #fadbd8; color: #922b21; }
+  .badge-cancelado { background: #fdebd0; color: #a04000; } .badge-otro { background: #eaf2ff; color: #154360; }
+  .badge-credito { background: #eaf2ff; color: #1a5276; } .badge-contado { background: #e9f7ef; color: #1d6a39; }
+  .badge-vencido { background: #fadbd8; color: #922b21; } .badge-proximo { background: #fdebd0; color: #a04000; } .badge-aldia { background: #d5f5e3; color: #1e8449; }
+  .cuotas-wrap { min-width: 120px; }
+  .cuotas-bar { background: #f0f0f0; border-radius: 4px; height: 6px; margin-top: 3px; overflow: hidden; }
+  .cuotas-bar-fill { height: 100%; border-radius: 4px; background: #27ae60; }
+  .cuotas-bar-fill.warning { background: #e67e22; } .cuotas-bar-fill.done { background: #2980b9; }
+  .cuotas-text { font-size: 10px; color: #666; }
+  .productos-short { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; color: #333; cursor: help; }
+  .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; }
+  .overlay.active { display: flex; align-items: center; justify-content: center; }
+  .detail-panel { background: white; border-radius: 12px; width: 600px; max-height: 85vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+  .detail-header { background: linear-gradient(135deg, #c0392b, #8b0000); color: white; padding: 16px 20px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center; }
+  .detail-header h2 { font-size: 16px; } .detail-close { background: none; border: none; color: white; font-size: 20px; cursor: pointer; line-height: 1; }
+  .detail-body { padding: 20px; }
+  .detail-section { margin-bottom: 16px; }
+  .detail-section h3 { font-size: 11px; text-transform: uppercase; color: #888; letter-spacing: 0.5px; font-weight: 700; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #eee; }
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .detail-field label { font-size: 10px; color: #aaa; display: block; } .detail-field span { font-size: 13px; font-weight: 600; color: #222; }
+  .products-list { background: #fafafa; border-radius: 6px; padding: 10px; }
+  .product-item { padding: 4px 0; border-bottom: 1px solid #eee; font-size: 12px; } .product-item:last-child { border-bottom: none; }
+  .tab-bar { display: flex; gap: 0; margin: 0 24px 0; flex-wrap: wrap; }
+  .tab { padding: 8px 18px; cursor: pointer; font-size: 12px; font-weight: 600; color: #888; border-radius: 8px 8px 0 0; border: 1px solid #e0e0e0; border-bottom: none; background: #f5f5f5; }
+  .tab.active { background: white; color: #c0392b; border-color: #e0e0e0; }
+  .tab-content { display: none; } .tab-content.active { display: block; }
+  .analytics { margin: 0 24px 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .analytics-card { background: white; border-radius: 10px; padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  .analytics-card.full { grid-column: 1 / -1; }
+  .analytics-card h3 { font-size: 11px; text-transform: uppercase; color: #888; letter-spacing: 0.5px; font-weight: 700; margin-bottom: 12px; display:flex; justify-content:space-between; align-items:center; }
+  .analytics-card h3 .mini { font-size: 10px; color:#bbb; font-weight:600; }
+  .scroll-list { max-height: 340px; overflow-y: auto; padding-right: 4px; }
+  .bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .bar-label { font-size: 11px; width: 160px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #333; }
+  .bar-track { flex: 1; background: #f0f0f0; border-radius: 4px; height: 14px; overflow: hidden; min-width: 40px; }
+  .bar-fill { height: 100%; border-radius: 4px; background: #c0392b; } .bar-fill.blue { background: #2980b9; } .bar-fill.green { background: #27ae60; } .bar-fill.purple { background:#8e44ad; }
+  .bar-val { font-size: 11px; color: #666; min-width: 110px; text-align: right; white-space:nowrap; }
+  .mini-input { padding:5px 9px; border:1px solid #ddd; border-radius:6px; font-size:11px; outline:none; }
+  .no-results { text-align: center; padding: 40px; color: #aaa; font-size: 14px; }
+  .legend { font-size:10px; color:#999; margin:0 24px 10px; }
+  .mini-btn { padding:4px 9px; border:none; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer; }
+  .btn-done { background:#27ae60; color:#fff; } .btn-done:hover{ background:#1e8449; }
+  .btn-undo { background:#eee; color:#666; margin-left:4px; } .btn-undo:hover{ background:#ddd; }
+  .btn-ghost { background:#f0f0f0; color:#333; border:1px solid #ddd; }
+  .tabcount { display:inline-block; background:#c0392b; color:#fff; border-radius:10px; font-size:10px; padding:0 6px; margin-left:3px; font-weight:700; vertical-align:middle; }
+  .done-row td { background:#f4fbf6 !important; opacity:.85; }
+  .badge-cad { background:#eee; color:#999; }
+  @media (max-width: 700px) {
+    .cards { grid-template-columns: repeat(2, 1fr); padding: 12px; }
+    .filters, .table-wrap, .analytics, .tab-bar { margin-left: 12px; margin-right: 12px; }
+    .analytics { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="header">
+  <div><h1>📦 Pedidos Rena Ware Perú</h1><div class="subtitle">Panel de Gestión de Órdenes</div></div>
+  <div class="header-right">Fecha actual: <span id="fechaHoy"></span><div style="margin-top:4px;font-size:11px"><span id="whoami" style="opacity:.9"></span> · <a href="#" onclick="doLogout();return false" style="color:#fff;text-decoration:underline">Salir</a></div></div>
+</div>
+<div id="loadBanner" style="display:none;background:#fdecea;color:#922b21;padding:8px 24px;font-size:12px"></div>
+
+<div class="cards">
+  <div class="card red"><div class="card-label">Total Pedidos</div><div class="card-value" id="c_total">—</div><div class="card-sub">filtrados</div></div>
+  <div class="card green"><div class="card-label">Ventas Totales</div><div class="card-value" id="c_ventas">—</div><div class="card-sub">S/ suma de totales</div></div>
+  <div class="card blue"><div class="card-label">Crédito</div><div class="card-value" id="c_credito">—</div><div class="card-sub">financiados</div></div>
+  <div class="card orange"><div class="card-label">Contado</div><div class="card-value" id="c_contado">—</div><div class="card-sub">al contado</div></div>
+  <div class="card purple"><div class="card-label">Rechazadas</div><div class="card-value" id="c_rechazadas">—</div><div class="card-sub">rechazados</div></div>
+  <div class="card teal"><div class="card-label">Cuotas Activas</div><div class="card-value" id="c_cuotas">—</div><div class="card-sub">créditos en curso</div></div>
+</div>
+
+<div class="tab-bar">
+  <div class="tab active" onclick="showTab('tab-table', this)">📋 Pedidos</div>
+  <div class="tab" onclick="showTab('tab-seg', this)">🔔 Seguimiento <span class="tabcount" id="tabVenc" style="display:none"></span></div>
+  <div class="tab" onclick="showTab('tab-analytics', this)">📊 Análisis</div>
+  <div class="tab" onclick="showTab('tab-cuotas', this)">💳 Estado de Cuotas</div>
+  <div class="tab" onclick="showTab('tab-filtros', this)">💧 Filtros / Mantenimiento</div>
+</div>
+
+<!-- TAB PEDIDOS -->
+<div id="tab-table" class="tab-content active">
+  <div class="filters"><h3>🔍 Filtros</h3>
+    <div class="filter-row">
+      <input type="text" id="searchInput" placeholder="Buscar cliente, vendedor, producto, orden..." oninput="applyFilters()">
+      <select id="filterVendedor" onchange="applyFilters()"><option value="">Todos los vendedores</option></select>
+      <select id="filterPeriodo" onchange="applyFilters()"><option value="">Todos los períodos</option></select>
+      <select id="filterDistrito" onchange="applyFilters()"><option value="">Todos los distritos</option></select>
+      <select id="filterEstatus" onchange="applyFilters()"><option value="">Todos los estatus</option><option value="ENTREGADA">Entregada</option><option value="RECHAZADA">Rechazada</option><option value="CANCELADO">Cancelado</option></select>
+      <select id="filterTipoPago" onchange="applyFilters()"><option value="">Crédito y Contado</option><option value="Crédito">Solo Crédito</option><option value="Contado">Solo Contado</option></select>
+      <button class="btn-clear" onclick="clearFilters()">✕ Limpiar</button>
+      <span class="result-count" id="resultCount"></span>
+    </div>
+  </div>
+  <div class="table-wrap"><div class="table-scroll"><table id="pedidosTable"><thead><tr>
+    <th class="sortable" onclick="sortTable('N° Orden')">N° Orden ⇅</th>
+    <th class="sortable" onclick="sortTable('Período')">Per. ⇅</th>
+    <th class="sortable" onclick="sortTable('Fecha Ordenado')">Fecha ⇅</th>
+    <th>Meses</th><th>Estatus</th>
+    <th class="sortable" onclick="sortTable('Vendedor')">Vendedor ⇅</th>
+    <th>Cliente</th><th>Distrito</th><th>Pago</th><th>Cuotas</th>
+    <th class="sortable" onclick="sortTable('Total')">Total ⇅</th><th>Productos</th>
+  </tr></thead><tbody id="tableBody"></tbody></table></div></div>
+</div>
+
+<!-- TAB ANALISIS -->
+<div id="tab-analytics" class="tab-content">
+  <div class="cards" style="padding:16px 24px 0;">
+    <div class="card green"><div class="card-label">Ventas entregadas</div><div class="card-value" id="a_rev">—</div><div class="card-sub" id="a_revn"></div></div>
+    <div class="card blue"><div class="card-label">Ticket promedio</div><div class="card-value" id="a_ticket">—</div><div class="card-sub">por venta entregada</div></div>
+    <div class="card teal"><div class="card-label">Puntos totales</div><div class="card-value" id="a_puntos">—</div><div class="card-sub">entregados</div></div>
+    <div class="card orange"><div class="card-label">Rechazadas</div><div class="card-value" id="a_rech">—</div><div class="card-sub" id="a_rechv"></div></div>
+    <div class="card purple"><div class="card-label">Canceladas</div><div class="card-value" id="a_canc">—</div><div class="card-sub" id="a_cancv"></div></div>
+    <div class="card red"><div class="card-label">Unidades vendidas</div><div class="card-value" id="a_units">—</div><div class="card-sub">ítems (entregados)</div></div>
+  </div>
+  <div class="legend">Los análisis consideran solo pedidos <b>entregados</b> (excluye rechazados y cancelados), salvo donde se indique.</div>
+  <div class="analytics">
+    <div class="analytics-card"><h3>📊 Ventas por Vendedor <span class="mini" id="vend_count"></span></h3><div class="scroll-list" id="chart_vendedor"></div></div>
+    <div class="analytics-card"><h3>📍 Ventas por Distrito <span class="mini" id="dist_count"></span></h3><div class="scroll-list" id="chart_distrito"></div></div>
+    <div class="analytics-card"><h3>📅 Pedidos por Período</h3><div class="scroll-list" id="chart_periodo"></div></div>
+    <div class="analytics-card"><h3>💰 Crédito vs Contado</h3><div id="chart_tipopago"></div></div>
+    <div class="analytics-card full"><h3>📦 Todos los productos vendidos
+      <span><input class="mini-input" id="prodSearch" placeholder="Buscar producto..." oninput="renderProductos()" style="margin-right:8px">
+      <select class="mini-input" id="prodSort" onchange="renderProductos()"><option value="qty">Por unidades</option><option value="rev">Por nº de órdenes</option><option value="az">A-Z</option></select></span>
+    </h3><div class="scroll-list" id="chart_productos" style="max-height:460px"></div></div>
+  </div>
+</div>
+
+<!-- TAB CUOTAS -->
+<div id="tab-cuotas" class="tab-content">
+  <div class="filters"><h3>💳 Filtros de Cuotas</h3><div class="filter-row">
+    <select id="filterCuotasVendedor" onchange="renderCuotas()"><option value="">Todos los vendedores</option></select>
+    <select id="filterCuotasEstado" onchange="renderCuotas()"><option value="">Todos</option><option value="activo">En curso</option><option value="terminado">Terminadas</option></select>
+    <span class="result-count" id="cuotasCount"></span>
+  </div></div>
+  <div class="table-wrap"><div class="table-scroll"><table><thead><tr>
+    <th>N° Orden</th><th>Fecha Compra</th><th>Cliente</th><th>Vendedor</th><th>Total</th><th>Cuotas</th><th>Meses</th><th>Pagadas</th><th>Restantes</th><th>Estado</th>
+  </tr></thead><tbody id="cuotasBody"></tbody></table></div></div>
+</div>
+
+<!-- TAB FILTROS -->
+<div id="tab-filtros" class="tab-content">
+  <div class="cards" style="padding:16px 24px 0;">
+    <div class="card blue"><div class="card-label">Clientes con filtro de agua</div><div class="card-value" id="f_agua">—</div><div class="card-sub">sistemas Aqua Nano entregados</div></div>
+    <div class="card orange"><div class="card-label">Cambios vencidos</div><div class="card-value" id="f_venc">—</div><div class="card-sub">pre-filtro o filtro principal</div></div>
+    <div class="card teal"><div class="card-label">Próximos 90 días</div><div class="card-value" id="f_prox">—</div><div class="card-sub">cambios por vencer</div></div>
+    <div class="card purple"><div class="card-label">Purificadores de aire</div><div class="card-value" id="f_aire">—</div><div class="card-sub">filtro cada 18 meses</div></div>
+  </div>
+  <div class="legend">💧 Pre-filtro de agua: cambio cada <b>12 meses</b> · Filtro principal: cada <b>48 meses (4 años)</b> · 🌀 Purificador de aire: filtro cada <b>18 meses</b>. Fechas calculadas desde la entrega. Solo pedidos entregados con producto de filtración.</div>
+  <div class="filters"><h3>🔍 Filtros</h3><div class="filter-row">
+    <input type="text" id="filtroSearch" placeholder="Buscar cliente..." oninput="renderFiltros()">
+    <select id="filtroTipo" onchange="renderFiltros()"><option value="">Agua y Aire</option><option value="agua">Solo agua (Aqua Nano)</option><option value="aire">Solo aire</option></select>
+    <select id="filtroEstado" onchange="renderFiltros()"><option value="">Todos los estados</option><option value="vencido">Con cambios vencidos</option><option value="proximo">Por vencer (90 días)</option><option value="aldia">Al día</option></select>
+    <span class="result-count" id="filtrosCount"></span>
+  </div></div>
+  <div class="table-wrap"><div class="table-scroll"><table><thead><tr>
+    <th>Cliente</th><th>Distrito</th><th>Sistema</th><th>N° Orden</th><th>Fecha Compra</th><th>Antigüedad</th>
+    <th>Pre-filtro (1 año)</th><th>Filtro principal (4 años)</th>
+  </tr></thead><tbody id="filtrosBody"></tbody></table></div></div>
+  <div id="aireWrap" style="display:none">
+    <div class="legend" style="margin-top:0;font-weight:700;color:#8e44ad">🌀 Purificadores de aire — filtro cada 18 meses</div>
+    <div class="table-wrap"><div class="table-scroll"><table><thead><tr>
+      <th>Cliente</th><th>Distrito</th><th>Producto</th><th>N° Orden</th><th>Fecha Compra</th><th>Antigüedad</th><th>Próximo cambio filtro (18 meses)</th>
+    </tr></thead><tbody id="aireBody"></tbody></table></div></div>
+  </div>
+</div>
+
+<!-- TAB SEGUIMIENTO -->
+<div id="tab-seg" class="tab-content">
+  <div class="cards" style="padding:16px 24px 0;">
+    <div class="card red"><div class="card-label">Vencidos</div><div class="card-value" id="sVenc">—</div><div class="card-sub">requieren gestión</div></div>
+    <div class="card orange"><div class="card-label">Próximos (≤30 días)</div><div class="card-value" id="sProx">—</div><div class="card-sub">por comunicar pronto</div></div>
+    <div class="card blue"><div class="card-label">Pendientes futuros</div><div class="card-value" id="sPend">—</div><div class="card-sub">programados</div></div>
+    <div class="card green"><div class="card-label">Gestionados</div><div class="card-value" id="sGest">—</div><div class="card-sub">acciones registradas</div></div>
+  </div>
+  <div class="legend">Registra cada acción cuando la ejecutes (ej. cambio de pre-filtro, envío de video): el pendiente se cierra y no reaparece hasta el siguiente ciclo. Los <b>vencidos permanecen</b> hasta que los gestiones. Las gestiones se guardan en este navegador — usa <b>⬇ Exportar</b> para respaldar y <b>⬆ Importar</b> para restaurar.</div>
+  <div class="filters"><h3>🔔 Seguimiento de clientes</h3><div class="filter-row">
+    <input type="text" id="segSearch" placeholder="Buscar cliente, orden, vendedor..." oninput="renderSeguimiento()">
+    <select id="segTipo" onchange="renderSeguimiento()"><option value="">Todas las acciones</option>
+      <option value="bienvenida">Bienvenida (al recibir)</option>
+      <option value="semana1">Semana 1 · Nutri Sensor</option>
+      <option value="mes1">Mes 1 · brillo / Rena Lite</option>
+      <option value="fincuotas">Fin de cuotas (crédito)</option>
+      <option value="prefiltro">Pre-filtro de agua</option>
+      <option value="filtroppal">Filtro principal</option>
+      <option value="aire">Filtro de aire</option></select>
+    <select id="segEstado" onchange="renderSeguimiento()">
+      <option value="accion">Accionables (vencido + próximo + pendiente)</option>
+      <option value="vencido">Solo vencidos</option>
+      <option value="proximo">Solo próximos</option>
+      <option value="pendiente">Solo pendientes futuros</option>
+      <option value="hecho">Hechas</option>
+      <option value="caducado">Fuera de plazo</option>
+      <option value="">Todas</option></select>
+    <select id="segVend" onchange="renderSeguimiento()"><option value="">Todos los vendedores</option></select>
+    <button class="mini-btn btn-ghost" onclick="exportSeg()">⬇ Exportar</button>
+    
+    <span class="result-count" id="segCount"></span>
+  </div></div>
+  <div class="table-wrap"><div class="table-scroll" style="max-height:600px"><table><thead><tr>
+    <th>Estado</th><th>Fecha objetivo</th><th>Cliente</th><th>Vendedor</th><th>Orden</th><th>Acción a comunicar</th><th>Disparador</th><th>Gestión</th>
+  </tr></thead><tbody id="segBody"></tbody></table></div></div>
+</div>
+
+<div class="overlay" id="overlay" onclick="closeDetail(event)">
+  <div class="detail-panel"><div class="detail-header"><h2 id="detailTitle">Detalle</h2><button class="detail-close" onclick="closeOverlay()">✕</button></div>
+  <div class="detail-body" id="detailBody"></div></div>
+</div>
+
+<script>
+const SEED = [];
+let PEDIDOS = SEED;
+const TODAY = new Date();
+const WATER_KW = ['AQUA NANO'];              // sistema de filtración de agua (no incluye "Aqua Check")
+const AIR_KW = ['PURIFICADOR DE AIRE','AIR PURIFIER','RENA AIR','PURIFICADOR AIRE'];
+// Categorías de producto para las comunicaciones de bienvenida / uso
+const POTS_KW = ['COOKER','OLLA','CACEROLA','SIGNATURE','PRINCESA','RENAWOK','RENA WOK','SAUCEPAN','SAUCIER','RONDEAU','ASADOR','CONTESSA'];
+const PAN_KW  = ['SARTÉN','SARTEN','SKILLET'];
+const COOK_KW = ['INDUCTION COOKER','COCINA DE INDUCC','IC-450'];
+const PRESSURE_KW = ['OLLA A PRESI','PRESSURE'];
+const WATERWIDE_KW = ['AQUA NANO','FILTRO DE AGUA','AQUA CHECK NANO 500 UCU'];
+
+// ===== Almacén de gestiones (persistencia): baked + localStorage =====
+const SEG_SAVED = {};
+let STORE = (function(){ let s={}; try{ s=JSON.parse(JSON.stringify(SEG_SAVED||{})); }catch(e){}
+  try{ const ls=JSON.parse(localStorage.getItem('rw_seg_v1')||'{}'); for(const k in ls) s[k]=ls[k]; }catch(e){}
+  return s; })();
+function saveStore(){ try{ localStorage.setItem('rw_seg_v1', JSON.stringify(STORE)); }catch(e){} }
+function segKey(o,t){ return o+'::'+t; }
+function doneList(o,t){ return STORE[segKey(o,t)]||[]; }
+function doneCount(o,t){ return doneList(o,t).length; }
+function lastDoneDate(o,t){ const l=doneList(o,t); return l.length?parseDate(l[l.length-1]):null; }
+function markDone(o,t,d){ const k=segKey(o,t); (STORE[k]=STORE[k]||[]).push(d); saveStore(); refreshAll(); }
+function undoDone(o,t){ const k=segKey(o,t); if(STORE[k]&&STORE[k].length){ STORE[k].pop(); if(!STORE[k].length) delete STORE[k]; saveStore(); refreshAll(); } }
+function refreshAll(){ try{renderSeguimiento();}catch(e){} try{renderFiltros();}catch(e){} try{updateTabBadges();}catch(e){} }
+function exportSeg(){ const blob=new Blob([JSON.stringify(STORE,null,1)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='seguimiento.json'; a.click(); }
+function importSeg(inp){ const f=inp.files[0]; if(!f) return; const rd=new FileReader();
+  rd.onload=()=>{ try{ const o=JSON.parse(rd.result); for(const k in o) STORE[k]=o[k]; saveStore(); refreshAll(); alert('Gestiones importadas.'); }catch(e){ alert('Archivo inválido.'); } }; rd.readAsText(f); }
+function registrar(o,t,g){ const def=fmtDate(TODAY); const v=prompt('Fecha de gestión (dd/mm/aaaa):\n'+g, def);
+  if(v){ const s=v.trim(); markDone(o,t, /^\d{2}\/\d{2}\/\d{4}$/.test(s)?s:def); } }
+
+function parseDate(s){ if(!s) return null; const p=String(s).split('/'); if(p.length!==3) return null; return new Date(+p[2], +p[1]-1, +p[0]); }
+function monthsDiff(s){ const d=parseDate(s); if(!d) return null; return (TODAY.getFullYear()-d.getFullYear())*12 + (TODAY.getMonth()-d.getMonth()); }
+function fmtDate(d){ return d.getDate().toString().padStart(2,'0')+'/'+(d.getMonth()+1).toString().padStart(2,'0')+'/'+d.getFullYear(); }
+function addMonths(d,m){ const n=new Date(d); n.setMonth(n.getMonth()+m); return n; }
+function addDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
+function money(v){ if(v===''||v==null) return '—'; return 'S/ '+Number(v).toLocaleString('es-PE',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function money0(v){ return 'S/'+Math.round(v).toLocaleString('es-PE'); }
+function district(p){ return p['Ciudad'] ? String(p['Ciudad']).split(',')[0].trim() : '—'; }
+function isDelivered(p){ return String(p['Estatus']).toUpperCase().includes('ENTREGADA'); }
+function isRejected(p){ const e=String(p['Estatus']).toUpperCase(); return e.includes('RECHAZADA'); }
+function isCancelled(p){ const e=String(p['Estatus']).toUpperCase(); return e.includes('CANCELADO')||e.includes('CANCELADA'); }
+function statusBadge(e){ const u=String(e).toUpperCase();
+  if(u.includes('ENTREGADA')) return '<span class="badge badge-entregada">ENTREGADA</span>';
+  if(u.includes('RECHAZADA')) return '<span class="badge badge-rechazada">RECHAZADA</span>';
+  if(u.includes('CANCELADO')||u.includes('CANCELADA')) return '<span class="badge badge-cancelado">CANCELADO</span>';
+  return '<span class="badge badge-otro">'+e+'</span>'; }
+
+function initFilters(){
+  const vend=[...new Set(PEDIDOS.map(p=>p['Vendedor']).filter(Boolean))].sort();
+  const per=[...new Set(PEDIDOS.map(p=>p['Período']).filter(v=>v!==''))].sort((a,b)=>String(b).localeCompare(String(a)));
+  const dist=[...new Set(PEDIDOS.map(district).filter(d=>d&&d!=='—'))].sort();
+  vend.forEach(v=>{filterVendedor.innerHTML+=`<option>${v}</option>`; filterCuotasVendedor.innerHTML+=`<option>${v}</option>`; document.getElementById('segVend').innerHTML+=`<option>${v}</option>`;});
+  per.forEach(p=>filterPeriodo.innerHTML+=`<option value="${p}">${p}</option>`);
+  dist.forEach(d=>filterDistrito.innerHTML+=`<option>${d}</option>`);
+  fechaHoy.textContent=TODAY.toLocaleDateString('es-PE');
+}
+
+let sortCol='N° Orden', sortAsc=false;
+function sortTable(c){ if(sortCol===c) sortAsc=!sortAsc; else {sortCol=c; sortAsc=true;} applyFilters(); }
+let filtered=[...PEDIDOS];
+function applyFilters(){
+  const s=searchInput.value.toLowerCase(), v=filterVendedor.value, per=filterPeriodo.value,
+    di=filterDistrito.value, es=filterEstatus.value, tp=filterTipoPago.value;
+  filtered=PEDIDOS.filter(p=>{
+    if(v&&p['Vendedor']!==v) return false;
+    if(per&&String(p['Período'])!==String(per)) return false;
+    if(di&&district(p)!==di) return false;
+    if(es&&!String(p['Estatus']).toUpperCase().includes(es)) return false;
+    if(tp&&p['Crédito/Contado']!==tp) return false;
+    if(s){ const h=[p['Cliente'],p['Vendedor'],p['Productos'],p['N° Orden'],p['Ciudad'],p['Email']].join(' ').toLowerCase(); if(!h.includes(s)) return false; }
+    return true;
+  });
+  filtered.sort((a,b)=>{ let va=a[sortCol],vb=b[sortCol];
+    if(va===''||va==null) va=sortAsc?Infinity:-Infinity; if(vb===''||vb==null) vb=sortAsc?Infinity:-Infinity;
+    if(typeof va==='number'&&typeof vb==='number') return sortAsc?va-vb:vb-va;
+    return sortAsc?String(va).localeCompare(String(vb)):String(vb).localeCompare(String(va)); });
+  renderTable(); updateCards();
+}
+function clearFilters(){ searchInput.value=''; filterVendedor.value=''; filterPeriodo.value=''; filterDistrito.value=''; filterEstatus.value=''; filterTipoPago.value=''; applyFilters(); }
+
+function renderTable(){
+  resultCount.textContent=filtered.length+' resultado(s)';
+  if(!filtered.length){ tableBody.innerHTML='<tr><td colspan="12" class="no-results">Sin resultados.</td></tr>'; return; }
+  tableBody.innerHTML=filtered.map(p=>{
+    const m=monthsDiff(p['Fecha Ordenado']); let rc=''; if(isRejected(p)) rc='rechazada'; else if(isCancelled(p)) rc='cancelado';
+    const c=p['Cuotas']; let ch='—';
+    if(c&&p['Crédito/Contado']==='Crédito'){ const pa=m!=null?Math.min(m,c):0, re=Math.max(0,c-pa), pct=Math.round(pa/c*100), fc=re===0?'done':(pct>=75?'warning':'');
+      ch=`<div class="cuotas-wrap"><div class="cuotas-text">${pa}/${c} (faltan ${re})</div><div class="cuotas-bar"><div class="cuotas-bar-fill ${fc}" style="width:${pct}%"></div></div></div>`;
+    } else if(p['Crédito/Contado']==='Contado') ch='<span style="color:#27ae60;font-size:11px">Contado</span>';
+    const prod=p['Productos']?p['Productos'].split('|')[0].trim():'—';
+    const tb=p['Crédito/Contado']==='Crédito'?'<span class="badge badge-credito">Crédito</span>':'<span class="badge badge-contado">Contado</span>';
+    return `<tr class="${rc}" onclick="openDetail(${p['N° Orden']})" style="cursor:pointer">
+      <td><strong>${p['N° Orden']}</strong></td><td style="text-align:center;white-space:nowrap" title="${p['Período']}">${String(p['Período']).split(' ')[0]}</td>
+      <td style="white-space:nowrap">${p['Fecha Ordenado']}</td><td style="text-align:center">${m!=null?m+'m':'—'}</td>
+      <td>${statusBadge(p['Estatus'])}</td>
+      <td style="max-width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${p['Vendedor']}">${p['Vendedor']}</td>
+      <td style="max-width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${p['Cliente']}">${p['Cliente']}</td>
+      <td style="white-space:nowrap">${district(p)}</td><td>${tb}</td><td>${ch}</td>
+      <td style="text-align:right;white-space:nowrap;font-weight:600">${money(p['Total'])}</td>
+      <td><div class="productos-short" title="${(p['Productos']||'').replace(/"/g,'&quot;')}">${prod}</div></td></tr>`;
+  }).join('');
+}
+function updateCards(){
+  const s=filtered;
+  c_total.textContent=s.length;
+  const tv=s.reduce((a,p)=>a+(parseFloat(p['Total'])||0),0);
+  c_ventas.textContent=tv>0?money0(tv):'—';
+  c_credito.textContent=s.filter(p=>p['Crédito/Contado']==='Crédito').length;
+  c_contado.textContent=s.filter(p=>p['Crédito/Contado']==='Contado').length;
+  c_rechazadas.textContent=s.filter(isRejected).length;
+  c_cuotas.textContent=s.filter(p=>{ if(p['Crédito/Contado']!=='Crédito'||!p['Cuotas']) return false; const m=monthsDiff(p['Fecha Ordenado']); return m!=null&&m<p['Cuotas']; }).length;
+}
+
+function openDetail(orden){
+  const p=PEDIDOS.find(x=>x['N° Orden']==orden); if(!p) return;
+  detailTitle.textContent=`Orden #${p['N° Orden']} — ${p['Cliente']}`;
+  const m=monthsDiff(p['Fecha Ordenado']); let ci='';
+  if(p['Crédito/Contado']==='Crédito'&&p['Cuotas']){ const pa=m!=null?Math.min(m,p['Cuotas']):0, re=Math.max(0,p['Cuotas']-pa);
+    ci=`<div class="detail-section"><h3>💳 Estado de Cuotas</h3><div class="detail-grid">
+      <div class="detail-field"><label>Total cuotas</label><span>${p['Cuotas']}</span></div>
+      <div class="detail-field"><label>Pagadas (est.)</label><span>${pa}</span></div>
+      <div class="detail-field"><label>Restantes</label><span style="color:${re===0?'#27ae60':'#c0392b'}">${re}</span></div>
+      <div class="detail-field"><label>Tasa</label><span>${p['Tasa']||'—'}</span></div>
+      <div class="detail-field"><label>Cupón mensual</label><span>${money(p['Cupón'])}</span></div></div></div>`; }
+  const prods=p['Productos']?p['Productos'].split('|').map(x=>`<div class="product-item">${x.trim()}</div>`).join(''):'<div class="product-item">—</div>';
+  detailBody.innerHTML=`
+    <div class="detail-section"><h3>📋 General</h3><div class="detail-grid">
+      <div class="detail-field"><label>N° Orden</label><span>${p['N° Orden']}</span></div>
+      <div class="detail-field"><label>Período</label><span>${p['Período']}</span></div>
+      <div class="detail-field"><label>Fecha Ordenado</label><span>${p['Fecha Ordenado']}</span></div>
+      <div class="detail-field"><label>Meses desde compra</label><span>${m!=null?m+' meses':'—'}</span></div>
+      <div class="detail-field"><label>Estatus</label><span>${p['Estatus']}</span></div>
+      <div class="detail-field"><label>Tipo Orden</label><span>${p['Tipo Orden']}</span></div>
+      <div class="detail-field"><label>Almacén</label><span>${p['Almacén']}</span></div>
+      <div class="detail-field"><label>GDR #</label><span>${p['GDR #']||'—'}</span></div>
+      <div class="detail-field"><label>Despacho</label><span>${p['Fecha Despacho']||'—'}</span></div>
+      <div class="detail-field"><label>Entrega</label><span>${p['Delivery Date']||'—'}</span></div></div></div>
+    <div class="detail-section"><h3>👤 Cliente</h3><div class="detail-grid">
+      <div class="detail-field"><label>Nombre</label><span>${p['Cliente']}</span></div>
+      <div class="detail-field"><label>Distrito</label><span>${district(p)}</span></div>
+      <div class="detail-field"><label>Celular</label><span>${p['Celular']}</span></div>
+      <div class="detail-field"><label>Email</label><span>${p['Email']||'—'}</span></div>
+      <div class="detail-field" style="grid-column:1/-1"><label>Dirección</label><span>${p['Dirección']}</span></div></div></div>
+    <div class="detail-section"><h3>🏷️ Vendedor</h3><div class="detail-grid">
+      <div class="detail-field"><label>Nombre</label><span>${p['Vendedor']}</span></div>
+      <div class="detail-field"><label>ID</label><span>${p['ID Vendedor']}</span></div>
+      <div class="detail-field"><label>Oficina</label><span>${p['Código Oficina']}</span></div>
+      <div class="detail-field"><label>Comisionable</label><span>${p['Comisionable']}</span></div>
+      <div class="detail-field"><label>Doc</label><span>${p['Document Type']}</span></div>
+      <div class="detail-field"><label>Comm. Value</label><span>${money(p['Commissionable Value'])}</span></div>
+      <div class="detail-field"><label>Puntos</label><span>${p['Puntos']||'—'}</span></div></div></div>
+    <div class="detail-section"><h3>💰 Financiero</h3><div class="detail-grid">
+      <div class="detail-field"><label>Tipo de Pago</label><span>${p['Crédito/Contado']}</span></div>
+      <div class="detail-field"><label>Depósito</label><span>${money(p['Depósito'])}</span></div>
+      <div class="detail-field"><label>Financiado</label><span>${money(p['Financiado'])}</span></div>
+      <div class="detail-field"><label>Interés</label><span>${money(p['Interés'])}</span></div>
+      <div class="detail-field"><label>Expenses</label><span>${money(p['Expenses'])}</span></div>
+      <div class="detail-field"><label>Total</label><span style="color:#c0392b;font-size:16px">${money(p['Total'])}</span></div></div></div>
+    ${ci}
+    <div class="detail-section"><h3>📦 Productos</h3><div class="products-list">${prods}</div></div>
+    ${p['Notas']?`<div class="detail-section"><h3>📝 Notas</h3><p style="font-size:12px;color:#555">${p['Notas']}</p></div>`:''}`;
+  overlay.classList.add('active');
+}
+function closeOverlay(){ overlay.classList.remove('active'); }
+function closeDetail(e){ if(e.target.id==='overlay') closeOverlay(); }
+
+/* ============ ANÁLISIS ============ */
+// Sinónimos: mismo producto con distinto nombre -> nombre canónico. Editable.
+const PROD_ALIASES = {
+  "TEAPOT WITH COVER":"RENA WARE TEAPOT WITH COVER",
+  "TEAPOT INFUSER":"RENA WARE TEAPOT INFUSER",
+  "UNIVERSAL CTU ADAPTER AQUA CHECK NANO":"UNIVERSAL CTU ADAPTER",
+  "UNIVERSAL CTU ADAPTER FOR AQUA CHECK NANO":"UNIVERSAL CTU ADAPTER",
+  "RENA WOK 34CM":"RENA WOK 34 CM",
+  "SAUCIER 1.75LT":"NUEVA SAUCIER CON TAPA 1.75LT",
+  "SAUCEPAN 2.5LT":"NUEVA SAUCEPAN CON TAPA 2.5LT",
+  "JUEGO CHEF I SERIE ZYLSTRA":"JUEGO CHEF I",
+  "JUEGO CHEF I 7PZAS ZYLSTRA":"JUEGO CHEF I",
+  "JUEGO CHEF I 7PZAS SERIE ZYLSTRA":"JUEGO CHEF I",
+  "JUEGO CHEF II SERIE ZYLSTRA":"JUEGO CHEF II",
+  "JUEGO CHEF II 7PZAS ZYLSTRA":"JUEGO CHEF II",
+  "JUEGO CHEF II 7PZAS SERIE ZYLSTRA":"JUEGO CHEF II",
+  // Tetera (español) = Teapot with Cover (inglés)
+  "TETERA 3L":"RENA WARE TEAPOT WITH COVER",
+  "NUEVA TETERA RENA WARE 3L":"RENA WARE TEAPOT WITH COVER",
+  // Botella filtrante (con/sin "nueva"/"rena ware")
+  "BOTELLA FILTRANTE":"NUEVA BOTELLA FILTRANTE RENA WARE",
+  "NUEVA BOTELLA FILTRANTE":"NUEVA BOTELLA FILTRANTE RENA WARE",
+  // Cubiertos Elite
+  "CUBIERTOS ELITE - 35PIEZAS":"CUBIERTOS ELITE 35 PIEZAS",
+  "CUBIERTOS ELITE 35PZAS":"CUBIERTOS ELITE 35 PIEZAS",
+  // Bandas / pack de bandas para botella filtrante
+  "BANDAS DE BOTELLA FILTRANTE":"PACK BANDAS BOTELLA FILTRANTE",
+  "BANDAS BOTELLA FILTRANTE 4 COLORES":"PACK BANDAS BOTELLA FILTRANTE",
+  "PACK DE BANDAS PARA BOTELLA FILTRANTE":"PACK BANDAS BOTELLA FILTRANTE"
+};
+// Normaliza nombre: quita código SKU, paréntesis, normaliza unidades, mayúsculas.
+function normProduct(name){
+  let n = String(name||'').trim();
+  n = n.replace(/^[A-Z0-9][A-Z0-9\-]*\s-\s/,'');      // "6000 - X" -> "X"
+  n = n.replace(/\([^)]*\)/g,'');                       // "(99 KB)" -> ""
+  n = n.toUpperCase();
+  n = n.replace(/\s[xX]\s?\d+\b/g,'');                  // "TEAPOT x2" -> "TEAPOT" (cantidad, no producto)
+  n = n.replace(/(\d)\s+(CM|MM|LT|L|ONZAS|OZ|PZAS|PIEZAS|PCS)\b/g,'$1$2'); // "34 CM"->"34CM"
+  n = n.replace(/\s+/g,' ').replace(/^[\s.\-]+|[\s.\-]+$/g,'');
+  return PROD_ALIASES[n] || n;
+}
+function parseProducts(str){ // returns [{name, qty, combo}]
+  if(!str) return [];
+  return str.split('|').map(seg=>{
+    seg=seg.trim();
+    let qty=1; const mm=seg.match(/\(x(\d+)/); if(mm) qty=parseInt(mm[1]);  // marcador "(xN S/..)"
+    let name=seg.split('(x')[0].trim().replace(/\([^)]*\)/g,'').trim();      // quita "(S/..)" u otros
+    const mn=name.match(/\s[xX]\s?(\d+)\b/);                                 // cantidad embebida "... x2"
+    if(mn){ qty=Math.max(qty, parseInt(mn[1])); name=name.replace(/\s[xX]\s?\d+\b/,'').trim(); }
+    return {name, qty, combo: name.includes(' + ')};
+  }).filter(x=>x.name);
+}
+// Productos reales de una orden: excluye la línea combo (conjunto) y deduplica
+// las líneas repetidas (versión con precio + versión SKU a S/0) tomando la mayor cantidad.
+function orderProducts(p){
+  const items = parseProducts(p['Productos']).filter(x=>!x.combo);
+  const m = {};
+  items.forEach(x=>{ const k=normProduct(x.name); if(k) m[k]=Math.max(m[k]||0, x.qty); });
+  return Object.entries(m).map(([name,qty])=>({name, qty}));
+}
+function renderAnalytics(){
+  const deliv=PEDIDOS.filter(isDelivered);
+  const tv=deliv.reduce((a,p)=>a+(parseFloat(p['Total'])||0),0);
+  a_rev.textContent=money0(tv); a_revn.textContent=deliv.length+' pedidos entregados';
+  a_ticket.textContent=deliv.length?money0(tv/deliv.length):'—';
+  a_puntos.textContent=deliv.reduce((a,p)=>a+(parseFloat(p['Puntos'])||0),0).toLocaleString('es-PE');
+  const rech=PEDIDOS.filter(isRejected), canc=PEDIDOS.filter(isCancelled);
+  a_rech.textContent=rech.length; a_rechv.textContent=money0(rech.reduce((a,p)=>a+(parseFloat(p['Total'])||0),0))+' (no concretado)';
+  a_canc.textContent=canc.length; a_cancv.textContent=money0(canc.reduce((a,p)=>a+(parseFloat(p['Total'])||0),0))+' (no concretado)';
+  let units=0; deliv.forEach(p=>orderProducts(p).forEach(x=>units+=x.qty));
+  a_units.textContent=units.toLocaleString('es-PE');
+
+  // Por vendedor (todos)
+  const byV={}; deliv.forEach(p=>{ const k=p['Vendedor']||'—'; byV[k]=byV[k]||{n:0,rev:0}; byV[k].n++; byV[k].rev+=parseFloat(p['Total'])||0; });
+  const sv=Object.entries(byV).sort((a,b)=>b[1].rev-a[1].rev); const maxV=sv[0]?sv[0][1].rev:1;
+  vend_count.textContent=sv.length+' vendedores';
+  chart_vendedor.innerHTML=sv.map(([k,o])=>`<div class="bar-row"><div class="bar-label" title="${k}">${k}</div>
+    <div class="bar-track"><div class="bar-fill" style="width:${(o.rev/maxV*100).toFixed(1)}%"></div></div>
+    <div class="bar-val">${money0(o.rev)} · ${o.n}</div></div>`).join('');
+
+  // Por distrito (todos)
+  const byD={}; deliv.forEach(p=>{ const k=district(p); byD[k]=byD[k]||{n:0,rev:0}; byD[k].n++; byD[k].rev+=parseFloat(p['Total'])||0; });
+  const sd=Object.entries(byD).sort((a,b)=>b[1].n-a[1].n); const maxD=sd[0]?sd[0][1].n:1;
+  dist_count.textContent=sd.length+' distritos';
+  chart_distrito.innerHTML=sd.map(([k,o])=>`<div class="bar-row"><div class="bar-label" title="${k}">${k}</div>
+    <div class="bar-track"><div class="bar-fill blue" style="width:${(o.n/maxD*100).toFixed(1)}%"></div></div>
+    <div class="bar-val">${o.n} vts · ${money0(o.rev)}</div></div>`).join('');
+
+  // Por período (todos los estatus, conteo)
+  const byP={}; PEDIDOS.forEach(p=>{ if(p['Período']!=='') byP[p['Período']]=(byP[p['Período']]||0)+1; });
+  const sp=Object.entries(byP).sort((a,b)=>String(b[0]).localeCompare(String(a[0]))); const maxP=Math.max(...sp.map(x=>x[1]));
+  chart_periodo.innerHTML=sp.map(([k,n])=>`<div class="bar-row"><div class="bar-label" title="${k}">${k}</div>
+    <div class="bar-track"><div class="bar-fill purple" style="width:${(n/maxP*100).toFixed(1)}%"></div></div>
+    <div class="bar-val">${n} pedidos</div></div>`).join('');
+
+  // Crédito vs contado (entregados)
+  const cr=deliv.filter(p=>p['Crédito/Contado']==='Crédito'), co=deliv.filter(p=>p['Crédito/Contado']==='Contado');
+  const crR=cr.reduce((a,p)=>a+(parseFloat(p['Total'])||0),0), coR=co.reduce((a,p)=>a+(parseFloat(p['Total'])||0),0);
+  const tot=cr.length+co.length||1;
+  chart_tipopago.innerHTML=`
+    <div class="bar-row"><div class="bar-label">Crédito (${cr.length})</div><div class="bar-track"><div class="bar-fill" style="width:${cr.length/tot*100}%"></div></div><div class="bar-val">${money0(crR)}</div></div>
+    <div class="bar-row"><div class="bar-label">Contado (${co.length})</div><div class="bar-track"><div class="bar-fill green" style="width:${co.length/tot*100}%"></div></div><div class="bar-val">${money0(coR)}</div></div>
+    <div style="margin-top:12px;font-size:11px;color:#888">Crédito: ${Math.round(cr.length/tot*100)}% de pedidos · Contado: ${Math.round(co.length/tot*100)}%</div>`;
+
+  renderProductos();
+}
+function renderProductos(){
+  const deliv=PEDIDOS.filter(isDelivered);
+  const map={};
+  deliv.forEach(p=>{ orderProducts(p).forEach(x=>{
+    map[x.name]=map[x.name]||{qty:0,ord:0}; map[x.name].qty+=x.qty; map[x.name].ord++;
+  }); });
+  let arr=Object.entries(map);
+  const q=(prodSearch.value||'').toLowerCase(); if(q) arr=arr.filter(([n])=>n.toLowerCase().includes(q));
+  const sort=prodSort.value;
+  if(sort==='rev') arr.sort((a,b)=>b[1].ord-a[1].ord);      // "por ingresos" -> ahora por nº de órdenes
+  else if(sort==='az') arr.sort((a,b)=>a[0].localeCompare(b[0]));
+  else arr.sort((a,b)=>b[1].qty-a[1].qty);
+  const maxQ=Math.max(1,...arr.map(x=>x[1].qty));
+  const totalU=arr.reduce((s,x)=>s+x[1].qty,0);
+  chart_productos.innerHTML = `<div style="font-size:10px;color:#aaa;margin-bottom:8px">${arr.length} productos distintos · ${totalU} unidades · se excluye la línea de conjunto/combo y se unifican nombres con o sin código</div>` +
+    arr.map(([n,o])=>`<div class="bar-row"><div class="bar-label" style="width:320px" title="${n}">${n}</div>
+    <div class="bar-track"><div class="bar-fill green" style="width:${(o.qty/maxQ*100).toFixed(1)}%"></div></div>
+    <div class="bar-val">${o.qty} u · ${o.ord} ord</div></div>`).join('') || '<div class="no-results">Sin productos.</div>';
+}
+
+/* ============ CUOTAS ============ */
+function renderCuotas(){
+  const v=filterCuotasVendedor.value, es=filterCuotasEstado.value;
+  const cp=PEDIDOS.filter(p=>p['Crédito/Contado']==='Crédito'&&p['Cuotas']&&!isRejected(p));
+  let rs=cp.map(p=>{ const m=monthsDiff(p['Fecha Ordenado'])||0, pa=Math.min(m,+p['Cuotas']), re=Math.max(0,+p['Cuotas']-pa); return {p,m,pa,re,done:re===0}; })
+    .filter(({p,done})=>{ if(v&&p['Vendedor']!==v) return false; if(es==='activo'&&done) return false; if(es==='terminado'&&!done) return false; return true; })
+    .sort((a,b)=>a.re-b.re);
+  cuotasCount.textContent=rs.length+' pedidos a crédito';
+  if(!rs.length){ cuotasBody.innerHTML='<tr><td colspan="10" class="no-results">Sin resultados.</td></tr>'; return; }
+  cuotasBody.innerHTML=rs.map(({p,m,pa,re,done})=>{ const pct=Math.round(pa/+p['Cuotas']*100), fc=done?'done':(pct>=75?'warning':'');
+    const eb=done?'<span class="badge badge-entregada">✓ Terminado</span>':`<span class="badge badge-credito">${re} restantes</span>`;
+    return `<tr onclick="openDetail(${p['N° Orden']})" style="cursor:pointer">
+      <td><strong>${p['N° Orden']}</strong></td><td style="white-space:nowrap">${p['Fecha Ordenado']}</td>
+      <td style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${p['Cliente']}">${p['Cliente']}</td>
+      <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${p['Vendedor']}">${p['Vendedor']}</td>
+      <td style="text-align:right;font-weight:600">${money(p['Total'])}</td><td style="text-align:center">${p['Cuotas']}</td>
+      <td style="text-align:center">${m}m</td><td style="text-align:center">${pa}</td>
+      <td style="text-align:center;font-weight:600;color:${re===0?'#27ae60':'#c0392b'}">${re}</td>
+      <td>${eb}<div class="cuotas-bar" style="margin-top:4px"><div class="cuotas-bar-fill ${fc}" style="width:${pct}%"></div></div></td></tr>`;
+  }).join('');
+}
+
+/* ============ FILTROS / MANTENIMIENTO ============ */
+function hasKw(str,kws){ const u=String(str||'').toUpperCase(); return kws.some(k=>u.includes(k)); }
+function nextDue(baseDate, intervalMonths, last){
+  // Próximo cambio = (último cambio hecho || base) + intervalo.
+  // NO auto-avanza: si venció y no se gestionó, se queda vencido.
+  return addMonths(last || baseDate, intervalMonths);
+}
+function dueInfo(baseDate, intervalMonths, last){
+  const due=nextDue(baseDate, intervalMonths, last);
+  const days=Math.round((due-TODAY)/(1000*60*60*24));
+  let st='aldia'; if(days<0) st='vencido'; else if(days<=90) st='proximo';
+  return {due, days, st};
+}
+function dueBadge(info, label){
+  const cls={vencido:'badge-vencido',proximo:'badge-proximo',aldia:'badge-aldia'}[info.st];
+  const txt=info.st==='vencido'?('Vencido '+Math.abs(info.days)+'d'):info.st==='proximo'?('En '+info.days+'d'):'Al día';
+  return `<div>${fmtDate(info.due)}</div><span class="badge ${cls}" style="margin-top:3px">${txt}</span>`;
+}
+function waterRecords(){
+  return PEDIDOS.filter(p=>isDelivered(p) && hasKw(p['Productos'],WATER_KW)).map(p=>{
+    const base=parseDate(p['Delivery Date'])||parseDate(p['Fecha Ordenado']);
+    const items=parseProducts(p['Productos']); const sys=items.find(x=>x.name.toUpperCase().includes('AQUA NANO'));
+    return {p, base, sys: sys?sys.name:'Aqua Nano'};
+  }).filter(r=>r.base);
+}
+function airRecords(){
+  return PEDIDOS.filter(p=>isDelivered(p) && hasKw(p['Productos'],AIR_KW)).map(p=>{
+    const base=parseDate(p['Delivery Date'])||parseDate(p['Fecha Ordenado']);
+    const items=parseProducts(p['Productos']); const sys=items.find(x=>hasKw(x.name,AIR_KW));
+    return {p, base, sys: sys?sys.name:'Purificador de aire'};
+  }).filter(r=>r.base);
+}
+function renderFiltrosCards(){
+  const w=waterRecords(), a=airRecords();
+  f_agua.textContent=w.length; f_aire.textContent=a.length;
+  let venc=0, prox=0;
+  w.forEach(r=>{ const pre=dueInfo(r.base,12,lastDoneDate(r.p['N° Orden'],'prefiltro')), main=dueInfo(r.base,48,lastDoneDate(r.p['N° Orden'],'filtroppal'));
+    if(pre.st==='vencido'||main.st==='vencido') venc++;
+    else if(pre.st==='proximo'||main.st==='proximo') prox++; });
+  a.forEach(r=>{ const f=dueInfo(r.base,18,lastDoneDate(r.p['N° Orden'],'aire')); if(f.st==='vencido') venc++; else if(f.st==='proximo') prox++; });
+  f_venc.textContent=venc; f_prox.textContent=prox;
+}
+function renderFiltros(){
+  renderFiltrosCards();
+  const tipo=filtroTipo.value, est=filtroEstado.value, q=(filtroSearch.value||'').toLowerCase();
+  // AGUA
+  let w=waterRecords();
+  if(tipo==='aire') w=[];
+  let rowsW=w.map(r=>{ const pre=dueInfo(r.base,12,lastDoneDate(r.p['N° Orden'],'prefiltro')), main=dueInfo(r.base,48,lastDoneDate(r.p['N° Orden'],'filtroppal'));
+    const worst = (pre.st==='vencido'||main.st==='vencido')?'vencido':(pre.st==='proximo'||main.st==='proximo')?'proximo':'aldia';
+    return {r,pre,main,worst}; });
+  if(q) rowsW=rowsW.filter(x=>String(x.r.p['Cliente']).toLowerCase().includes(q));
+  if(est) rowsW=rowsW.filter(x=>x.worst===est);
+  rowsW.sort((a,b)=>{ const ord={vencido:0,proximo:1,aldia:2}; if(ord[a.worst]!==ord[b.worst]) return ord[a.worst]-ord[b.worst]; return a.pre.due-b.pre.due; });
+  filtrosCount.textContent=rowsW.length+' clientes con filtro de agua';
+  if(!rowsW.length){ filtrosBody.innerHTML='<tr><td colspan="8" class="no-results">Sin resultados.</td></tr>'; }
+  else filtrosBody.innerHTML=rowsW.map(({r,pre,main})=>{ const m=monthsDiff(r.p['Delivery Date']||r.p['Fecha Ordenado']);
+    return `<tr onclick="openDetail(${r.p['N° Orden']})" style="cursor:pointer">
+      <td style="font-weight:600;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.p['Cliente']}">${r.p['Cliente']}</td>
+      <td>${district(r.p)}</td>
+      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.sys}">${r.sys}</td>
+      <td>${r.p['N° Orden']}</td><td style="white-space:nowrap">${fmtDate(r.base)}</td>
+      <td style="text-align:center">${m!=null?m+' m':'—'}</td>
+      <td style="white-space:nowrap">${dueBadge(pre)}</td><td style="white-space:nowrap">${dueBadge(main)}</td></tr>`;
+  }).join('');
+  // AIRE
+  let a=airRecords(); if(tipo==='agua') a=[];
+  let rowsA=a.map(r=>{ const f=dueInfo(r.base,18,lastDoneDate(r.p['N° Orden'],'aire')); return {r,f}; });
+  if(q) rowsA=rowsA.filter(x=>String(x.r.p['Cliente']).toLowerCase().includes(q));
+  if(est) rowsA=rowsA.filter(x=>x.f.st===est);
+  rowsA.sort((a,b)=>a.f.due-b.f.due);
+  if(rowsA.length){ aireWrap.style.display='block';
+    aireBody.innerHTML=rowsA.map(({r,f})=>{ const m=monthsDiff(r.p['Delivery Date']||r.p['Fecha Ordenado']);
+      return `<tr onclick="openDetail(${r.p['N° Orden']})" style="cursor:pointer">
+        <td style="font-weight:600">${r.p['Cliente']}</td><td>${district(r.p)}</td><td>${r.sys}</td>
+        <td>${r.p['N° Orden']}</td><td>${fmtDate(r.base)}</td><td style="text-align:center">${m!=null?m+' m':'—'}</td>
+        <td style="white-space:nowrap">${dueBadge(f)}</td></tr>`; }).join('');
+  } else { aireWrap.style.display = (tipo==='aire') ? 'block' : 'none';
+    aireBody.innerHTML='<tr><td colspan="7" class="no-results">No hay purificadores de aire registrados.</td></tr>'; }
+}
+
+/* ============ SEGUIMIENTO DE CLIENTES ============ */
+function pHas(p,kws){ return hasKw(p['Productos'],kws); }
+function welcomeLabel(p){
+  const bits=['🎥 Video: lavado de utensilios + recomendaciones de uso'];
+  if(pHas(p,PAN_KW)) bits.push('sartenes: freír sin aceite');
+  if(pHas(p,WATERWIDE_KW)) bits.push('filtro: cómo conectarlo');
+  if(pHas(p,COOK_KW)) bits.push('cocina de inducción: cómo usarla');
+  if(pHas(p,PRESSURE_KW)) bits.push('olla a presión: uso y recomendaciones');
+  return bits.join(' · ');
+}
+function actionsForOrder(p){
+  const acts=[]; if(!isDelivered(p)) return acts;
+  const base=parseDate(p['Delivery Date'])||parseDate(p['Fecha Ordenado']); if(!base) return acts;
+  const o=p['N° Orden'];
+  acts.push({o,p,type:'bienvenida',grp:'Bienvenida',recurring:false,base,dueDate:base,label:welcomeLabel(p),trigger:'Al recibir el pedido'});
+  const pots = pHas(p,POTS_KW)||pHas(p,PRESSURE_KW);
+  if(pots){
+    acts.push({o,p,type:'semana1',grp:'Semana 1',recurring:false,base,dueDate:addDays(base,7),label:'🎥 Video: cómo lavar el Nutri Sensor',trigger:'1 semana de recibido (tiene ollas)'});
+    acts.push({o,p,type:'mes1',grp:'Mes 1',recurring:false,base,dueDate:addDays(base,30),label:'✨ Mantener el brillo, buen uso y Rena Lite',trigger:'1 mes de recibido (tiene ollas)'});
+  }
+  if(p['Crédito/Contado']==='Crédito' && +p['Cuotas']>0){
+    const ord=parseDate(p['Fecha Ordenado']);
+    if(ord) acts.push({o,p,type:'fincuotas',grp:'Fin de cuotas',recurring:false,base:ord,dueDate:addMonths(ord,(+p['Cuotas'])-1),label:'📞 Contactar: ~1 mes para terminar de pagar sus cuotas ('+p['Cuotas']+' cuotas)',trigger:'1 mes antes de terminar cuotas'});
+  }
+  if(pHas(p,WATER_KW)){
+    acts.push({o,p,type:'prefiltro',grp:'Pre-filtro agua',recurring:true,base,interval:12,label:'💧 Coordinar cambio de PRE-FILTRO de agua (cada 12 meses)',trigger:'Filtro Aqua Nano'});
+    acts.push({o,p,type:'filtroppal',grp:'Filtro principal',recurring:true,base,interval:48,label:'💧 Coordinar cambio de FILTRO PRINCIPAL (cada 48 meses)',trigger:'Filtro Aqua Nano'});
+  }
+  if(pHas(p,AIR_KW)) acts.push({o,p,type:'aire',grp:'Filtro de aire',recurring:true,base,interval:18,label:'🌀 Coordinar cambio de filtro del purificador (cada 18 meses)',trigger:'Purificador de aire'});
+  return acts;
+}
+function allActions(){ const r=[]; PEDIDOS.forEach(p=>actionsForOrder(p).forEach(a=>r.push(a))); return r; }
+function actState(a){
+  const done=doneCount(a.o,a.type); let due;
+  if(a.recurring){ due=nextDue(a.base,a.interval,lastDoneDate(a.o,a.type)); }
+  else { if(done>0) return {st:'hecho',due:a.dueDate,days:null,done,doneDate:doneList(a.o,a.type)[done-1]}; due=a.dueDate; }
+  const days=Math.round((due-TODAY)/86400000);
+  let st = days<0?'vencido' : days<=30?'proximo' : 'pendiente';
+  // Comunicaciones puntuales vencidas hace >45 días: fuera de plazo (ya no accionables, no cuentan como vencidas)
+  if(!a.recurring && days < -45) st='caducado';
+  return {st,due,days,done};
+}
+function segBadge(s){
+  const map={vencido:['badge-vencido','Vencido'],proximo:['badge-proximo','Próximo'],pendiente:['badge-otro','Pendiente'],hecho:['badge-aldia','✓ Hecho'],caducado:['badge-cad','Fuera de plazo']};
+  const [cls,txt]=map[s.st]||['badge-otro',s.st];
+  const d = s.st==='vencido'?(' '+Math.abs(s.days)+'d'):s.st==='proximo'?(' '+s.days+'d'):'';
+  return '<span class="badge '+cls+'">'+txt+d+'</span>';
+}
+function manageCell(a,s){
+  if(!a.recurring && s.st==='hecho') return '<span class="badge badge-aldia">'+s.doneDate+'</span><button class="mini-btn btn-undo" onclick="undoDone('+a.o+',&#39;'+a.type+'&#39;)">deshacer</button>';
+  const extra = a.recurring && s.done>0 ? '<div style="font-size:10px;color:#888;margin-top:3px">cambios: '+s.done+' · últ. '+doneList(a.o,a.type)[s.done-1]+' <a href="#" onclick="undoDone('+a.o+',&#39;'+a.type+'&#39;);return false" style="color:#c0392b">deshacer</a></div>':'';
+  return '<button class="mini-btn btn-done" onclick="registrar('+a.o+',&#39;'+a.type+'&#39;,&#39;'+a.grp.replace(/'/g,"")+'&#39;)">✓ Registrar</button>'+extra;
+}
+function renderSeguimiento(){
+  const q=(document.getElementById('segSearch').value||'').toLowerCase();
+  const tp=document.getElementById('segTipo').value, es=document.getElementById('segEstado').value, vd=document.getElementById('segVend').value;
+  const acts=allActions().map(a=>({a,s:actState(a)}));
+  document.getElementById('sVenc').textContent=acts.filter(x=>x.s.st==='vencido').length;
+  document.getElementById('sProx').textContent=acts.filter(x=>x.s.st==='proximo').length;
+  document.getElementById('sPend').textContent=acts.filter(x=>x.s.st==='pendiente').length;
+  document.getElementById('sGest').textContent=Object.values(STORE).reduce((n,l)=>n+(l?l.length:0),0);
+  let rows=acts;
+  if(tp) rows=rows.filter(x=>x.a.type===tp);
+  if(vd) rows=rows.filter(x=>x.a.p['Vendedor']===vd);
+  if(es==='accion') rows=rows.filter(x=>x.s.st==='vencido'||x.s.st==='proximo'||x.s.st==='pendiente');
+  else if(es) rows=rows.filter(x=>x.s.st===es);
+  if(q) rows=rows.filter(x=>[x.a.p['Cliente'],x.a.p['Vendedor'],x.a.o,x.a.grp].join(' ').toLowerCase().includes(q));
+  const ord={vencido:0,proximo:1,pendiente:2,hecho:3,caducado:4};
+  rows.sort((x,y)=>{ if(ord[x.s.st]!==ord[y.s.st]) return ord[x.s.st]-ord[y.s.st]; return x.s.due-y.s.due; });
+  document.getElementById('segCount').textContent=rows.length+' acción(es)';
+  const body=document.getElementById('segBody');
+  if(!rows.length){ body.innerHTML='<tr><td colspan="8" class="no-results">Sin acciones.</td></tr>'; return; }
+  body.innerHTML=rows.map(({a,s})=>'<tr class="'+(s.st==='hecho'?'done-row':'')+'">'+
+    '<td style="white-space:nowrap">'+segBadge(s)+'</td>'+
+    '<td style="white-space:nowrap">'+fmtDate(s.due)+'</td>'+
+    '<td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;color:#1a5276" title="'+a.p['Cliente']+'" onclick="openDetail('+a.o+')">'+a.p['Cliente']+'</td>'+
+    '<td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+a.p['Vendedor']+'">'+a.p['Vendedor']+'</td>'+
+    '<td style="white-space:nowrap">'+a.o+'<div style="font-size:10px;color:#999">'+(a.p['Celular']||'')+'</div></td>'+
+    '<td style="min-width:230px;font-size:12px">'+a.label+'</td>'+
+    '<td style="max-width:150px;font-size:11px;color:#666">'+a.trigger+'</td>'+
+    '<td style="white-space:nowrap">'+manageCell(a,s)+'</td></tr>').join('');
+}
+function updateTabBadges(){ const v=allActions().reduce((n,a)=>n+(actState(a).st==='vencido'?1:0),0);
+  const b=document.getElementById('tabVenc'); if(b){ b.textContent=v; b.style.display=v>0?'inline-block':'none'; } }
+
+function showTab(id, el){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active'); el.classList.add('active');
+}
+
+function boot(){ if(!window.__initDone){ window.__initDone=true; initFilters(); } applyFilters(); renderAnalytics(); renderCuotas(); renderFiltros(); renderSeguimiento(); updateTabBadges(); }
+</script>
+
+<div id="authGate" style="position:fixed;inset:0;background:linear-gradient(135deg,#c0392b,#8b0000);z-index:9999;display:flex;align-items:center;justify-content:center;font-family:'Segoe UI',Arial,sans-serif">
+  <div style="background:#fff;border-radius:14px;padding:30px 32px;width:340px;max-width:92vw;box-shadow:0 12px 44px rgba(0,0,0,.35)">
+    <div style="font-size:20px;font-weight:800;color:#8b0000">📦 Pedidos Rena Ware</div>
+    <div style="font-size:12px;color:#888;margin:4px 0 18px">Acceso restringido — inicia sesión</div>
+    <input id="authEmail" type="email" placeholder="Correo" autocomplete="username" style="width:100%;padding:11px;margin-bottom:8px;border:1px solid #ddd;border-radius:8px;font-size:14px">
+    <input id="authPass" type="password" placeholder="Contraseña" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" style="width:100%;padding:11px;margin-bottom:14px;border:1px solid #ddd;border-radius:8px;font-size:14px">
+    <button onclick="doLogin()" style="width:100%;padding:12px;background:#c0392b;color:#fff;border:none;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer">Ingresar</button>
+    <div id="authMsg" style="font-size:12px;color:#c0392b;margin-top:10px;min-height:16px"></div>
+  </div>
+</div>
+<script>
+const SB_URL="https://kiexpdaaoegbtesqmaff.supabase.co", SB_KEY="sb_publishable_pftOAOUR51_Q5gq-Qqra-g_cc0rzhth";
+const SB = (window.supabase&&window.supabase.createClient)? window.supabase.createClient(SB_URL,SB_KEY) : null;
+const COLS = [["N° Orden","n_orden","int"],["Período","periodo","t"],["Fecha Ordenado","fecha_ordenado","t"],["Fecha Comisión","fecha_comision","t"],["Fecha Entrega Aprox.","fecha_entrega_aprox","t"],["Fecha Despacho","fecha_despacho","t"],["Fecha Enviado","fecha_enviado","t"],["Delivery Date","delivery_date","t"],["GDR #","gdr","t"],["Estatus","estatus","t"],["Vendedor","vendedor","t"],["ID Vendedor","id_vendedor","int"],["Código Oficina","codigo_oficina","t"],["Almacén","almacen","t"],["Tipo Orden","tipo_orden","t"],["Comisionable","comisionable","t"],["Document Type","document_type","t"],["Commissionable Value","commissionable_value","num"],["Puntos","puntos","int"],["Cliente","cliente","t"],["Dirección","direccion","t"],["Ciudad","ciudad","t"],["Celular","celular","t"],["Email","email","t"],["Crédito/Contado","credito_contado","t"],["Cuotas","cuotas","int"],["Tasa","tasa","num"],["Cupón","cupon","num"],["Depósito","deposito","num"],["Financiado","financiado","num"],["Interés","interes","num"],["Expenses","expenses","num"],["Total","total","num"],["Productos","productos","t"],["Notas","notas","t"]];
+function mapDbRow(r){ const o={}; COLS.forEach(([h,c,t])=>{ let v=r[c]; if(v===null||v===undefined) v=''; else if((t==='int'||t==='num')&&v!=='') v=Number(v); o[h]=v; }); return o; }
+// Trae todas las filas en páginas de 1000 (límite por consulta de Supabase)
+async function fetchAll(table, cols, orderCol){ const out=[], step=1000;
+  for(let from=0;;from+=step){ const {data,error}=await SB.from(table).select(cols).order(orderCol).range(from,from+step-1);
+    if(error) throw error; out.push(...data); if(data.length<step) break; }
+  return out; }
+let STORE_IDS={};
+async function loadSeguimiento(){ STORE={}; STORE_IDS={};
+  const data=await fetchAll('crm_seguimiento','id,n_orden,tipo,fecha_gestion','id');
+  data.forEach(r=>{ const k=r.n_orden+'::'+r.tipo; (STORE[k]=STORE[k]||[]).push(r.fecha_gestion); (STORE_IDS[k]=STORE_IDS[k]||[]).push(r.id); }); }
+async function markDone(o,t,d){ if(!SB){ alert('Sin conexión.'); return; }
+  const {data,error}=await SB.from('crm_seguimiento').insert({n_orden:o,tipo:t,fecha_gestion:d}).select('id').single();
+  if(error){ alert('No se pudo guardar: '+error.message); return; }
+  const k=o+'::'+t; (STORE[k]=STORE[k]||[]).push(d); (STORE_IDS[k]=STORE_IDS[k]||[]).push(data.id); refreshAll(); }
+async function undoDone(o,t){ if(!SB) return; const k=o+'::'+t; const ids=STORE_IDS[k]; if(!ids||!ids.length) return;
+  const id=ids[ids.length-1]; const {error}=await SB.from('crm_seguimiento').delete().eq('id',id);
+  if(error){ alert('No se pudo deshacer: '+error.message); return; }
+  STORE[k].pop(); ids.pop(); if(!STORE[k].length){ delete STORE[k]; delete STORE_IDS[k]; } refreshAll(); }
+function exportSeg(){ const blob=new Blob([JSON.stringify(STORE,null,1)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='seguimiento_backup.json'; a.click(); }
+function showLoadError(msg){ const b=document.getElementById('loadBanner'); if(!b) return; b.textContent=msg||''; b.style.display=msg?'':'none'; }
+async function loadData(){
+  try{ const rows=await fetchAll('crm_pedidos','*','n_orden'); PEDIDOS=rows.map(mapDbRow);
+    showLoadError(PEDIDOS.length?'':'No hay pedidos visibles para esta cuenta.'); }
+  catch(e){ PEDIDOS=[]; showLoadError('⚠️ No se pudieron cargar los pedidos ('+(e.message||e)+'). Revisa tu conexión o vuelve a ingresar.'); }
+  try{ await loadSeguimiento(); }catch(e){ console.error(e); }
+}
+async function doLogin(){ const m=document.getElementById('authMsg'); m.textContent='Ingresando…';
+  const email=(document.getElementById('authEmail').value||'').trim(); const password=document.getElementById('authPass').value||'';
+  const {error}=await SB.auth.signInWithPassword({email,password}); if(error){ m.textContent=error.message; return; } await afterAuth(); }
+async function doLogout(){ if(SB) await SB.auth.signOut(); location.reload(); }
+async function afterAuth(){ const {data:{session}}=await SB.auth.getSession(); if(!session) return;
+  const w=document.getElementById('whoami'); if(w) w.textContent=session.user.email;
+  document.getElementById('authGate').style.display='none';
+  await loadData(); boot(); }
+(async function(){ if(!SB){ const m=document.getElementById('authMsg'); if(m) m.textContent='No se pudo cargar Supabase (revisa tu conexión).'; return; }
+  const {data:{session}}=await SB.auth.getSession(); if(session) await afterAuth(); })();
+</script>
+
+</body>
+</html>
