@@ -1,0 +1,8 @@
+# Nunca subir datos de clientes al repo
+*.xlsx
+*.xls
+*.csv
+data/
+pb*.json
+seguimiento*.json
+.DS_Store
