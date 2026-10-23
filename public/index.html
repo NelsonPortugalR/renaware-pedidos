@@ -204,26 +204,26 @@
 <!-- TAB FILTROS -->
 <div id="tab-filtros" class="tab-content">
   <div class="cards" style="padding:16px 24px 0;">
-    <div class="card blue"><div class="card-label">Clientes con filtro de agua</div><div class="card-value" id="f_agua">—</div><div class="card-sub">sistemas Aqua Nano entregados</div></div>
+    <div class="card blue"><div class="card-label">Clientes con filtro de agua</div><div class="card-value" id="f_agua">—</div><div class="card-sub" id="f_agua_sub">sistemas Aqua Nano entregados</div></div>
     <div class="card orange"><div class="card-label">Cambios vencidos</div><div class="card-value" id="f_venc">—</div><div class="card-sub">pre-filtro o filtro principal</div></div>
     <div class="card teal"><div class="card-label">Próximos 90 días</div><div class="card-value" id="f_prox">—</div><div class="card-sub">cambios por vencer</div></div>
     <div class="card purple"><div class="card-label">Purificadores de aire</div><div class="card-value" id="f_aire">—</div><div class="card-sub">filtro cada 18 meses</div></div>
   </div>
-  <div class="legend">💧 Pre-filtro de agua: cambio cada <b>12 meses</b> · Filtro principal: cada <b>48 meses (4 años)</b> · 🌀 Purificador de aire: filtro cada <b>18 meses</b>. Fechas calculadas desde la entrega. Solo pedidos entregados con producto de filtración.</div>
+  <div class="legend">💧 Pre-filtro de agua: cambio cada <b>12 meses</b> · Filtro principal: cada <b>48 meses (4 años)</b> · 🌀 Purificador de aire: filtro cada <b>18 meses</b>. Fechas calculadas desde la entrega del sistema <b>o del último repuesto comprado</b> (pre-filtro / elemento desechable / filtro de aire): cada compra de repuesto reinicia su ciclo. Quien solo compró repuesto también aparece, aunque su sistema sea anterior a este registro.</div>
   <div class="filters"><h3>🔍 Filtros</h3><div class="filter-row">
     <input type="text" id="filtroSearch" placeholder="Buscar cliente..." oninput="renderFiltros()">
-    <select id="filtroTipo" onchange="renderFiltros()"><option value="">Agua y Aire</option><option value="agua">Solo agua (Aqua Nano)</option><option value="aire">Solo aire</option></select>
+    <select id="filtroTipo" onchange="renderFiltros()"><option value="">Agua y Aire</option><option value="agua">Solo agua (Aqua Nano)</option><option value="aire">Solo aire</option><option value="repuesto">Compraron repuestos</option></select>
     <select id="filtroEstado" onchange="renderFiltros()"><option value="">Todos los estados</option><option value="vencido">Con cambios vencidos</option><option value="proximo">Por vencer (90 días)</option><option value="aldia">Al día</option></select>
     <span class="result-count" id="filtrosCount"></span>
   </div></div>
   <div class="table-wrap"><div class="table-scroll"><table><thead><tr>
-    <th>Cliente</th><th>Distrito</th><th>Sistema</th><th>N° Orden</th><th>Fecha Compra</th><th>Antigüedad</th>
-    <th>Pre-filtro (1 año)</th><th>Filtro principal (4 años)</th>
+    <th>Cliente</th><th>Distrito</th><th>Sistema</th><th>N° Orden</th><th>Compra sistema</th><th>Antigüedad</th>
+    <th>Último repuesto</th><th>Pre-filtro (1 año)</th><th>Filtro principal (4 años)</th>
   </tr></thead><tbody id="filtrosBody"></tbody></table></div></div>
   <div id="aireWrap" style="display:none">
     <div class="legend" style="margin-top:0;font-weight:700;color:#8e44ad">🌀 Purificadores de aire — filtro cada 18 meses</div>
     <div class="table-wrap"><div class="table-scroll"><table><thead><tr>
-      <th>Cliente</th><th>Distrito</th><th>Producto</th><th>N° Orden</th><th>Fecha Compra</th><th>Antigüedad</th><th>Próximo cambio filtro (18 meses)</th>
+      <th>Cliente</th><th>Distrito</th><th>Producto</th><th>N° Orden</th><th>Compra sistema</th><th>Antigüedad</th><th>Último repuesto</th><th>Próximo cambio filtro (18 meses)</th>
     </tr></thead><tbody id="aireBody"></tbody></table></div></div>
   </div>
 </div>
@@ -274,7 +274,7 @@
 const SEED = [];
 let PEDIDOS = SEED;
 const TODAY = new Date();
-const WATER_KW = ['AQUA NANO'];              // sistema de filtración de agua (no incluye "Aqua Check")
+const WATER_KW = ['AQUA NANO','AQUA CHECK NANO 500 CTU (UNID','AQUA CHECK NANO 500 UCU','LX-500']; // sistema de agua (combos + unidad portátil + UCU); el componente "Aqua Check Nano 500 CTU (x1 S/0)" solo no cuenta
 const AIR_KW = ['PURIFICADOR DE AIRE','AIR PURIFIER','RENA AIR','PURIFICADOR AIRE'];
 // Categorías de producto para las comunicaciones de bienvenida / uso
 const POTS_KW = ['COOKER','OLLA','CACEROLA','SIGNATURE','PRINCESA','RENAWOK','RENA WOK','SAUCEPAN','SAUCIER','RONDEAU','ASADOR','CONTESSA'];
@@ -282,6 +282,13 @@ const PAN_KW  = ['SARTÉN','SARTEN','SKILLET'];
 const COOK_KW = ['INDUCTION COOKER','COCINA DE INDUCC','IC-450'];
 const PRESSURE_KW = ['OLLA A PRESI','PRESSURE'];
 const WATERWIDE_KW = ['AQUA NANO','FILTRO DE AGUA','AQUA CHECK NANO 500 UCU'];
+// Repuestos: cada compra reinicia el ciclo de ese filtro (se cuenta desde la entrega del repuesto)
+const PREFILTRO_KW = ['PREFILTRO','PRE-FILTRO','PRE FILTRO'];                                  // 12 meses
+const ELEMENTO_KW  = ['ELEMENTO DESECHABLE','ELEMENTO AQ HD','ALOJAMIENTO REU'];               // filtro principal, 48 meses
+const AIRFILTER_KW = ['FILTRO HEPA','FILTRO DE AIRE','FILTRO PARA PURIFICADOR','FILTRO AEROQUATTRO','FILTRO AERO']; // 18 meses
+const CICLOS = { prefiltro:{interval:12, sysKw:WATER_KW, repKw:PREFILTRO_KW, grp:'Pre-filtro agua', label:'💧 Coordinar cambio de PRE-FILTRO de agua (cada 12 meses)'},
+                 filtroppal:{interval:48, sysKw:WATER_KW, repKw:ELEMENTO_KW, grp:'Filtro principal', label:'💧 Coordinar cambio de FILTRO PRINCIPAL / elemento desechable (cada 48 meses)'},
+                 aire:{interval:18, sysKw:AIR_KW, repKw:AIRFILTER_KW, grp:'Filtro de aire', label:'🌀 Coordinar cambio de filtro del purificador (cada 18 meses)'} };
 
 // ===== Almacén de gestiones (persistencia): baked + localStorage =====
 const SEG_SAVED = {};
@@ -605,67 +612,103 @@ function dueBadge(info, label){
   const txt=info.st==='vencido'?('Vencido '+Math.abs(info.days)+'d'):info.st==='proximo'?('En '+info.days+'d'):'Al día';
   return `<div>${fmtDate(info.due)}</div><span class="badge ${cls}" style="margin-top:3px">${txt}</span>`;
 }
+function normName(n){ return String(n||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z ]/g,' ').replace(/\s+/g,' ').trim(); }
+function clientKey(p){ return p['Cliente ID'] ? 'id:'+p['Cliente ID'] : 'nom:'+normName(p['Cliente']); }
+function orderDate(p){ return parseDate(p['Delivery Date'])||parseDate(p['Fecha Ordenado']); }
+function maxDate(a,b){ if(!a) return b; if(!b) return a; return a>b?a:b; }
+// Un ciclo por cliente y tipo de filtro. Base = lo más reciente entre la compra del sistema y la
+// compra del repuesto de ese filtro. Clientes que solo compraron repuesto (sistema anterior a este
+// registro) también entran, con base en el repuesto.
+function filterCycles(kind){
+  const C=CICLOS[kind]; const byCli={};
+  PEDIDOS.forEach(p=>{ if(!isDelivered(p)) return; const d=orderDate(p); if(!d) return;
+    // sistema = un ítem con la palabra clave del sistema que NO sea un repuesto ("ELEMENTO DESECHABLE AQUA NANO HD" no es un Aqua Nano)
+    const isSys=String(p['Productos']||'').split('|').some(x=>hasKw(x,C.sysKw)&&!hasKw(x,PREFILTRO_KW)&&!hasKw(x,ELEMENTO_KW)&&!hasKw(x,AIRFILTER_KW)), isRep=hasKw(p['Productos'],C.repKw);
+    // repuesto de otro ciclo de agua (ej. solo prefiltro) también cuenta como "tiene el sistema", pero no mueve esta base
+    const isWaterRep = kind!=='aire' && (hasKw(p['Productos'],PREFILTRO_KW)||hasKw(p['Productos'],ELEMENTO_KW));
+    if(!isSys && !isRep && !isWaterRep) return;
+    const k=clientKey(p); const c=byCli[k]=byCli[k]||{key:k,orders:[],sys:null,sysDate:null,rep:null,repDate:null,reps:[],anchor:null,anchorDate:null};
+    c.orders.push(p['N° Orden']);
+    if(isSys && (!c.sysDate||d>c.sysDate)){ c.sys=p; c.sysDate=d; }
+    if(isRep){ c.reps.push({p,d}); if(!c.repDate||d>c.repDate){ c.rep=p; c.repDate=d; } }
+    if(!c.anchorDate||d>c.anchorDate){ c.anchor=p; c.anchorDate=d; } });
+  return Object.values(byCli).map(c=>{
+    const base=maxDate(c.sysDate,c.repDate); if(!base) return null;
+    const p=c.sys||c.anchor; const items=parseProducts(p['Productos']);
+    const sysItem = c.sys ? items.find(x=>hasKw(x.name,C.sysKw)&&!hasKw(x.name,PREFILTRO_KW)&&!hasKw(x.name,ELEMENTO_KW)) || items[0] : null;
+    const src = c.repDate && (!c.sysDate||c.repDate>=c.sysDate) ? 'repuesto' : 'sistema';
+    return {kind, key:c.key, p, o:p['N° Orden'], orders:c.orders, base, src,
+            sysDate:c.sysDate, repDate:c.repDate, repCount:c.reps.length, interval:C.interval,
+            sysName: sysItem ? sysItem.name : (c.sys ? (kind==='aire'?'Purificador de aire':'Aqua Nano') : 'Sistema anterior (solo repuesto)') };
+  }).filter(Boolean);
+}
+// Gestiones registradas en cualquiera de las órdenes del cliente (sistema o repuestos)
+function doneAll(orders,t){ const out=[]; (orders||[]).forEach(o=>doneList(o,t).forEach(d=>out.push({o,d,dt:parseDate(d)}))); return out.filter(x=>x.dt).sort((a,b)=>a.dt-b.dt); }
+function lastDoneAll(orders,t){ const l=doneAll(orders,t); return l.length?l[l.length-1]:null; }
+function cycleInfo(c, t){ const ld=lastDoneAll(c.orders,t); return dueInfo(c.base, c.interval, ld?ld.dt:null); }
+// Vista por cliente de agua: junta los dos ciclos (pre-filtro y principal)
 function waterRecords(){
-  return PEDIDOS.filter(p=>isDelivered(p) && hasKw(p['Productos'],WATER_KW)).map(p=>{
-    const base=parseDate(p['Delivery Date'])||parseDate(p['Fecha Ordenado']);
-    const items=parseProducts(p['Productos']); const sys=items.find(x=>x.name.toUpperCase().includes('AQUA NANO'));
-    return {p, base, sys: sys?sys.name:'Aqua Nano'};
-  }).filter(r=>r.base);
+  const pre=filterCycles('prefiltro'), main=filterCycles('filtroppal'); const byKey={};
+  pre.forEach(c=>{ byKey[c.key]={key:c.key,p:c.p,o:c.o,orders:c.orders,sys:c.sysName,sysDate:c.sysDate,pre:c,main:null}; });
+  main.forEach(c=>{ const r=byKey[c.key]; if(r){ r.main=c; if(!r.sysDate&&c.sysDate){ r.sysDate=c.sysDate; r.sys=c.sysName; r.p=c.p; r.o=c.o; } }
+    else byKey[c.key]={key:c.key,p:c.p,o:c.o,orders:c.orders,sys:c.sysName,sysDate:c.sysDate,pre:null,main:c}; });
+  return Object.values(byKey).map(r=>{ r.base=r.sysDate||maxDate(r.pre&&r.pre.base, r.main&&r.main.base); r.preI=r.pre?cycleInfo(r.pre,'prefiltro'):null; r.mainI=r.main?cycleInfo(r.main,'filtroppal'):null;
+    const sts=[r.preI,r.mainI].filter(Boolean).map(x=>x.st); r.worst=sts.includes('vencido')?'vencido':sts.includes('proximo')?'proximo':'aldia'; return r; });
 }
-function airRecords(){
-  return PEDIDOS.filter(p=>isDelivered(p) && hasKw(p['Productos'],AIR_KW)).map(p=>{
-    const base=parseDate(p['Delivery Date'])||parseDate(p['Fecha Ordenado']);
-    const items=parseProducts(p['Productos']); const sys=items.find(x=>hasKw(x.name,AIR_KW));
-    return {p, base, sys: sys?sys.name:'Purificador de aire'};
-  }).filter(r=>r.base);
+function airRecords(){ return filterCycles('aire').map(c=>{ c.f=cycleInfo(c,'aire'); return c; }); }
+function repCell(r){
+  const bits=[]; if(r.pre&&r.pre.repDate) bits.push('Pre '+fmtDate(r.pre.repDate)); if(r.main&&r.main.repDate) bits.push('Ppal '+fmtDate(r.main.repDate));
+  return bits.length ? '<span class="badge badge-otro" title="Última compra de repuesto; el ciclo cuenta desde ahí">'+bits.join(' · ')+'</span>' : '<span style="color:#bbb">—</span>';
 }
+function noCycle(){ return '<span style="color:#bbb" title="Sin fecha conocida: no compró este repuesto y el sistema es anterior a este registro">—</span>'; }
 function renderFiltrosCards(){
   const w=waterRecords(), a=airRecords();
   f_agua.textContent=w.length; f_aire.textContent=a.length;
+  const nrep=w.filter(r=>(r.pre&&r.pre.repDate)||(r.main&&r.main.repDate)).length;
+  const sub=document.getElementById('f_agua_sub'); if(sub) sub.textContent=nrep+' compraron repuestos';
   let venc=0, prox=0;
-  w.forEach(r=>{ const pre=dueInfo(r.base,12,lastDoneDate(r.p['N° Orden'],'prefiltro')), main=dueInfo(r.base,48,lastDoneDate(r.p['N° Orden'],'filtroppal'));
-    if(pre.st==='vencido'||main.st==='vencido') venc++;
-    else if(pre.st==='proximo'||main.st==='proximo') prox++; });
-  a.forEach(r=>{ const f=dueInfo(r.base,18,lastDoneDate(r.p['N° Orden'],'aire')); if(f.st==='vencido') venc++; else if(f.st==='proximo') prox++; });
+  w.forEach(r=>{ if(r.worst==='vencido') venc++; else if(r.worst==='proximo') prox++; });
+  a.forEach(r=>{ if(r.f.st==='vencido') venc++; else if(r.f.st==='proximo') prox++; });
   f_venc.textContent=venc; f_prox.textContent=prox;
 }
 function renderFiltros(){
   renderFiltrosCards();
   const tipo=filtroTipo.value, est=filtroEstado.value, q=(filtroSearch.value||'').toLowerCase();
-  // AGUA
-  let w=waterRecords();
-  if(tipo==='aire') w=[];
-  let rowsW=w.map(r=>{ const pre=dueInfo(r.base,12,lastDoneDate(r.p['N° Orden'],'prefiltro')), main=dueInfo(r.base,48,lastDoneDate(r.p['N° Orden'],'filtroppal'));
-    const worst = (pre.st==='vencido'||main.st==='vencido')?'vencido':(pre.st==='proximo'||main.st==='proximo')?'proximo':'aldia';
-    return {r,pre,main,worst}; });
-  if(q) rowsW=rowsW.filter(x=>String(x.r.p['Cliente']).toLowerCase().includes(q));
-  if(est) rowsW=rowsW.filter(x=>x.worst===est);
-  rowsW.sort((a,b)=>{ const ord={vencido:0,proximo:1,aldia:2}; if(ord[a.worst]!==ord[b.worst]) return ord[a.worst]-ord[b.worst]; return a.pre.due-b.pre.due; });
+  // AGUA (un ciclo por cliente: sistema + repuestos)
+  let rowsW=waterRecords();
+  if(tipo==='aire') rowsW=[];
+  if(tipo==='repuesto') rowsW=rowsW.filter(r=>(r.pre&&r.pre.repDate)||(r.main&&r.main.repDate));
+  if(q) rowsW=rowsW.filter(r=>String(r.p['Cliente']).toLowerCase().includes(q));
+  if(est) rowsW=rowsW.filter(r=>r.worst===est);
+  rowsW.sort((a,b)=>{ const ord={vencido:0,proximo:1,aldia:2}; if(ord[a.worst]!==ord[b.worst]) return ord[a.worst]-ord[b.worst];
+    const da=(a.preI||a.mainI).due, db=(b.preI||b.mainI).due; return da-db; });
   filtrosCount.textContent=rowsW.length+' clientes con filtro de agua';
-  if(!rowsW.length){ filtrosBody.innerHTML='<tr><td colspan="8" class="no-results">Sin resultados.</td></tr>'; }
-  else filtrosBody.innerHTML=rowsW.map(({r,pre,main})=>{ const m=monthsDiff(r.p['Delivery Date']||r.p['Fecha Ordenado']);
-    return `<tr onclick="openDetail(${r.p['N° Orden']})" style="cursor:pointer">
+  if(!rowsW.length){ filtrosBody.innerHTML='<tr><td colspan="9" class="no-results">Sin resultados.</td></tr>'; }
+  else filtrosBody.innerHTML=rowsW.map(r=>{ const m=r.base?Math.max(0,(TODAY.getFullYear()-r.base.getFullYear())*12+(TODAY.getMonth()-r.base.getMonth())):null;
+    return `<tr onclick="openDetail(${r.o})" style="cursor:pointer">
       <td style="font-weight:600;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.p['Cliente']}">${r.p['Cliente']}</td>
       <td>${district(r.p)}</td>
       <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.sys}">${r.sys}</td>
-      <td>${r.p['N° Orden']}</td><td style="white-space:nowrap">${fmtDate(r.base)}</td>
+      <td>${r.o}${r.orders.length>1?'<div style="font-size:10px;color:#999">+'+(r.orders.length-1)+' orden(es)</div>':''}</td><td style="white-space:nowrap">${r.sysDate?fmtDate(r.sysDate):'—'}</td>
       <td style="text-align:center">${m!=null?m+' m':'—'}</td>
-      <td style="white-space:nowrap">${dueBadge(pre)}</td><td style="white-space:nowrap">${dueBadge(main)}</td></tr>`;
+      <td style="white-space:nowrap">${repCell(r)}</td>
+      <td style="white-space:nowrap">${r.preI?dueBadge(r.preI):noCycle()}</td><td style="white-space:nowrap">${r.mainI?dueBadge(r.mainI):noCycle()}</td></tr>`;
   }).join('');
   // AIRE
-  let a=airRecords(); if(tipo==='agua') a=[];
-  let rowsA=a.map(r=>{ const f=dueInfo(r.base,18,lastDoneDate(r.p['N° Orden'],'aire')); return {r,f}; });
-  if(q) rowsA=rowsA.filter(x=>String(x.r.p['Cliente']).toLowerCase().includes(q));
-  if(est) rowsA=rowsA.filter(x=>x.f.st===est);
+  let rowsA=airRecords(); if(tipo==='agua') rowsA=[];
+  if(tipo==='repuesto') rowsA=rowsA.filter(r=>r.repDate);
+  if(q) rowsA=rowsA.filter(r=>String(r.p['Cliente']).toLowerCase().includes(q));
+  if(est) rowsA=rowsA.filter(r=>r.f.st===est);
   rowsA.sort((a,b)=>a.f.due-b.f.due);
   if(rowsA.length){ aireWrap.style.display='block';
-    aireBody.innerHTML=rowsA.map(({r,f})=>{ const m=monthsDiff(r.p['Delivery Date']||r.p['Fecha Ordenado']);
-      return `<tr onclick="openDetail(${r.p['N° Orden']})" style="cursor:pointer">
-        <td style="font-weight:600">${r.p['Cliente']}</td><td>${district(r.p)}</td><td>${r.sys}</td>
-        <td>${r.p['N° Orden']}</td><td>${fmtDate(r.base)}</td><td style="text-align:center">${m!=null?m+' m':'—'}</td>
-        <td style="white-space:nowrap">${dueBadge(f)}</td></tr>`; }).join('');
+    aireBody.innerHTML=rowsA.map(r=>{ const m=(TODAY.getFullYear()-r.base.getFullYear())*12+(TODAY.getMonth()-r.base.getMonth());
+      return `<tr onclick="openDetail(${r.o})" style="cursor:pointer">
+        <td style="font-weight:600">${r.p['Cliente']}</td><td>${district(r.p)}</td><td>${r.sysName}</td>
+        <td>${r.o}</td><td>${r.sysDate?fmtDate(r.sysDate):'—'}</td><td style="text-align:center">${m+' m'}</td>
+        <td style="white-space:nowrap">${r.repDate?'<span class="badge badge-otro">'+fmtDate(r.repDate)+'</span>':'<span style="color:#bbb">—</span>'}</td>
+        <td style="white-space:nowrap">${dueBadge(r.f)}</td></tr>`; }).join('');
   } else { aireWrap.style.display = (tipo==='aire') ? 'block' : 'none';
-    aireBody.innerHTML='<tr><td colspan="7" class="no-results">No hay purificadores de aire registrados.</td></tr>'; }
+    aireBody.innerHTML='<tr><td colspan="8" class="no-results">No hay purificadores de aire registrados.</td></tr>'; }
 }
 
 /* ============ SEGUIMIENTO DE CLIENTES ============ */
@@ -692,17 +735,18 @@ function actionsForOrder(p){
     const ord=parseDate(p['Fecha Ordenado']);
     if(ord) acts.push({o,p,type:'fincuotas',grp:'Fin de cuotas',recurring:false,base:ord,dueDate:addMonths(ord,(+p['Cuotas'])-1),label:'📞 Contactar: ~1 mes para terminar de pagar sus cuotas ('+p['Cuotas']+' cuotas)',trigger:'1 mes antes de terminar cuotas'});
   }
-  if(pHas(p,WATER_KW)){
-    acts.push({o,p,type:'prefiltro',grp:'Pre-filtro agua',recurring:true,base,interval:12,label:'💧 Coordinar cambio de PRE-FILTRO de agua (cada 12 meses)',trigger:'Filtro Aqua Nano'});
-    acts.push({o,p,type:'filtroppal',grp:'Filtro principal',recurring:true,base,interval:48,label:'💧 Coordinar cambio de FILTRO PRINCIPAL (cada 48 meses)',trigger:'Filtro Aqua Nano'});
-  }
-  if(pHas(p,AIR_KW)) acts.push({o,p,type:'aire',grp:'Filtro de aire',recurring:true,base,interval:18,label:'🌀 Coordinar cambio de filtro del purificador (cada 18 meses)',trigger:'Purificador de aire'});
+  // Los ciclos de filtros (pre-filtro, principal, aire) se generan por cliente en cycleActions()
   return acts;
 }
-function allActions(){ const r=[]; PEDIDOS.forEach(p=>actionsForOrder(p).forEach(a=>r.push(a))); return r; }
+function cycleActions(){ const r=[];
+  Object.keys(CICLOS).forEach(kind=>{ const C=CICLOS[kind]; filterCycles(kind).forEach(c=>{
+    const trig = c.src==='repuesto' ? 'Repuesto comprado el '+fmtDate(c.repDate)+(c.sysDate?' (sistema '+fmtDate(c.sysDate)+')':' · sistema anterior') : (kind==='aire'?'Purificador de aire':'Filtro Aqua Nano')+' entregado '+fmtDate(c.base);
+    r.push({o:c.o,p:c.p,orders:c.orders,type:kind,grp:C.grp,recurring:true,base:c.base,interval:C.interval,label:C.label,trigger:trig}); }); });
+  return r; }
+function allActions(){ const r=[]; PEDIDOS.forEach(p=>actionsForOrder(p).forEach(a=>r.push(a))); cycleActions().forEach(a=>r.push(a)); return r; }
 function actState(a){
-  const done=doneCount(a.o,a.type); let due;
-  if(a.recurring){ due=nextDue(a.base,a.interval,lastDoneDate(a.o,a.type)); }
+  let done=doneCount(a.o,a.type); let due;
+  if(a.recurring){ const l=doneAll(a.orders||[a.o],a.type); done=l.length; due=nextDue(a.base,a.interval,l.length?l[l.length-1].dt:null); }
   else { if(done>0) return {st:'hecho',due:a.dueDate,days:null,done,doneDate:doneList(a.o,a.type)[done-1]}; due=a.dueDate; }
   const days=Math.round((due-TODAY)/86400000);
   let st = days<0?'vencido' : days<=30?'proximo' : 'pendiente';
@@ -718,7 +762,8 @@ function segBadge(s){
 }
 function manageCell(a,s){
   if(!a.recurring && s.st==='hecho') return '<span class="badge badge-aldia">'+s.doneDate+'</span><button class="mini-btn btn-undo" onclick="undoDone('+a.o+',&#39;'+a.type+'&#39;)">deshacer</button>';
-  const extra = a.recurring && s.done>0 ? '<div style="font-size:10px;color:#888;margin-top:3px">cambios: '+s.done+' · últ. '+doneList(a.o,a.type)[s.done-1]+' <a href="#" onclick="undoDone('+a.o+',&#39;'+a.type+'&#39;);return false" style="color:#c0392b">deshacer</a></div>':'';
+  const last = a.recurring && s.done>0 ? lastDoneAll(a.orders||[a.o],a.type) : null;
+  const extra = last ? '<div style="font-size:10px;color:#888;margin-top:3px">cambios: '+s.done+' · últ. '+last.d+' <a href="#" onclick="undoDone('+last.o+',&#39;'+a.type+'&#39;);return false" style="color:#c0392b">deshacer</a></div>':'';
   return '<button class="mini-btn btn-done" onclick="registrar('+a.o+',&#39;'+a.type+'&#39;,&#39;'+a.grp.replace(/'/g,"")+'&#39;)">✓ Registrar</button>'+extra;
 }
 function renderSeguimiento(){
@@ -775,7 +820,7 @@ function boot(){ if(!window.__initDone){ window.__initDone=true; initFilters(); 
 <script>
 const SB_URL="https://kiexpdaaoegbtesqmaff.supabase.co", SB_KEY="sb_publishable_pftOAOUR51_Q5gq-Qqra-g_cc0rzhth";
 const SB = (window.supabase&&window.supabase.createClient)? window.supabase.createClient(SB_URL,SB_KEY) : null;
-const COLS = [["N° Orden","n_orden","int"],["Período","periodo","t"],["Fecha Ordenado","fecha_ordenado","t"],["Fecha Comisión","fecha_comision","t"],["Fecha Entrega Aprox.","fecha_entrega_aprox","t"],["Fecha Despacho","fecha_despacho","t"],["Fecha Enviado","fecha_enviado","t"],["Delivery Date","delivery_date","t"],["GDR #","gdr","t"],["Estatus","estatus","t"],["Vendedor","vendedor","t"],["ID Vendedor","id_vendedor","int"],["Código Oficina","codigo_oficina","t"],["Almacén","almacen","t"],["Tipo Orden","tipo_orden","t"],["Comisionable","comisionable","t"],["Document Type","document_type","t"],["Commissionable Value","commissionable_value","num"],["Puntos","puntos","int"],["Cliente","cliente","t"],["Dirección","direccion","t"],["Ciudad","ciudad","t"],["Celular","celular","t"],["Email","email","t"],["Crédito/Contado","credito_contado","t"],["Cuotas","cuotas","int"],["Tasa","tasa","num"],["Cupón","cupon","num"],["Depósito","deposito","num"],["Financiado","financiado","num"],["Interés","interes","num"],["Expenses","expenses","num"],["Total","total","num"],["Productos","productos","t"],["Notas","notas","t"]];
+const COLS = [["N° Orden","n_orden","int"],["Período","periodo","t"],["Fecha Ordenado","fecha_ordenado","t"],["Fecha Comisión","fecha_comision","t"],["Fecha Entrega Aprox.","fecha_entrega_aprox","t"],["Fecha Despacho","fecha_despacho","t"],["Fecha Enviado","fecha_enviado","t"],["Delivery Date","delivery_date","t"],["GDR #","gdr","t"],["Estatus","estatus","t"],["Vendedor","vendedor","t"],["ID Vendedor","id_vendedor","int"],["Código Oficina","codigo_oficina","t"],["Almacén","almacen","t"],["Tipo Orden","tipo_orden","t"],["Comisionable","comisionable","t"],["Document Type","document_type","t"],["Commissionable Value","commissionable_value","num"],["Puntos","puntos","int"],["Cliente","cliente","t"],["Cliente ID","cliente_id","t"],["Dirección","direccion","t"],["Ciudad","ciudad","t"],["Celular","celular","t"],["Email","email","t"],["Crédito/Contado","credito_contado","t"],["Cuotas","cuotas","int"],["Tasa","tasa","num"],["Cupón","cupon","num"],["Depósito","deposito","num"],["Financiado","financiado","num"],["Interés","interes","num"],["Expenses","expenses","num"],["Total","total","num"],["Productos","productos","t"],["Notas","notas","t"]];
 function mapDbRow(r){ const o={}; COLS.forEach(([h,c,t])=>{ let v=r[c]; if(v===null||v===undefined) v=''; else if((t==='int'||t==='num')&&v!=='') v=Number(v); o[h]=v; }); return o; }
 // Trae todas las filas en páginas de 1000 (límite por consulta de Supabase)
 async function fetchAll(table, cols, orderCol){ const out=[], step=1000;

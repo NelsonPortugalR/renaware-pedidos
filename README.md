@@ -2,8 +2,15 @@
 
 Panel de pedidos de toda la organización (WV08) y **seguimiento de clientes**:
 bienvenida y videos de uso, Nutri Sensor a la semana, brillo y Rena Lite al mes,
-cambio de pre-filtro (12 m), filtro principal (48 m) y filtro de aire (18 m), y
-aviso un mes antes de terminar las cuotas.
+cambio de pre-filtro (12 m), filtro principal / elemento desechable (48 m) y
+filtro de aire (18 m), y aviso un mes antes de terminar las cuotas.
+
+Los ciclos de filtros se llevan **por cliente, no por orden**: la base es la
+entrega del sistema o la del **último repuesto comprado** (prefiltro EM,
+elemento desechable / alojamiento REU, filtro de aire), lo que sea más
+reciente. Cada compra de repuesto reinicia su ciclo. Quien solo compró
+repuesto (sistema anterior a este registro) también aparece. Registrar un
+cambio en cualquiera de las órdenes del cliente cuenta para su ciclo.
 
 - `public/index.html` — la app completa (una sola página)
 - `public/_headers`, `public/robots.txt`, `public/404.html` — configuración
