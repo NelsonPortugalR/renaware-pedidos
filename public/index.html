@@ -140,6 +140,8 @@
   .bar-val { font-size: 11px; color: #666; min-width: 110px; text-align: right; white-space:nowrap; }
   .mini-input { padding:5px 9px; border:1px solid #ddd; border-radius:6px; font-size:11px; outline:none; }
   .no-results { text-align: center; padding: 40px; color: #aaa; font-size: 14px; }
+  .badge-auto { background:#f3e8fd; color:#6c3483; }
+  .regla.ajuste { border-left-color:#8e44ad; }
   .regla-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:12px; margin-bottom:18px; }
   .regla { background:#fff; border-radius:10px; padding:14px 16px; box-shadow:0 1px 4px rgba(0,0,0,0.08); border-left:4px solid #2980b9; }
   .regla.ciclo { border-left-color:#16a085; } .regla.off { opacity:.55; }
@@ -225,7 +227,7 @@
       <select id="filterPeriodo" onchange="applyFilters()"><option value="">Todos los períodos</option></select>
       <select id="filterDistrito" onchange="applyFilters()"><option value="">Todos los distritos</option></select>
       <select id="filterEstatus" onchange="applyFilters()"><option value="">Todos los estatus</option><option value="ENTREGADA">Entregada</option><option value="RECHAZADA">Rechazada</option><option value="CANCELADO">Cancelado</option><option value="PENDIENTE">Pendiente</option></select>
-      <select id="filterTipoPago" onchange="applyFilters()"><option value="">Crédito y Contado</option><option value="Crédito">Solo Crédito</option><option value="Contado">Solo Contado</option></select>
+      <select id="filterTipoPago" onchange="applyFilters()"><option value="">Crédito y Contado</option><option value="Crédito">Solo Crédito</option><option value="Contado">Solo Contado</option><option value="auto">Solo autocompras</option><option value="noauto">Sin autocompras</option></select>
       <button class="btn red" onclick="clearFilters()">✕ Limpiar</button>
       <button class="btn ghost" onclick="exportar('pedidos')">⬇ Excel</button>
       <span class="result-count" id="resultCount"></span>
@@ -441,7 +443,7 @@ function applyFilters(){
     if(per&&String(p['Período'])!==String(per)) return false;
     if(di&&district(p)!==di) return false;
     if(es&&!String(p['Estatus']).toUpperCase().includes(es)) return false;
-    if(tp&&p['Crédito/Contado']!==tp) return false;
+    if(tp==='auto'){ if(!p['Autocompra']) return false; } else if(tp==='noauto'){ if(p['Autocompra']) return false; } else if(tp&&p['Crédito/Contado']!==tp) return false;
     if(s){ const h=[p['Cliente'],p['Vendedor'],p['Productos'],p['N° Orden'],p['Ciudad'],p['Email'],p['Celular']].join(' ').toLowerCase(); if(!h.includes(s)) return false; }
     return true;
   });
@@ -467,7 +469,7 @@ function renderTable(){
       <td><strong>${p['N° Orden']}</strong></td><td class="nw" title="${esc(p['Período'])}">${esc(String(p['Período']).split(' ')[0])}</td>
       <td class="nw">${esc(p['Fecha Ordenado'])}</td><td>${m!=null?m+' m':'—'}</td>
       <td>${statusBadge(p['Estatus'])}</td>
-      <td class="ell" title="${esc(p['Vendedor'])}">${esc(p['Vendedor'])}</td>
+      <td class="ell" title="${esc(p['Vendedor'])}${p['Autocompra']?' · autocompra':''}">${p['Autocompra']?'<span class="badge badge-auto" title="Autocompra: el asesor se compró a sí mismo">auto</span> ':''}${esc(p['Vendedor'])}</td>
       <td class="ell" title="${esc(p['Cliente'])}">${esc(p['Cliente'])}</td>
       <td class="nw">${esc(district(p))}</td><td>${tb}</td><td>${cuotasCell(p)}</td>
       <td class="num">${money(p['Total'])}</td>
@@ -582,15 +584,16 @@ async function cargarReglas(){ try{ const {data,error}=await SB.from('crm_reglas
 function reTxt(re){ if(!re) return ''; return String(re).replace(/^\(|\)$/g,'').split('|').map(x=>x.replace(/\\\(/g,'(').replace(/ \?/g,' ').trim()).join(', '); }
 function renderReglas(){ const el=document.getElementById('reglasBody'); if(!el) return;
   if(!REGLAS.length){ el.innerHTML='<p class="hint">No se pudieron leer las reglas.</p>'; return; }
-  const uso=t=>{ const l=ACCIONES.filter(a=>a.tipo===t); if(!l.length) return 'Sin acciones todavía.'; const n=k=>l.filter(a=>a.estado===k).length;
+  const uso=t=>{ if(t==='autocompra'){ const n=PEDIDOS.filter(p=>p['Autocompra']).length; return n+' pedidos marcados como autocompra · '+PEDIDOS.filter(p=>p['Autocompra']&&p['Vendedor BO']).length+' con vendedor corregido'; } const l=ACCIONES.filter(a=>a.tipo===t); if(!l.length) return 'Sin acciones todavía.'; const n=k=>l.filter(a=>a.estado===k).length;
     return l.length+' acciones · '+n('vencido')+' vencidas · '+n('proximo')+' próximas'+(l[0].clase==='ciclo'?' · '+n('al_dia')+' al día':' · '+n('hecho')+' enviadas'); };
-  const card=r=>`<div class="regla ${r.tipo_regla==='ciclo'?'ciclo':''} ${r.activo?'':'off'}"><h4>${esc(r.nombre)}<span class="badge ${r.activo?'badge-aldia':'badge-cad'}">${r.activo?'activa':'apagada'}</span></h4><dl>
+  const card=r=>`<div class="regla ${r.tipo_regla==='ciclo'?'ciclo':r.tipo_regla==='ajuste'?'ajuste':''} ${r.activo?'':'off'}"><h4>${esc(r.nombre)}<span class="badge ${r.activo?'badge-aldia':'badge-cad'}">${r.activo?'activa':'apagada'}</span></h4><dl>
     <dt>Aplica a</dt><dd>${esc(r.aplica_a)}</dd><dt>Cuándo</dt><dd>${esc(r.cuando)}</dd><dt>Acción</dt><dd>${esc(r.accion)}</dd>
     ${r.re_sistema?`<dt>Detecta</dt><dd>${esc(reTxt(r.re_sistema))}${r.re_excluir?' <span class="hint">(no cuenta: '+esc(reTxt(r.re_excluir))+')</span>':''}</dd>`:''}
     ${r.re_repuesto?`<dt>Reinicia</dt><dd>comprar ${esc(reTxt(r.re_repuesto))}</dd>`:''}</dl><div class="uso">${esc(uso(r.clave))}</div></div>`;
-  const u=REGLAS.filter(r=>r.tipo_regla==='una_vez'), c=REGLAS.filter(r=>r.tipo_regla==='ciclo');
+  const u=REGLAS.filter(r=>r.tipo_regla==='una_vez'), c=REGLAS.filter(r=>r.tipo_regla==='ciclo'), aj=REGLAS.filter(r=>r.tipo_regla==='ajuste');
   el.innerHTML='<div class="reglas-h">💬 Mensajes por pedido (una vez)</div><div class="regla-grid">'+u.map(card).join('')+'</div>'+
     '<div class="reglas-h">🔁 Ciclos por cliente (se repiten)</div><div class="regla-grid">'+c.map(card).join('')+'</div>'+
+    (aj.length?'<div class="reglas-h">⚙️ Ajustes de datos al cargar pedidos</div><div class="regla-grid">'+aj.map(card).join('')+'</div>':'')+
     '<p class="hint">Mensajes por pedido: vencidos hasta 45 días se muestran; después pasan a «fuera de plazo». Ciclos: se avisan desde 90 días antes y quedan vencidos hasta que se anote el cambio o «ya no aplica».</p>'; }
 async function recargarAcciones(){ try{ ACCIONES=(await fetchAcciones()).filter(a=>a&&a.estado!=='caducado'); }catch(e){ toast('No se pudieron releer las gestiones: '+(e.message||e), true); }
   armarClientes(); renderFiltros(); renderClientes(); updateTabBadge(); refrescarFicha(); }
@@ -622,7 +625,7 @@ function openDetail(orden){
       ${f('Tipo de orden',esc(p['Tipo Orden']))}${f('Almacén',esc(p['Almacén']))}${f('GDR',esc(p['GDR #']))}${f('Puntos',p['Puntos'])}</div></div>
     <div class="detail-section"><h3>👤 Cliente ${c?`<button class="mini-btn" onclick="closeOverlay();openFicha('${esc(c.id)}')">Ver ficha</button>`:''}</h3><div class="detail-grid">
       ${f('Nombre',esc(titulo(p['Cliente'])))}${f('Distrito',esc(district(p)))}${f('Celular',esc(p['Celular']))}${f('Email',esc(p['Email']))}${f('Dirección',esc(p['Dirección']),' style="grid-column:1/-1"')}</div></div>
-    <div class="detail-section"><h3>🏷️ Vendedor</h3><div class="detail-grid">${f('Nombre',esc(p['Vendedor']))}${f('Código',p['ID Vendedor'])}${f('Oficina',esc(p['Código Oficina']))}${f('Comisionable',esc(p['Comisionable']))}${f('Valor comisionable',money_(p['Commissionable Value']))}</div></div>
+    <div class="detail-section"><h3>🏷️ Vendedor</h3>${p['Autocompra']?`<p class="hint" style="margin:-2px 0 8px"><span class="badge badge-auto">autocompra</span> El asesor se compró a sí mismo (precio con decimales).${p['Vendedor BO']?' En el back office figura de vendedor '+esc(titulo(p['Vendedor BO']))+', su reclutador.':''}${p['Cliente BO']?' En el back office figura de cliente '+esc(titulo(p['Cliente BO']))+' (datos de la oficina).':''}${p['Celular BO']?' Celular del back office: '+esc(p['Celular BO'])+'.':''}</p>`:''}<div class="detail-grid">${f('Nombre',esc(p['Vendedor']))}${f('Código',p['ID Vendedor'])}${f('Oficina',esc(p['Código Oficina']))}${f('Comisionable',esc(p['Comisionable']))}${f('Valor comisionable',money_(p['Commissionable Value']))}</div></div>
     <div class="detail-section"><h3>💰 Pago</h3><div class="detail-grid">${f('Tipo',esc(p['Crédito/Contado']))}${f('Depósito',money_(p['Depósito']))}${f('Financiado',money_(p['Financiado']))}${f('Interés',money_(p['Interés']))}${f('Gastos',money_(p['Expenses']))}${f('Total',`<span style="color:#c0392b;font-size:16px">${money(p['Total'])}</span>`)}</div></div>
     ${ci}
     <div class="detail-section"><h3>📦 Productos</h3><div class="products-list">${prods}</div></div>
@@ -855,7 +858,7 @@ function boot(){
 <script>
 const SB_URL="https://kiexpdaaoegbtesqmaff.supabase.co", SB_KEY="sb_publishable_pftOAOUR51_Q5gq-Qqra-g_cc0rzhth";
 const SB = (window.supabase&&window.supabase.createClient)? window.supabase.createClient(SB_URL,SB_KEY) : null;
-const COLS = [["N° Orden","n_orden","int"],["Período","periodo","t"],["Fecha Ordenado","fecha_ordenado","t"],["Fecha Comisión","fecha_comision","t"],["Fecha Entrega Aprox.","fecha_entrega_aprox","t"],["Fecha Despacho","fecha_despacho","t"],["Fecha Enviado","fecha_enviado","t"],["Delivery Date","delivery_date","t"],["GDR #","gdr","t"],["Estatus","estatus","t"],["Vendedor","vendedor","t"],["ID Vendedor","id_vendedor","int"],["Código Oficina","codigo_oficina","t"],["Almacén","almacen","t"],["Tipo Orden","tipo_orden","t"],["Comisionable","comisionable","t"],["Document Type","document_type","t"],["Commissionable Value","commissionable_value","num"],["Puntos","puntos","int"],["Cliente","cliente","t"],["Cliente ID","cliente_id","t"],["Dirección","direccion","t"],["Ciudad","ciudad","t"],["Celular","celular","t"],["Email","email","t"],["Crédito/Contado","credito_contado","t"],["Cuotas","cuotas","int"],["Tasa","tasa","t"],["Cupón","cupon","num"],["Depósito","deposito","num"],["Financiado","financiado","num"],["Interés","interes","num"],["Expenses","expenses","num"],["Total","total","num"],["Productos","productos","t"],["Notas","notas","t"]];
+const COLS = [["N° Orden","n_orden","int"],["Período","periodo","t"],["Fecha Ordenado","fecha_ordenado","t"],["Fecha Comisión","fecha_comision","t"],["Fecha Entrega Aprox.","fecha_entrega_aprox","t"],["Fecha Despacho","fecha_despacho","t"],["Fecha Enviado","fecha_enviado","t"],["Delivery Date","delivery_date","t"],["GDR #","gdr","t"],["Estatus","estatus","t"],["Vendedor","vendedor","t"],["ID Vendedor","id_vendedor","int"],["Código Oficina","codigo_oficina","t"],["Almacén","almacen","t"],["Tipo Orden","tipo_orden","t"],["Comisionable","comisionable","t"],["Document Type","document_type","t"],["Commissionable Value","commissionable_value","num"],["Puntos","puntos","int"],["Cliente","cliente","t"],["Cliente ID","cliente_id","t"],["Dirección","direccion","t"],["Ciudad","ciudad","t"],["Celular","celular","t"],["Email","email","t"],["Crédito/Contado","credito_contado","t"],["Cuotas","cuotas","int"],["Tasa","tasa","t"],["Cupón","cupon","num"],["Depósito","deposito","num"],["Financiado","financiado","num"],["Interés","interes","num"],["Expenses","expenses","num"],["Total","total","num"],["Productos","productos","t"],["Notas","notas","t"],["Autocompra","autocompra","bool"],["Vendedor BO","vendedor_bo","t"],["Cliente BO","cliente_bo","t"],["Celular BO","celular_bo","t"]];
 function mapDbRow(r){ const o={}; COLS.forEach(([h,c,t])=>{ let v=r[c]; if(v===null||v===undefined) v=''; else if((t==='int'||t==='num')&&v!=='') v=Number(v); o[h]=v; }); return o; }
 async function fetchAll(table, cols, orderCol){ const out=[], step=1000;
   for(let from=0;;from+=step){ const {data,error}=await SB.from(table).select(cols).order(orderCol).range(from,from+step-1);
