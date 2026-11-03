@@ -549,7 +549,14 @@ async function registrarGestion(clave, modo, fechaISO){
   await recargarAcciones();
 }
 async function anularGestion(id){ if(!SB) return; const {error}=await SB.from('crm_seguimiento').update({anulado:true}).eq('id',id); if(error){ toast('No se pudo deshacer: '+error.message, true); return; } toast('Deshecho'); await recargarAcciones(); }
-async function recargarAcciones(){ try{ const {data,error}=await SB.rpc('crm_acciones'); if(error) throw error; ACCIONES=(data||[]).filter(a=>a&&a.estado!=='caducado'); }catch(e){ toast('No se pudieron releer las gestiones: '+(e.message||e), true); }
+// crm_acciones devuelve más de 1000 filas y Supabase corta cada respuesta en 1000:
+// sin paginar se perdían todos los ciclos de filtros (vienen al final). Se pide por páginas.
+async function fetchAcciones(){ const out=[], seen=new Set(), step=1000;
+  for(let from=0;;from+=step){ const {data,error}=await SB.rpc('crm_acciones').range(from,from+step-1); if(error) throw error;
+    (data||[]).forEach(a=>{ const k=a&&a.clave; if(k&&seen.has(k)) return; if(k) seen.add(k); out.push(a); });
+    if(!data||data.length<step) break; }
+  return out; }
+async function recargarAcciones(){ try{ ACCIONES=(await fetchAcciones()).filter(a=>a&&a.estado!=='caducado'); }catch(e){ toast('No se pudieron releer las gestiones: '+(e.message||e), true); }
   armarClientes(); renderFiltros(); renderClientes(); updateTabBadge(); refrescarFicha(); }
 function abrirBienvenida(cid, vista){
   const w=window.open('about:blank','_blank'); const ir=hash=>{ const u=BIENVENIDA_URL+'#'+hash; if(w) w.location=u; else location.href=u; };
@@ -812,7 +819,7 @@ function showLoadError(msg){ const b=document.getElementById('loadBanner'); if(!
 async function loadData(){
   try{ const rows=await fetchAll('crm_pedidos','*','n_orden'); PEDIDOS=rows.map(mapDbRow); showLoadError(PEDIDOS.length?'':'No hay pedidos visibles para esta cuenta.'); }
   catch(e){ PEDIDOS=[]; showLoadError('⚠️ No se pudieron cargar los pedidos ('+(e.message||e)+'). Revisa tu conexión o vuelve a ingresar.'); }
-  try{ const {data,error}=await SB.rpc('crm_acciones'); if(error) throw error; ACCIONES=(data||[]).filter(a=>a&&a.estado!=='caducado'); }
+  try{ ACCIONES=(await fetchAcciones()).filter(a=>a&&a.estado!=='caducado'); }
   catch(e){ ACCIONES=[]; console.error(e); showLoadError('⚠️ Los pedidos cargaron, pero no las gestiones de clientes ('+(e.message||e)+').'); }
 }
 async function doLogin(){ const m=document.getElementById('authMsg'); m.textContent='Ingresando…';
