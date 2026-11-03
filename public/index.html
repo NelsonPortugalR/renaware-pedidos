@@ -140,6 +140,14 @@
   .bar-val { font-size: 11px; color: #666; min-width: 110px; text-align: right; white-space:nowrap; }
   .mini-input { padding:5px 9px; border:1px solid #ddd; border-radius:6px; font-size:11px; outline:none; }
   .no-results { text-align: center; padding: 40px; color: #aaa; font-size: 14px; }
+  .regla-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:12px; margin-bottom:18px; }
+  .regla { background:#fff; border-radius:10px; padding:14px 16px; box-shadow:0 1px 4px rgba(0,0,0,0.08); border-left:4px solid #2980b9; }
+  .regla.ciclo { border-left-color:#16a085; } .regla.off { opacity:.55; }
+  .regla h4 { font-size:14px; margin-bottom:6px; display:flex; justify-content:space-between; gap:8px; align-items:baseline; }
+  .regla dl { display:grid; grid-template-columns:92px 1fr; gap:4px 10px; font-size:12px; }
+  .regla dt { color:#999; font-size:10.5px; text-transform:uppercase; letter-spacing:.4px; padding-top:1px; }
+  .regla dd { color:#333; } .regla .uso { margin-top:8px; font-size:11px; color:#666; }
+  .reglas-h { font-size:11px; text-transform:uppercase; color:#888; letter-spacing:.5px; font-weight:700; margin:6px 0 10px; }
   .legend { font-size:10.5px; color:#888; margin:0 24px 10px; line-height: 1.45; }
   .tabcount { display:inline-block; background:#c0392b; color:#fff; border-radius:10px; font-size:10px; padding:0 6px; margin-left:3px; font-weight:700; vertical-align:middle; }
   .trend { max-width: 100%; height: 180px; display: block; }
@@ -205,6 +213,7 @@
   <div class="tab" data-tab="tab-filtros" onclick="showTab('tab-filtros', this)">💧 Filtros <span class="tabcount" id="tabVenc" style="display:none"></span></div>
   <div class="tab" data-tab="tab-cuotas" onclick="showTab('tab-cuotas', this)">💳 Cuotas</div>
   <div class="tab" data-tab="tab-analytics" onclick="showTab('tab-analytics', this)">📊 Análisis</div>
+  <div class="tab" data-tab="tab-reglas" onclick="showTab('tab-reglas', this)">📏 Reglas</div>
 </div>
 
 <!-- TAB PEDIDOS -->
@@ -254,14 +263,14 @@
 <div id="tab-filtros" class="tab-content">
   <div class="cards" style="padding:16px 24px 0;">
     <div class="card blue"><div class="card-label">Clientes con filtro de agua</div><div class="card-value" id="f_agua">—</div><div class="card-sub" id="f_agua_sub">sistemas Aqua Nano</div></div>
-    <div class="card orange"><div class="card-label">Cambios vencidos</div><div class="card-value" id="f_venc">—</div><div class="card-sub">pre-filtro, principal o aire</div></div>
+    <div class="card orange"><div class="card-label">Cambios vencidos</div><div class="card-value" id="f_venc">—</div><div class="card-sub">pre-filtro, principal, aire o botella</div></div>
     <div class="card teal"><div class="card-label">Próximos 90 días</div><div class="card-value" id="f_prox">—</div><div class="card-sub">cambios por vencer</div></div>
     <div class="card purple"><div class="card-label">Avisados</div><div class="card-value" id="f_avis">—</div><div class="card-sub">esperando el cambio</div></div>
   </div>
-  <div class="legend">💧 Pre-filtro: cada <b>12 meses</b> · Filtro principal (elemento desechable): cada <b>48 meses</b> · 🌀 Purificador de aire: cada <b>18 meses</b>. El ciclo corre desde la entrega del sistema <b>o del último repuesto comprado</b>, lo que sea más reciente; comprar un repuesto reinicia su ciclo. Los avisos por WhatsApp se mandan desde <b>Bienvenida</b>; aquí se anota el cambio hecho o que ya no aplica.</div>
+  <div class="legend">💧 Pre-filtro: cada <b>12 meses</b> · Filtro principal (elemento desechable): cada <b>48 meses</b> · 🌀 Purificador de aire: cada <b>18 meses</b> · 🍶 Botella filtrante: cada <b>36 meses</b>. El ciclo corre desde la entrega del sistema <b>o del último repuesto comprado</b>, lo que sea más reciente; comprar un repuesto reinicia su ciclo. Los avisos por WhatsApp se mandan desde <b>Bienvenida</b>; aquí se anota el cambio hecho o que ya no aplica.</div>
   <div class="filters"><h3>🔍 Filtros</h3><div class="filter-row">
     <input type="text" id="filtroSearch" placeholder="Buscar cliente..." oninput="renderFiltros()">
-    <select id="filtroTipo" onchange="renderFiltros()"><option value="">Agua y aire</option><option value="agua">Solo agua (Aqua Nano)</option><option value="aire">Solo aire</option><option value="repuesto">Compraron repuestos</option></select>
+    <select id="filtroTipo" onchange="renderFiltros()"><option value="">Todos</option><option value="agua">Solo agua (Aqua Nano)</option><option value="aire">Solo aire</option><option value="botella">Solo botella filtrante</option><option value="repuesto">Compraron repuestos</option></select>
     <select id="filtroEstado" onchange="renderFiltros()"><option value="">Todos los estados</option><option value="vencido">Con cambios vencidos</option><option value="proximo">Por vencer (90 días)</option><option value="avisado">Avisados</option><option value="al_dia">Al día</option><option value="cerrado">Ya no aplica</option></select>
     <button class="btn ghost" onclick="exportar('filtros')">⬇ Excel</button>
     <span class="result-count" id="filtrosCount"></span>
@@ -274,6 +283,12 @@
     <div class="table-wrap tarjetas"><div class="table-scroll"><table id="aireTable"><thead><tr>
       <th>Cliente</th><th>Distrito</th><th>Producto</th><th>Compra</th><th>Último repuesto</th><th>Próximo cambio (18 meses)</th>
     </tr></thead><tbody id="aireBody"></tbody></table></div></div>
+  </div>
+  <div id="botellaWrap" style="display:none">
+    <div class="legend" style="margin-top:0;font-weight:700;color:#16a085">🍶 Botellas filtrantes — renovar cada 3 años</div>
+    <div class="table-wrap tarjetas"><div class="table-scroll"><table id="botellaTable"><thead><tr>
+      <th>Cliente</th><th>Distrito</th><th>Producto</th><th>Compra</th><th>Próxima renovación (3 años)</th>
+    </tr></thead><tbody id="botellaBody"></tbody></table></div></div>
   </div>
 </div>
 
@@ -316,6 +331,12 @@
   </div>
 </div>
 
+<!-- TAB REGLAS -->
+<div id="tab-reglas" class="tab-content">
+  <div class="legend" style="margin-top:16px">Estas son las reglas que generan las acciones de seguimiento. Son las mismas para <b>Pedidos</b> y <b>Bienvenida</b> (viven en Supabase, tabla <code>crm_reglas</code>). Si falta una regla o quieres cambiar un plazo, pídelo y se ajusta en un solo lugar.</div>
+  <div id="reglasBody" style="margin:0 24px 24px"><p class="hint">Cargando reglas…</p></div>
+</div>
+
 <div class="overlay" id="overlay" onclick="if(event.target.id==='overlay')closeOverlay()">
   <div class="detail-panel"><div class="detail-header"><div><h2 id="detailTitle">Detalle</h2><div class="sub" id="detailSub"></div></div><button class="detail-close" onclick="closeOverlay()" aria-label="Cerrar">✕</button></div>
   <div class="detail-body" id="detailBody"></div></div>
@@ -342,7 +363,7 @@ const KW = {
 };
 const TIENE_TXT = { ollas: 'Ollas', sartenes: 'Sartenes', filtro: 'Filtro de agua', cocina: 'Cocina', presion: 'Olla a presión', aire: 'Purificador', repuesto: 'Repuestos' };
 const TIPO_TXT = { bienvenida: 'Al recibir · video de lavado', semana1: 'Semana 1 · Nutri Sensor', mes1: 'Mes 1 · brillo y Rena Lite', fincuotas: 'Un mes antes de terminar cuotas',
-                   prefiltro: 'Pre-filtro de agua', filtroppal: 'Filtro principal', aire: 'Filtro de aire' };
+                   prefiltro: 'Pre-filtro de agua', filtroppal: 'Filtro principal', aire: 'Filtro de aire', botella: 'Botella filtrante (3 años)' };
 const ESTADO_TXT = { vencido: 'Vencido', proximo: 'Próximo', pendiente: 'Programado', hecho: 'Enviado', omitido: 'Omitido', caducado: 'Fuera de plazo', al_dia: 'Al día', avisado: 'Avisado', cerrado: 'Ya no aplica' };
 const MODO_TXT = { whatsapp: 'WhatsApp', aviso: 'avisado en persona', omitido: 'omitido', cambio: 'cambio hecho', noaplica: 'ya no aplica' };
 
@@ -509,7 +530,7 @@ function closeFicha(){ fichaOverlay.classList.remove('active'); FICHA=null; }
 function refrescarFicha(){ if(FICHA&&fichaOverlay.classList.contains('active')) renderFicha(); }
 function gestionesDe(acs){ const l=[]; acs.forEach(a=>(a.gestiones||[]).forEach(g=>l.push({a,g}))); l.sort((x,y)=>String(y.g.fecha).localeCompare(String(x.g.fecha))||(y.g.id-x.g.id)); return l; }
 function lineaCiclo(a){ const desde=a.ultimo_cambio?'último cambio '+fmtDate(a.ultimo_cambio):a.src==='repuesto'?'repuesto comprado el '+fmtDate(a.base):'desde la entrega del '+fmtDate(a.base);
-  return (a.sistema?bonito(a.sistema):(a.tipo==='aire'?'Purificador de aire':'Aqua Nano (solo repuestos)'))+' · '+desde+' · cada '+a.intervalo+' meses · vence '+fmtDate(a.vence); }
+  return (a.sistema?bonito(a.sistema):(a.tipo==='aire'?'Purificador de aire':a.tipo==='botella'?'Botella filtrante':'Aqua Nano (solo repuestos)'))+' · '+desde+' · cada '+a.intervalo+' meses · vence '+fmtDate(a.vence); }
 function botonesCiclo(a){
   const k=esc(a.clave);
   if(FICHA&&FICHA.fechaPara===a.clave) return `<label class="hint">Fecha del cambio <input type="date" id="fechaCambio" value="${hoyISO()}" max="${hoyISO()}"></label><button class="mini-btn done" onclick="confirmarCambio('${k}')">Guardar</button><button class="mini-btn" onclick="FICHA.fechaPara=null;renderFicha()">Cancelar</button>`;
@@ -521,7 +542,7 @@ function botonesCiclo(a){
 }
 function renderFicha(){
   const c=clientePorId(FICHA.id); if(!c){ closeFicha(); return; }
-  const cel=celWA(c.celular), acs=c.acciones, unos=acs.filter(a=>a.clase!=='ciclo').sort((a,b)=>String(a.vence).localeCompare(String(b.vence))), cics=acs.filter(a=>a.clase==='ciclo').sort((a,b)=>({prefiltro:0,filtroppal:1,aire:2}[a.tipo]-{prefiltro:0,filtroppal:1,aire:2}[b.tipo]));
+  const cel=celWA(c.celular), acs=c.acciones, unos=acs.filter(a=>a.clase!=='ciclo').sort((a,b)=>String(a.vence).localeCompare(String(b.vence))), cics=acs.filter(a=>a.clase==='ciclo').sort((a,b)=>(({prefiltro:0,filtroppal:1,aire:2,botella:3}[a.tipo]??9)-({prefiltro:0,filtroppal:1,aire:2,botella:3}[b.tipo]??9)));
   fichaTitle.textContent=titulo(c.nombre);
   fichaSub.textContent=[c.distrito!=='—'?c.distrito:'', c.ordenes.length+(c.ordenes.length===1?' compra':' compras'), c.total?money0(c.total):''].filter(Boolean).join(' · ');
   const f=(l,v,extra)=>v&&v!=='—'?`<div class="detail-field"${extra||''}><label>${l}</label><span>${v}</span></div>`:'';
@@ -556,6 +577,21 @@ async function fetchAcciones(){ const out=[], seen=new Set(), step=1000;
     (data||[]).forEach(a=>{ const k=a&&a.clave; if(k&&seen.has(k)) return; if(k) seen.add(k); out.push(a); });
     if(!data||data.length<step) break; }
   return out; }
+let REGLAS=[];
+async function cargarReglas(){ try{ const {data,error}=await SB.from('crm_reglas').select('*').order('orden'); if(error) throw error; REGLAS=data||[]; }catch(e){ REGLAS=[]; console.error(e); } renderReglas(); }
+function reTxt(re){ if(!re) return ''; return String(re).replace(/^\(|\)$/g,'').split('|').map(x=>x.replace(/\\\(/g,'(').replace(/ \?/g,' ').trim()).join(', '); }
+function renderReglas(){ const el=document.getElementById('reglasBody'); if(!el) return;
+  if(!REGLAS.length){ el.innerHTML='<p class="hint">No se pudieron leer las reglas.</p>'; return; }
+  const uso=t=>{ const l=ACCIONES.filter(a=>a.tipo===t); if(!l.length) return 'Sin acciones todavía.'; const n=k=>l.filter(a=>a.estado===k).length;
+    return l.length+' acciones · '+n('vencido')+' vencidas · '+n('proximo')+' próximas'+(l[0].clase==='ciclo'?' · '+n('al_dia')+' al día':' · '+n('hecho')+' enviadas'); };
+  const card=r=>`<div class="regla ${r.tipo_regla==='ciclo'?'ciclo':''} ${r.activo?'':'off'}"><h4>${esc(r.nombre)}<span class="badge ${r.activo?'badge-aldia':'badge-cad'}">${r.activo?'activa':'apagada'}</span></h4><dl>
+    <dt>Aplica a</dt><dd>${esc(r.aplica_a)}</dd><dt>Cuándo</dt><dd>${esc(r.cuando)}</dd><dt>Acción</dt><dd>${esc(r.accion)}</dd>
+    ${r.re_sistema?`<dt>Detecta</dt><dd>${esc(reTxt(r.re_sistema))}${r.re_excluir?' <span class="hint">(no cuenta: '+esc(reTxt(r.re_excluir))+')</span>':''}</dd>`:''}
+    ${r.re_repuesto?`<dt>Reinicia</dt><dd>comprar ${esc(reTxt(r.re_repuesto))}</dd>`:''}</dl><div class="uso">${esc(uso(r.clave))}</div></div>`;
+  const u=REGLAS.filter(r=>r.tipo_regla==='una_vez'), c=REGLAS.filter(r=>r.tipo_regla==='ciclo');
+  el.innerHTML='<div class="reglas-h">💬 Mensajes por pedido (una vez)</div><div class="regla-grid">'+u.map(card).join('')+'</div>'+
+    '<div class="reglas-h">🔁 Ciclos por cliente (se repiten)</div><div class="regla-grid">'+c.map(card).join('')+'</div>'+
+    '<p class="hint">Mensajes por pedido: vencidos hasta 45 días se muestran; después pasan a «fuera de plazo». Ciclos: se avisan desde 90 días antes y quedan vencidos hasta que se anote el cambio o «ya no aplica».</p>'; }
 async function recargarAcciones(){ try{ ACCIONES=(await fetchAcciones()).filter(a=>a&&a.estado!=='caducado'); }catch(e){ toast('No se pudieron releer las gestiones: '+(e.message||e), true); }
   armarClientes(); renderFiltros(); renderClientes(); updateTabBadge(); refrescarFicha(); }
 function abrirBienvenida(cid, vista){
@@ -603,18 +639,19 @@ function badgeCiclo(a){ if(!a) return '<span class="hint" title="Sin fecha conoc
   return '<div class="nw">'+fmtDate(a.vence)+'</div>'+estadoBadge(a); }
 function waterRecords(){
   const m={};
-  ciclos().filter(a=>a.tipo!=='aire').forEach(a=>{ const r=m[a.cliente_id]=m[a.cliente_id]||{id:a.cliente_id, cliente:a.cliente, ciudad:a.ciudad, pre:null, main:null}; if(a.tipo==='prefiltro') r.pre=a; else r.main=a; });
+  ciclos().filter(a=>a.tipo==='prefiltro'||a.tipo==='filtroppal').forEach(a=>{ const r=m[a.cliente_id]=m[a.cliente_id]||{id:a.cliente_id, cliente:a.cliente, ciudad:a.ciudad, pre:null, main:null}; if(a.tipo==='prefiltro') r.pre=a; else r.main=a; });
   return Object.values(m).map(r=>{ const any=r.pre||r.main; r.sistema=any.sistema; r.sysDate=any.fecha_sistema; r.repDates=[r.pre&&r.pre.fecha_repuesto?'Pre '+fmtDate(r.pre.fecha_repuesto):'', r.main&&r.main.fecha_repuesto?'Ppal '+fmtDate(r.main.fecha_repuesto):''].filter(Boolean);
     const sts=[r.pre,r.main].filter(Boolean).map(x=>x.estado); r.worst=sts.includes('vencido')?'vencido':sts.includes('proximo')?'proximo':sts.includes('avisado')?'avisado':sts.every(s=>s==='cerrado')?'cerrado':'al_dia'; r.due=Math.min(...[r.pre,r.main].filter(Boolean).map(x=>+parseDate(x.vence))); return r; });
 }
 function airRecords(){ return ciclos().filter(a=>a.tipo==='aire'); }
+function bottleRecords(){ return ciclos().filter(a=>a.tipo==='botella'); }
 function updateTabBadge(){ const v=ciclos().filter(a=>a.estado==='vencido').length; const b=document.getElementById('tabVenc'); b.textContent=v; b.style.display=v>0?'inline-block':'none'; }
 function renderFiltros(){
   const w=waterRecords(), a=airRecords(), all=ciclos();
   f_agua.textContent=w.length; f_agua_sub.textContent=w.filter(r=>r.repDates.length).length+' compraron repuestos';
   f_venc.textContent=all.filter(x=>x.estado==='vencido').length; f_prox.textContent=all.filter(x=>x.estado==='proximo').length; f_avis.textContent=all.filter(x=>x.estado==='avisado').length;
   const tipo=filtroTipo.value, est=filtroEstado.value, q=(filtroSearch.value||'').toLowerCase();
-  let rowsW=tipo==='aire'?[]:w;
+  let rowsW=(tipo==='aire'||tipo==='botella')?[]:w;
   if(tipo==='repuesto') rowsW=rowsW.filter(r=>r.repDates.length);
   if(q) rowsW=rowsW.filter(r=>String(r.cliente).toLowerCase().includes(q));
   if(est) rowsW=rowsW.filter(r=>r.worst===est||(r.pre&&r.pre.estado===est)||(r.main&&r.main.estado===est));
@@ -628,7 +665,7 @@ function renderFiltros(){
       <td class="nw">${badgeCiclo(r.pre)}</td><td class="nw">${badgeCiclo(r.main)}</td></tr>`).join('')
     :'<tr><td colspan="7" class="no-results">Sin resultados.</td></tr>';
   labelTable('filtrosTable');
-  let rowsA=tipo==='agua'?[]:a;
+  let rowsA=(tipo==='agua'||tipo==='botella')?[]:a;
   if(tipo==='repuesto') rowsA=rowsA.filter(x=>x.fecha_repuesto);
   if(q) rowsA=rowsA.filter(x=>String(x.cliente).toLowerCase().includes(q));
   if(est) rowsA=rowsA.filter(x=>x.estado===est);
@@ -638,6 +675,14 @@ function renderFiltros(){
       <td class="nw">${x.fecha_sistema?fmtDate(x.fecha_sistema):'—'}</td><td class="nw">${x.fecha_repuesto?'<span class="badge badge-otro">'+fmtDate(x.fecha_repuesto)+'</span>':'—'}</td><td class="nw">${badgeCiclo(x)}</td></tr>`).join('');
     labelTable('aireTable');
   } else { aireWrap.style.display=tipo==='aire'?'block':'none'; aireBody.innerHTML='<tr><td colspan="6" class="no-results">No hay purificadores de aire registrados.</td></tr>'; }
+  let rowsB=(tipo&&tipo!=='botella')?[]:bottleRecords();
+  if(q) rowsB=rowsB.filter(x=>String(x.cliente).toLowerCase().includes(q));
+  if(est) rowsB=rowsB.filter(x=>x.estado===est);
+  rowsB.sort((x,y)=>(ord[x.estado]-ord[y.estado])||String(x.vence).localeCompare(String(y.vence)));
+  botellaWrap.style.display=rowsB.length||tipo==='botella'?'block':'none';
+  botellaBody.innerHTML=rowsB.length?rowsB.map(x=>`<tr class="fila" onclick="openFicha('${esc(x.cliente_id)}')"><td class="ell"><strong>${esc(titulo(x.cliente))}</strong></td><td class="nw">${esc(String(x.ciudad||'').split(',')[0]||'—')}</td><td class="ell w">${esc(x.sistema?bonito(x.sistema):'Botella filtrante')}</td>
+      <td class="nw">${x.fecha_sistema?fmtDate(x.fecha_sistema):'—'}</td><td class="nw">${badgeCiclo(x)}</td></tr>`).join(''):'<tr><td colspan="5" class="no-results">Sin botellas en este filtro.</td></tr>';
+  if(rowsB.length) labelTable('botellaTable');
 }
 
 /* ============ ANÁLISIS ============ */
@@ -763,7 +808,8 @@ function filasExport(tab){
   if(tab==='pedidos') return filtered.map(p=>({'N° Orden':p['N° Orden'],'Período':p['Período'],'Fecha':p['Fecha Ordenado'],'Entrega':p['Delivery Date'],'Estatus':p['Estatus'],'Vendedor':p['Vendedor'],'Cliente':p['Cliente'],'Celular':p['Celular'],'Distrito':district(p),'Pago':p['Crédito/Contado'],'Cuotas':p['Cuotas'],'Total':p['Total'],'Puntos':p['Puntos'],'Productos':p['Productos']}));
   if(tab==='clientes'){ const rows=[...clientesBody.querySelectorAll('tr.fila')].map(tr=>tr.getAttribute('onclick').match(/'([^']+)'/)[1]); return rows.map(id=>clientePorId(id)).filter(Boolean).map(c=>({'Cliente':c.nombre,'Distrito':c.distrito,'Celular':c.celular,'Email':c.email,'Compras':c.ordenes.length,'Entregadas':c.entregadas,'Total':Math.round(c.total*100)/100,'Última compra':fmtDate(c.ultima),'Tiene':Object.keys(TIENE_TXT).filter(k=>c.tiene[k]).map(k=>TIENE_TXT[k]).join(', '),'Pendientes':c.pend.length,'Vencidos':c.venc.length,'Asesor':c.vendedor})); }
   if(tab==='filtros'){ const rows=[...filtrosBody.querySelectorAll('tr.fila')].map(tr=>tr.getAttribute('onclick').match(/'([^']+)'/)[1]); const w=waterRecords(); const out=rows.map(id=>w.find(r=>String(r.id)===id)).filter(Boolean).map(r=>({'Cliente':r.cliente,'Distrito':String(r.ciudad||'').split(',')[0],'Celular':(r.pre||r.main).celular,'Sistema':r.sistema||'Sistema anterior (solo repuestos)','Compra sistema':r.sysDate?fmtDate(r.sysDate):'','Último repuesto':r.repDates.join(' · '),'Pre-filtro vence':r.pre?fmtDate(r.pre.vence):'','Pre-filtro estado':r.pre?ESTADO_TXT[r.pre.estado]:'','Filtro principal vence':r.main?fmtDate(r.main.vence):'','Filtro principal estado':r.main?ESTADO_TXT[r.main.estado]:''}));
-    airRecords().forEach(x=>out.push({'Cliente':x.cliente,'Distrito':String(x.ciudad||'').split(',')[0],'Celular':x.celular,'Sistema':x.sistema||'Purificador de aire','Compra sistema':x.fecha_sistema?fmtDate(x.fecha_sistema):'','Último repuesto':x.fecha_repuesto?fmtDate(x.fecha_repuesto):'','Filtro de aire vence':fmtDate(x.vence),'Filtro de aire estado':ESTADO_TXT[x.estado]})); return out; }
+    airRecords().forEach(x=>out.push({'Cliente':x.cliente,'Distrito':String(x.ciudad||'').split(',')[0],'Celular':x.celular,'Sistema':x.sistema||'Purificador de aire','Compra sistema':x.fecha_sistema?fmtDate(x.fecha_sistema):'','Último repuesto':x.fecha_repuesto?fmtDate(x.fecha_repuesto):'','Filtro de aire vence':fmtDate(x.vence),'Filtro de aire estado':ESTADO_TXT[x.estado]}));
+    bottleRecords().forEach(x=>out.push({'Cliente':x.cliente,'Distrito':String(x.ciudad||'').split(',')[0],'Celular':x.celular,'Sistema':x.sistema||'Botella filtrante','Compra sistema':x.fecha_sistema?fmtDate(x.fecha_sistema):'','Botella renovar':fmtDate(x.vence),'Botella estado':ESTADO_TXT[x.estado]})); return out; }
   if(tab==='cuotas') return CUOTAS_ROWS.map(({p,m,pa,re,done})=>({'N° Orden':p['N° Orden'],'Fecha compra':p['Fecha Ordenado'],'Cliente':p['Cliente'],'Celular':p['Celular'],'Vendedor':p['Vendedor'],'Total':p['Total'],'Cuotas':p['Cuotas'],'Meses':m,'Pagadas (est.)':pa,'Restantes':re,'Estado':done?'Terminado':'En curso'}));
   return [];
 }
@@ -821,6 +867,7 @@ async function loadData(){
   catch(e){ PEDIDOS=[]; showLoadError('⚠️ No se pudieron cargar los pedidos ('+(e.message||e)+'). Revisa tu conexión o vuelve a ingresar.'); }
   try{ ACCIONES=(await fetchAcciones()).filter(a=>a&&a.estado!=='caducado'); }
   catch(e){ ACCIONES=[]; console.error(e); showLoadError('⚠️ Los pedidos cargaron, pero no las gestiones de clientes ('+(e.message||e)+').'); }
+  cargarReglas();
 }
 async function doLogin(){ const m=document.getElementById('authMsg'); m.textContent='Ingresando…';
   const email=(document.getElementById('authEmail').value||'').trim(); const password=document.getElementById('authPass').value||'';
