@@ -101,6 +101,7 @@
   .cuotas-bar-fill.warning { background: #e67e22; } .cuotas-bar-fill.done { background: #2980b9; }
   .cuotas-text { font-size: 10px; color: #666; }
   .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; }
+  #overlay { z-index: 120; }   /* el pedido se abre encima de la ficha del cliente */
   .overlay.active { display: flex; align-items: center; justify-content: center; }
   .detail-panel { background: white; border-radius: 12px; width: 640px; max-width: 96vw; max-height: 88vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
   .detail-header { background: linear-gradient(135deg, #c0392b, #8b0000); color: white; padding: 14px 18px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; position: sticky; top: 0; z-index: 2; }
@@ -391,7 +392,7 @@ function fechaOrden(p){ return parseDate(p['Delivery Date'])||parseDate(p['Fecha
 function isDelivered(p){ return String(p['Estatus']).toUpperCase().includes('ENTREGADA'); }
 function isRejected(p){ return String(p['Estatus']).toUpperCase().includes('RECHAZADA'); }
 function isCancelled(p){ const e=String(p['Estatus']).toUpperCase(); return e.includes('CANCELADO')||e.includes('CANCELADA'); }
-function hasKw(str,kws){ const u=String(str||'').toUpperCase(); return kws.some(k=>u.includes(k)); }
+function hasKw(str,kws){ const u=String(str||'').replace(/[✓✔]\s*/g,'').toUpperCase(); return kws.some(k=>u.includes(k)); }   // "AQUA ✓ NANO" cuenta como Aqua Nano
 function statusBadge(e){ const u=String(e).toUpperCase();
   if(u.includes('ENTREGADA')) return '<span class="badge badge-entregada">ENTREGADA</span>';
   if(u.includes('RECHAZADA')) return '<span class="badge badge-rechazada">RECHAZADA</span>';
