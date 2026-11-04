@@ -49,6 +49,11 @@
   .gsr button:hover, .gsr button:focus { background: #fff5f5; outline: none; }
   .gsr .sub { display: block; font-size: 11px; color: #888; margin-top: 2px; }
   .gsr .vacio { padding: 12px; color: #888; font-size: 12px; }
+  .gsr button.cli { font-weight: 700; background: #fafafa; }
+  .gsr button.ped { padding: 7px 12px 7px 30px; font-size: 12px; position: relative; }
+  .gsr button.ped::before { content: '↳'; position: absolute; left: 14px; color: #bbb; }
+  .gsr button.ped .pn { font-weight: 700; } .gsr button.ped .badge { margin-left: 4px; }
+  .gsr button.mas { color: #c0392b; font-style: italic; }
   .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; padding: 16px 24px 8px; }
   .card { background: white; border-radius: 10px; padding: 14px 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); border-left: 4px solid #ccc; min-width: 0; }
   .card.red { border-left-color: #c0392b; } .card.blue { border-left-color: #2980b9; } .card.green { border-left-color: #27ae60; }
@@ -395,6 +400,7 @@ function statusBadge(e){ const u=String(e).toUpperCase();
 function estadoBadge(a){ const t=ESTADO_TXT[a.estado]||a.estado; let extra='';
   if(a.estado==='vencido') extra=' '+Math.abs(a.dias)+'d'; else if(a.estado==='proximo') extra=' en '+a.dias+'d'; else if(a.estado==='hecho'&&a.hecho_el) extra=' '+fmtCorta(a.hecho_el); else if(a.estado==='avisado'&&a.ultimo_aviso) extra=' '+fmtCorta(a.ultimo_aviso);
   return '<span class="badge badge-'+esc(a.estado)+'">'+esc(t+extra)+'</span>'; }
+function plano(s){ return String(s==null?'':s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(); }
 function titulo(n){ const MIN={de:1,del:1,la:1,las:1,los:1,y:1,e:1}; return String(n||'').toLowerCase().replace(/\s+/g,' ').trim().split(' ').map((p,i)=>i>0&&MIN[p]?p:p.charAt(0).toUpperCase()+p.slice(1)).join(' '); }
 function bonito(n){ return titulo(sinCodigo(n)).replace(/\bIi\b/g,'II').replace(/\bCtu\b/g,'CTU').replace(/\bUcu\b/g,'UCU').replace(/\bHd\b/g,'HD').replace(/\bUv\b/g,'UV').replace(/\bIc-/g,'IC-').replace(/\bLx-/g,'LX-').replace(/\bC\/tapa\b/g,'c/tapa'); }
 function sinCodigo(s){ return String(s||'').replace(/^\s*\d+[A-Z]?\s*-\s*/,''); }
@@ -437,14 +443,14 @@ let sortCol='_fecha', sortAsc=false;
 function sortTable(c){ if(sortCol===c) sortAsc=!sortAsc; else {sortCol=c; sortAsc=c!=='_fecha'&&c!=='Total';} applyFilters(); }
 let filtered=[];
 function applyFilters(){
-  const s=searchInput.value.toLowerCase(), v=filterVendedor.value, per=filterPeriodo.value, di=filterDistrito.value, es=filterEstatus.value, tp=filterTipoPago.value;
+  const s=plano(searchInput.value.trim()), v=filterVendedor.value, per=filterPeriodo.value, di=filterDistrito.value, es=filterEstatus.value, tp=filterTipoPago.value;
   filtered=PEDIDOS.filter(p=>{
     if(v&&p['Vendedor']!==v) return false;
     if(per&&String(p['Período'])!==String(per)) return false;
     if(di&&district(p)!==di) return false;
     if(es&&!String(p['Estatus']).toUpperCase().includes(es)) return false;
     if(tp==='auto'){ if(!p['Autocompra']) return false; } else if(tp==='noauto'){ if(p['Autocompra']) return false; } else if(tp&&p['Crédito/Contado']!==tp) return false;
-    if(s){ const h=[p['Cliente'],p['Vendedor'],p['Productos'],p['N° Orden'],p['Ciudad'],p['Email'],p['Celular']].join(' ').toLowerCase(); if(!h.includes(s)) return false; }
+    if(s){ const h=plano([p['Cliente'],p['Vendedor'],p['Productos'],p['N° Orden'],p['Ciudad'],p['Email'],p['Celular']].join(' ')); if(!h.includes(s)) return false; }
     return true;
   });
   const key=p=>sortCol==='_fecha'?(parseDate(p['Fecha Ordenado'])||0).valueOf():p[sortCol];
@@ -490,14 +496,19 @@ function updateCards(){
 
 /* ============ búsqueda global ============ */
 function buscarGlobal(){
-  const q=(globalSearch.value||'').trim().toLowerCase(), box=globalResults;
+  const q=plano((globalSearch.value||'').trim()), box=globalResults;
   if(q.length<2){ box.hidden=true; box.innerHTML=''; return; }
   const dig=q.replace(/\D/g,'');
-  let r=[];
-  if(dig.length>=5){ PEDIDOS.filter(p=>String(p['N° Orden']).includes(dig)).slice(0,4).forEach(p=>r.push({t:'Pedido '+p['N° Orden']+' · '+titulo(p['Cliente']), s:fmtDate(p['Fecha Ordenado'])+' · '+productoCorto(p['Productos']), go:'openDetail('+p['N° Orden']+')'})); }
-  CLIENTES.filter(c=>String(c.nombre).toLowerCase().includes(q)||(dig.length>=4&&String(c.celular).replace(/\D/g,'').includes(dig))).slice(0,8)
-    .forEach(c=>r.push({t:titulo(c.nombre), s:[c.distrito, c.celular, c.ordenes.length+(c.ordenes.length===1?' compra':' compras'), c.pend.length?c.pend.length+' pendiente(s)':''].filter(Boolean).join(' · '), go:"openFicha('"+esc(c.id)+"')"}));
-  box.innerHTML=r.length?r.map(x=>'<button type="button" onclick="'+x.go+';cerrarBusqueda()">'+esc(x.t)+'<span class="sub">'+esc(x.s)+'</span></button>').join(''):'<div class="vacio">Nada con «'+esc(q)+'».</div>';
+  const fila=(cls,go,t,sub)=>'<button type="button" class="'+cls+'" onclick="'+go+';cerrarBusqueda()">'+t+(sub?'<span class="sub">'+esc(sub)+'</span>':'')+'</button>';
+  const pedido=p=>fila('ped','openDetail('+p['N° Orden']+')', '<span class="pn">'+esc(fmtDate(fechaOrden(p)||p['Fecha Ordenado']))+'</span> · '+esc(productoCorto(p['Productos']))+' '+statusBadge(p['Estatus']), 'Pedido '+p['N° Orden']+' · '+money(p['Total'])+' · '+p['Vendedor']);
+  let h='';
+  if(dig.length>=5) PEDIDOS.filter(p=>String(p['N° Orden']).includes(dig)).slice(0,4).forEach(p=>{ h+=fila('cli','openDetail('+p['N° Orden']+')', esc('Pedido '+p['N° Orden']+' · '+titulo(p['Cliente'])), fmtDate(p['Fecha Ordenado'])+' · '+productoCorto(p['Productos'])); });
+  CLIENTES.filter(c=>plano(c.nombre).includes(q)||(dig.length>=4&&String(c.celular).replace(/\D/g,'').includes(dig))).slice(0,6).forEach(c=>{
+    h+=fila('cli',"openFicha('"+esc(c.id)+"')", '👤 '+esc(titulo(c.nombre)), [c.distrito, c.celular, c.ordenes.length+(c.ordenes.length===1?' compra':' compras')+' · ver ficha', c.pend.length?c.pend.length+' pendiente(s)':''].filter(Boolean).join(' · '));
+    c.ordenes.slice(0,5).forEach(p=>{ h+=pedido(p); });
+    if(c.ordenes.length>5) h+=fila('ped mas',"openFicha('"+esc(c.id)+"')", '… '+(c.ordenes.length-5)+' pedido(s) más en su ficha');
+  });
+  box.innerHTML=h||'<div class="vacio">Nada con «'+esc(globalSearch.value.trim())+'».</div>';
   box.hidden=false;
 }
 function cerrarBusqueda(){ globalResults.hidden=true; globalSearch.value=''; }
@@ -506,9 +517,9 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ globalResults.hid
 
 /* ============ pestaña Clientes ============ */
 function renderClientes(){
-  const q=(cliSearch.value||'').toLowerCase(), v=cliVend.value, d=cliDist.value, t=cliTiene.value, es=cliEstado.value;
+  const q=plano((cliSearch.value||'').trim()), v=cliVend.value, d=cliDist.value, t=cliTiene.value, es=cliEstado.value;
   let l=CLIENTES.filter(c=>{
-    if(q&&!(String(c.nombre).toLowerCase().includes(q)||String(c.celular).includes(q))) return false;
+    if(q&&!(plano(c.nombre).includes(q)||String(c.celular).includes(q))) return false;
     if(v&&!c.vendedores.has(v)) return false;
     if(d&&!c.distritos.has(d)) return false;
     if(t&&!c.tiene[t]) return false;
@@ -653,10 +664,10 @@ function renderFiltros(){
   const w=waterRecords(), a=airRecords(), all=ciclos();
   f_agua.textContent=w.length; f_agua_sub.textContent=w.filter(r=>r.repDates.length).length+' compraron repuestos';
   f_venc.textContent=all.filter(x=>x.estado==='vencido').length; f_prox.textContent=all.filter(x=>x.estado==='proximo').length; f_avis.textContent=all.filter(x=>x.estado==='avisado').length;
-  const tipo=filtroTipo.value, est=filtroEstado.value, q=(filtroSearch.value||'').toLowerCase();
+  const tipo=filtroTipo.value, est=filtroEstado.value, q=plano((filtroSearch.value||'').trim());
   let rowsW=(tipo==='aire'||tipo==='botella')?[]:w;
   if(tipo==='repuesto') rowsW=rowsW.filter(r=>r.repDates.length);
-  if(q) rowsW=rowsW.filter(r=>String(r.cliente).toLowerCase().includes(q));
+  if(q) rowsW=rowsW.filter(r=>plano(r.cliente).includes(q));
   if(est) rowsW=rowsW.filter(r=>r.worst===est||(r.pre&&r.pre.estado===est)||(r.main&&r.main.estado===est));
   const ord={vencido:0,proximo:1,avisado:2,al_dia:3,cerrado:4};
   rowsW.sort((x,y)=>(ord[x.worst]-ord[y.worst])||(x.due-y.due));
@@ -670,7 +681,7 @@ function renderFiltros(){
   labelTable('filtrosTable');
   let rowsA=(tipo==='agua'||tipo==='botella')?[]:a;
   if(tipo==='repuesto') rowsA=rowsA.filter(x=>x.fecha_repuesto);
-  if(q) rowsA=rowsA.filter(x=>String(x.cliente).toLowerCase().includes(q));
+  if(q) rowsA=rowsA.filter(x=>plano(x.cliente).includes(q));
   if(est) rowsA=rowsA.filter(x=>x.estado===est);
   rowsA.sort((x,y)=>(ord[x.estado]-ord[y.estado])||String(x.vence).localeCompare(String(y.vence)));
   if(rowsA.length){ aireWrap.style.display='block';
@@ -679,7 +690,7 @@ function renderFiltros(){
     labelTable('aireTable');
   } else { aireWrap.style.display=tipo==='aire'?'block':'none'; aireBody.innerHTML='<tr><td colspan="6" class="no-results">No hay purificadores de aire registrados.</td></tr>'; }
   let rowsB=(tipo&&tipo!=='botella')?[]:bottleRecords();
-  if(q) rowsB=rowsB.filter(x=>String(x.cliente).toLowerCase().includes(q));
+  if(q) rowsB=rowsB.filter(x=>plano(x.cliente).includes(q));
   if(est) rowsB=rowsB.filter(x=>x.estado===est);
   rowsB.sort((x,y)=>(ord[x.estado]-ord[y.estado])||String(x.vence).localeCompare(String(y.vence)));
   botellaWrap.style.display=rowsB.length||tipo==='botella'?'block':'none';
@@ -776,7 +787,7 @@ function renderAnalytics(){
 function renderProductos(){
   const deliv=PEDIDOS.filter(isDelivered); const map={};
   deliv.forEach(p=>{ orderProducts(p).forEach(x=>{ map[x.name]=map[x.name]||{qty:0,ord:0}; map[x.name].qty+=x.qty; map[x.name].ord++; }); });
-  let arr=Object.entries(map); const q=(prodSearch.value||'').toLowerCase(); if(q) arr=arr.filter(([n])=>n.toLowerCase().includes(q));
+  let arr=Object.entries(map); const q=plano((prodSearch.value||'').trim()); if(q) arr=arr.filter(([n])=>plano(n).includes(q));
   const sort=prodSort.value;
   if(sort==='rev') arr.sort((a,b)=>b[1].ord-a[1].ord); else if(sort==='az') arr.sort((a,b)=>a[0].localeCompare(b[0])); else arr.sort((a,b)=>b[1].qty-a[1].qty);
   const maxQ=Math.max(1,...arr.map(x=>x[1].qty)); const totalU=arr.reduce((s,x)=>s+x[1].qty,0);
