@@ -1,38 +1,69 @@
 # Pedidos y clientes · Rena Ware · Equipo Arequipa
 
-Panel de pedidos de toda la organización (WV08) y **ficha de cada cliente**:
-compras, qué tiene, filtros con sus fechas de cambio, cuotas y lo anotado.
+Panel de pedidos de toda la organización (WV08), **ficha de cada cliente** y
+**post venta de filtros**: a quién le toca cambiar su repuesto, qué se gestionó
+con cada uno y qué sigue.
 
 - **Pedidos**: todas las órdenes, filtros, orden por fecha, exportar a Excel.
+  En el detalle, **Corregir cliente** cambia el nombre, celular o dirección de
+  un pedido que salió a nombre de otra persona (queda guardado lo que decía el
+  back office y la corrección resiste las recargas).
 - **Clientes**: un cliente por fila (agrupado por `cliente_id`): compras,
-  total, última compra, qué tiene (ollas, sartenes, filtro de agua, cocina,
-  olla a presión, purificador, repuestos) y qué tiene pendiente. Toca una fila
-  para abrir su ficha. El buscador de arriba (cliente, celular o N° de pedido)
-  abre la ficha o el pedido desde cualquier pestaña.
-- **Filtros**: ciclos de pre-filtro (12 m), filtro principal / elemento
-  desechable (48 m) y filtro de aire (18 m) **por cliente**: la base es la
-  entrega del sistema o la compra del último repuesto de ese filtro, lo que sea
-  más reciente; comprar un repuesto reinicia el ciclo. En la ficha se anota el
-  **cambio hecho** (con fecha, reinicia el ciclo) o **ya no aplica** (lo cierra).
-- **Cuotas**: créditos en curso primero, ordenados por lo que falta (estimado
-  por meses transcurridos).
-- **Análisis**: tendencia por período, último período cerrado vs. el anterior,
-  vendedores, distritos, productos.
+  total, última compra, qué tiene y qué tiene pendiente. Filtros para celular
+  inválido o número errado, posible nombre «comodín» (pedidos de 3 o más
+  vendedores) y excluidos de post venta. El buscador de arriba (cliente,
+  celular o N° de pedido, con o sin tildes) abre la ficha o el pedido.
+- **Filtros** (post venta): ciclos de pre-filtro (12 m), filtro principal
+  (48 m), filtro de aire (18 m) y botella (36 m) **por cliente**.
+  - **Tanda del mes**: los que vencen en 30 días (o ya vencieron) y no tienen
+    gestión en su etapa. También «Vence ≤ hoy + 30 días», por tanda (T1, T2…),
+    por asesor de seguimiento, sin gestión, ya gestionados, con acción
+    siguiente, con el repuesto en mano y número errado.
+  - **📝 Gestión** en cada fila (y «Registrar gestión» en la ficha): llamada
+    automática o manual (intento, resultado fijo, CallSid, grabación), mensaje
+    directo, video enviado, visita coordinada y **aviso al asesor** (a quién y
+    cuándo; deja listo el WhatsApp). Con etapa, tanda, acción siguiente con
+    fecha y nota. Lo que llega al cliente o a su asesor deja el ciclo en
+    «Avisado» 30 días; buzón, no contesta y número errado no.
+  - **Avisos a asesores**: a los 5 días aparecen para marcar si ya contactó al
+    cliente.
+  - **⬆ Cargar resultados**: plantilla con la tanda del mes, carga de un Excel
+    o CSV con los resultados (no duplica lo ya cargado) y la guía y las llaves
+    de la API del bot.
+- **Ficha del cliente**: datos, compras, filtros e **historial de gestiones**
+  (editar o deshacer). Ahí se anota el cambio hecho (con fecha), «compró por su
+  cuenta», «tiene el repuesto en mano», «ya no aplica», y se editan el
+  **asesor de seguimiento** (por defecto, el vendedor), la referencia, la nota
+  libre, la exclusión temporal con su motivo y el celular.
+- **Cuotas**, **Análisis** y **Reglas** (las reglas que generan todo, leídas de
+  `crm_reglas`).
 
-Los **mensajes a clientes** (bienvenida al recibir, semana 1, mes 1, fin de
-cuotas y los avisos de cambio de filtro) **ya no se gestionan aquí**: viven en
-[Bienvenida](https://renaware-bienvenida.pages.dev) (grupo Clientes). Esta
-página solo muestra su estado y enlaza allá (`#c=<cliente_id>`, con traspaso de
-sesión si la cuenta tiene rol en la plataforma).
+Los **mensajes de WhatsApp al cliente** viven en
+[Bienvenida](https://renaware-bienvenida.pages.dev) (grupo Clientes); esta
+página muestra su estado y enlaza allá (`#c=<cliente_id>`, con traspaso de
+sesión).
 
 - `public/index.html` — la app completa (una sola página, sin build)
-- `public/_headers`, `public/robots.txt`, `public/404.html` — configuración
+- `sql/` — lo aplicado en la base para este módulo (ver `sql/LEEME.md`)
+- `pruebas/prueba.js` — prueba de punta a punta
 - `wrangler.toml` — dice que el sitio son los archivos de `public/`
 
 ## Cómo se publica
 
 Sitio estático, sin build ni dependencias. Cloudflare está conectado a este
-repositorio: **cada push a `main` publica**. No hay que subir nada a mano.
+repositorio: **cada push a `main` publica**.
+
+## Pruebas
+
+```
+NODE_PATH=$(npm root -g) node pruebas/prueba.js
+```
+
+Chromium real (playwright) contra un Supabase falso que aplica las mismas
+reglas que la base y **rechaza escrituras directas** a las tablas que deben
+entrar por función. Sin internet hacen falta las dos librerías de la página:
+`npm i --no-save --prefix pruebas @supabase/supabase-js@2 xlsx@0.18.5`.
+`CAPTURAS=/carpeta` guarda capturas de escritorio y celular.
 
 ## De dónde salen los datos
 
@@ -41,14 +72,20 @@ repositorio: **cada push a `main` publica**. No hay que subir nada a mano.
 
 | Qué | Dónde |
 |---|---|
-| Órdenes (cliente, productos, fechas, estado, financiamiento) | tabla `crm_pedidos` (una fila por orden, `cliente_id` → `clientes`) |
-| Acciones por cliente: mensajes por orden y ciclos de filtros, con su estado | función `crm_acciones()` — la misma que lee Bienvenida |
-| Lo anotado (cambio hecho, ya no aplica, mensajes enviados u omitidos) | tabla `crm_seguimiento` (`modo`: cambio, noaplica, whatsapp, aviso, omitido; deshacer = `anulado`) |
+| Órdenes | tabla `crm_pedidos` (una fila por orden, `cliente_id` → `clientes`) |
+| Acciones por cliente: mensajes por orden y ciclos de filtros con su estado, etapa, tanda, gestiones y avisos | función `crm_acciones()` — la misma que leen Bienvenida, el hub y el bot |
+| Estado del ciclo (cambio hecho, por su cuenta, ya no aplica) y mensajes de Bienvenida | tabla `crm_seguimiento` (deshacer = `anulado`) |
+| Contactos con el cliente (llamadas, mensajes, videos, visitas) | tabla `crm_gestiones`, por `crm_gestion_registrar` / `_editar` / `_anular` |
+| Avisos al asesor y su revisión a los 5 días | tabla `crm_avisos_asesor`, por `crm_gestion_registrar` (canal `aviso_asesor`) y `crm_aviso_revisar` |
+| Asesor de seguimiento, referencia, nota, exclusión, repuesto en mano | tabla `crm_cliente_post`, por `crm_cliente_post_guardar` |
+| Carga en lote | `crm_gestiones_cargar` (sesión) y `crm_bot_registrar` / `crm_bot_pendientes` (llave del bot): una sola implementación, `crm_gestiones_registrar_int` |
+| Reglas | tabla `crm_reglas` |
 
-Las tablas tienen RLS: solo los correos autorizados ven y escriben. La app usa
-la clave pública de Supabase; la protección la dan el login y las reglas.
+Las tablas tienen RLS: solo las cuentas de la oficina leen, y lo nuevo se
+escribe por función que valida la sesión (`crm_puede`). La app usa la clave
+pública de Supabase; la protección la dan el ingreso y esas reglas.
 
-Los pedidos se cargan **una vez al cierre de cada período** (14 días), desde el
-back office, directo a Supabase. Por eso actualizar datos no requiere publicar.
+Los pedidos se cargan al cierre de cada período, directo a Supabase: actualizar
+datos no requiere publicar.
 
 Enlaces: `#cliente=<id>` abre una ficha, `#orden=<n>` un pedido, `#tab=<id>` una pestaña.

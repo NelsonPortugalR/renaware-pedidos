@@ -6,3 +6,7 @@ data/
 pb*.json
 seguimiento*.json
 .DS_Store
+
+# Librerías que las pruebas bajan cuando no hay internet
+node_modules/
+pruebas/package*.json

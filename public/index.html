@@ -169,6 +169,43 @@
   .toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%) translateY(20px); background: #222; color: #fff; padding: 9px 16px; border-radius: 20px; font-size: 12.5px; opacity: 0; transition: .2s; z-index: 200; pointer-events: none; max-width: 92vw; }
   .toast.on { opacity: 1; transform: translateX(-50%); } .toast.mal { background: #922b21; }
   .hint { color: #888; font-size: 11.5px; }
+  .badge-excluido { background: #ede7f6; color: #5e35b1; }
+  .chip.ok { background: #e3f6ea; color: #1e8449; } .chip.mal { background: #fde8e6; color: #922b21; } .chip.mano { background: #fff4d6; color: #8a6100; }
+  .chip.sig { background: #fff; border: 1px solid #ddd; color: #555; } .chip.sig.hoy { border-color: #e67e22; color: #a04000; background: #fff7ee; }
+  .mini-btn.reg { background: #2c3e50; color: #fff; } .mini-btn.reg:hover { background: #1a252f; }
+  .res { font-weight: 600; } .res-pidio_visita, .res-contesto, .res-contactado { color: #1e8449; } .res-no_desea, .res-numero_errado, .res-no_contactado { color: #922b21; } .res-buzon, .res-no_contesta, .res-colgo, .res-pendiente { color: #a04000; }
+  .lista .meta.nota { color: #555; font-style: italic; white-space: pre-wrap; }
+  .lista .acc-acts { margin-top: 6px; }
+  .ug { font-size: 11.5px; color: #333; max-width: 240px; white-space: normal; line-height: 1.3; }
+  .sub2 { display: block; font-size: 11px; color: #888; font-weight: 400; margin-top: 1px; white-space: normal; }
+  .aviso-ex { background: #ede7f6; color: #4527a0; border-radius: 8px; padding: 8px 10px; font-size: 12px; margin-bottom: 10px; }
+  .form-post, .form-g { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .form-post { background: #fafafa; border: 1px solid #eee; border-radius: 10px; padding: 12px; margin-top: 10px; }
+  .form-post label, .form-g label { display: grid; gap: 4px; font-size: 11px; color: #777; font-weight: 600; min-width: 0; }
+  .form-post input, .form-post textarea, .form-g input, .form-g select, .form-g textarea { padding: 8px 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; color: #222; background: #fff; width: 100%; font-weight: 400; min-width: 0; }
+  .form-post textarea, .form-g textarea { resize: vertical; font-family: inherit; }
+  .form-post input:focus, .form-post textarea:focus, .form-g input:focus, .form-g select:focus, .form-g textarea:focus { border-color: #c0392b; outline: none; }
+  .dos { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+  .seg { display: flex; flex-wrap: wrap; gap: 6px; }
+  .seg button { flex: 1 1 30%; padding: 8px 6px; border: 1px solid #ddd; background: #fff; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: #444; }
+  .seg button.on { background: #c0392b; border-color: #c0392b; color: #fff; } .seg button:disabled { opacity: .55; cursor: default; }
+  #gestOverlay, #loteOverlay { z-index: 130; }
+  .avisos { margin: 0 24px 12px; background: #fff; border-radius: 10px; padding: 12px 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); border-left: 4px solid #8e44ad; }
+  .avisos h4 { font-size: 12.5px; margin-bottom: 4px; } .avisos h4 .hint { font-weight: 400; margin-left: 6px; }
+  .av-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; padding: 7px 0; border-top: 1px solid #f0f0f0; font-size: 12.5px; }
+  .av-row .acts { display: flex; gap: 6px; flex-wrap: wrap; }
+  .avisos details { margin-top: 6px; } .avisos summary { cursor: pointer; font-size: 12px; color: #666; padding: 4px 0; }
+  .card.clic { cursor: pointer; } .card.clic:hover { box-shadow: 0 2px 8px rgba(0,0,0,.16); }
+  .prev { max-height: 240px; overflow: auto; border: 1px solid #eee; border-radius: 8px; }
+  .prev table { border-collapse: collapse; font-size: 11.5px; width: 100%; } .prev th, .prev td { padding: 5px 8px; border-bottom: 1px solid #f0f0f0; text-align: left; white-space: nowrap; }
+  .prev th { background: #f7f7f7; position: sticky; top: 0; } .prev tr.mal td { background: #fff3f2; }
+  .codigo { background: #1f2430; color: #e6e6e6; border-radius: 8px; padding: 10px 12px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 11px; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .llave { background: #fff8e1; border: 1px solid #f0d58a; border-radius: 8px; padding: 10px 12px; font-size: 12px; overflow-wrap: anywhere; }
+  .pasos { counter-reset: p; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; } .pasos > div { position: relative; padding-left: 30px; min-width: 0; }
+  .pasos > div::before { counter-increment: p; content: counter(p); position: absolute; left: 0; top: 0; width: 22px; height: 22px; border-radius: 50%; background: #c0392b; color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .pasos b.t { display: block; font-size: 13px; margin-bottom: 4px; }
+  .cdiv { max-width: 220px; white-space: normal; line-height: 1.3; }
+  .sub2.nota { color: #555; font-style: italic; }
   @media (max-width: 760px) {
     .header { padding: 10px 12px; flex-wrap: wrap; gap: 8px 12px; }
     .header h1 { font-size: 16px; } .header .subtitle { display: none; }
@@ -195,6 +232,9 @@
     .detail-grid { grid-template-columns: 1fr 1fr; }
     .overlay.active { align-items: flex-end; } .detail-panel { max-height: 92vh; border-radius: 14px 14px 0 0; width: 100%; max-width: 100%; }
     .detail-header { border-radius: 14px 14px 0 0; }
+    .avisos { margin-left: 12px; margin-right: 12px; } .dos { grid-template-columns: minmax(0, 1fr); } .seg button { flex-basis: 45%; }
+    .ug { max-width: none; text-align: right; } .sub2 { text-align: right; }
+    .cdiv { max-width: none; text-align: right; }
   }
 </style>
 </head>
@@ -252,13 +292,13 @@
 
 <!-- TAB CLIENTES -->
 <div id="tab-clientes" class="tab-content">
-  <div class="legend">Un cliente por fila, con todas sus compras. Toca una fila para ver su ficha: compras, qué tiene, filtros, mensajes y gestiones.</div>
+  <div class="legend">Un cliente por fila, con todas sus compras. Toca una fila para ver su ficha: compras, qué tiene, filtros, gestiones y datos de post venta (asesor de seguimiento, referencia, nota).</div>
   <div class="filters"><h3>🔍 Filtros</h3><div class="filter-row">
     <input type="text" id="cliSearch" placeholder="Buscar cliente, celular..." oninput="renderClientes()">
     <select id="cliVend" onchange="renderClientes()"><option value="">Todos los vendedores</option></select>
     <select id="cliDist" onchange="renderClientes()"><option value="">Todos los distritos</option></select>
     <select id="cliTiene" onchange="renderClientes()"><option value="">Tiene cualquier cosa</option><option value="filtro">Filtro de agua</option><option value="ollas">Ollas</option><option value="sartenes">Sartenes</option><option value="cocina">Cocina de inducción</option><option value="presion">Olla a presión</option><option value="aire">Purificador de aire</option></select>
-    <select id="cliEstado" onchange="renderClientes()"><option value="">Todos</option><option value="pend">Con algo pendiente</option><option value="venc">Con algo vencido</option><option value="cuotas">Pagando cuotas</option><option value="multi">Más de una compra</option></select>
+    <select id="cliEstado" onchange="renderClientes()"><option value="">Todos</option><option value="pend">Con algo pendiente</option><option value="venc">Con algo vencido</option><option value="cuotas">Pagando cuotas</option><option value="multi">Más de una compra</option><option value="cel">Celular inválido o número errado</option><option value="comodin">Posible comodín (varios vendedores)</option><option value="excl">Excluidos de post venta</option></select>
     <button class="btn ghost" onclick="exportar('clientes')">⬇ Excel</button>
     <span class="result-count" id="cliCount"></span>
   </div></div>
@@ -270,32 +310,40 @@
 <!-- TAB FILTROS -->
 <div id="tab-filtros" class="tab-content">
   <div class="cards" style="padding:16px 24px 0;">
+    <div class="card red clic" onclick="verFiltros('tanda','')" title="Ver quiénes entran en la tanda del mes"><div class="card-label">🎯 Tanda del mes</div><div class="card-value" id="f_tanda">—</div><div class="card-sub">vencen en 30 días y sin gestión</div></div>
+    <div class="card orange clic" onclick="verFiltros('vencido','')"><div class="card-label">Cambios vencidos</div><div class="card-value" id="f_venc">—</div><div class="card-sub">pre-filtro, principal, aire o botella</div></div>
+    <div class="card teal clic" onclick="verFiltros('proximo','')"><div class="card-label">Próximos 90 días</div><div class="card-value" id="f_prox">—</div><div class="card-sub">cambios por vencer</div></div>
+    <div class="card purple clic" onclick="verFiltros('avisado','')"><div class="card-label">Avisados</div><div class="card-value" id="f_avis">—</div><div class="card-sub">esperando el cambio</div></div>
+    <div class="card green clic" onclick="verFiltros('','aviso')"><div class="card-label">Avisos a asesor por revisar</div><div class="card-value" id="f_seg">—</div><div class="card-sub">pasaron los 5 días</div></div>
     <div class="card blue"><div class="card-label">Clientes con filtro de agua</div><div class="card-value" id="f_agua">—</div><div class="card-sub" id="f_agua_sub">sistemas Aqua Nano</div></div>
-    <div class="card orange"><div class="card-label">Cambios vencidos</div><div class="card-value" id="f_venc">—</div><div class="card-sub">pre-filtro, principal, aire o botella</div></div>
-    <div class="card teal"><div class="card-label">Próximos 90 días</div><div class="card-value" id="f_prox">—</div><div class="card-sub">cambios por vencer</div></div>
-    <div class="card purple"><div class="card-label">Avisados</div><div class="card-value" id="f_avis">—</div><div class="card-sub">esperando el cambio</div></div>
   </div>
-  <div class="legend">💧 Pre-filtro: cada <b>12 meses</b> · Filtro principal (elemento desechable): cada <b>48 meses</b> · 🌀 Purificador de aire: cada <b>18 meses</b> · 🍶 Botella filtrante: cada <b>36 meses</b>. El ciclo corre desde la entrega del sistema <b>o del último repuesto comprado</b>, lo que sea más reciente; comprar un repuesto reinicia su ciclo. Los avisos por WhatsApp se mandan desde <b>Bienvenida</b>; aquí se anota el cambio hecho o que ya no aplica.</div>
+  <div class="legend">💧 Pre-filtro: cada <b>12 meses</b> · Filtro principal (elemento desechable): cada <b>48 meses</b> · 🌀 Purificador de aire: cada <b>18 meses</b> · 🍶 Botella filtrante: cada <b>36 meses</b>. El ciclo corre desde la entrega del sistema <b>o del último repuesto comprado</b>, lo que sea más reciente. Con <b>📝</b> se anota cada gestión (llamada, mensaje, video, aviso al asesor, visita): lo que llega al cliente o a su asesor lo deja en «Avisado» 30 días. Los avisos por WhatsApp al cliente se mandan desde <b>Bienvenida</b>.</div>
+  <div id="avisosWrap"></div>
   <div class="filters"><h3>🔍 Filtros</h3><div class="filter-row">
-    <input type="text" id="filtroSearch" placeholder="Buscar cliente..." oninput="renderFiltros()">
+    <input type="text" id="filtroSearch" placeholder="Buscar cliente o celular..." oninput="renderFiltros()">
     <select id="filtroTipo" onchange="renderFiltros()"><option value="">Todos</option><option value="agua">Solo agua (Aqua Nano)</option><option value="aire">Solo aire</option><option value="botella">Solo botella filtrante</option><option value="repuesto">Compraron repuestos</option></select>
-    <select id="filtroEstado" onchange="renderFiltros()"><option value="">Todos los estados</option><option value="vencido">Con cambios vencidos</option><option value="proximo">Por vencer (90 días)</option><option value="avisado">Avisados</option><option value="al_dia">Al día</option><option value="cerrado">Ya no aplica</option></select>
+    <select id="filtroEstado" onchange="renderFiltros()"><option value="">Todos los estados</option><option value="tanda">🎯 Tanda del mes (30 días, sin gestión)</option><option value="v30">Vence ≤ hoy + 30 días</option><option value="vencido">Con cambios vencidos</option><option value="proximo">Por vencer (90 días)</option><option value="avisado">Avisados</option><option value="al_dia">Al día</option><option value="excluido">Excluidos</option><option value="cerrado">Ya no aplica</option></select>
+    <select id="filtroGestion" onchange="renderFiltros()"><option value="">Con o sin gestión</option><option value="sin">Sin gestión (de los que ya tocan)</option><option value="con">Ya gestionados en la etapa</option><option value="accion">Con acción siguiente</option><option value="aviso">Aviso a asesor por revisar</option><option value="mano">Tienen el repuesto en mano</option><option value="errado">Número errado o celular inválido</option></select>
+    <select id="filtroTanda" onchange="renderFiltros()"><option value="">Todas las tandas</option></select>
+    <select id="filtroAsesor" onchange="renderFiltros()"><option value="">Todos los asesores</option></select>
+    <button class="btn red" onclick="limpiarFiltros()" title="Limpiar filtros">✕</button>
     <button class="btn ghost" onclick="exportar('filtros')">⬇ Excel</button>
+    <button class="btn ghost" onclick="abrirLote()">⬆ Cargar resultados</button>
     <span class="result-count" id="filtrosCount"></span>
   </div></div>
   <div class="table-wrap tarjetas"><div class="table-scroll"><table id="filtrosTable"><thead><tr>
-    <th>Cliente</th><th>Distrito</th><th>Sistema</th><th>Compra sistema</th><th>Último repuesto</th><th>Pre-filtro (1 año)</th><th>Filtro principal (4 años)</th>
+    <th>Cliente</th><th>Asesor de seguimiento</th><th>Sistema</th><th>Último repuesto</th><th>Pre-filtro (1 año)</th><th>Filtro principal (4 años)</th><th>Gestión</th><th></th>
   </tr></thead><tbody id="filtrosBody"></tbody></table></div></div>
   <div id="aireWrap" style="display:none">
     <div class="legend" style="margin-top:0;font-weight:700;color:#8e44ad">🌀 Purificadores de aire — filtro cada 18 meses</div>
     <div class="table-wrap tarjetas"><div class="table-scroll"><table id="aireTable"><thead><tr>
-      <th>Cliente</th><th>Distrito</th><th>Producto</th><th>Compra</th><th>Último repuesto</th><th>Próximo cambio (18 meses)</th>
+      <th>Cliente</th><th>Asesor de seguimiento</th><th>Producto</th><th>Último repuesto</th><th>Próximo cambio (18 meses)</th><th>Gestión</th><th></th>
     </tr></thead><tbody id="aireBody"></tbody></table></div></div>
   </div>
   <div id="botellaWrap" style="display:none">
     <div class="legend" style="margin-top:0;font-weight:700;color:#16a085">🍶 Botellas filtrantes — renovar cada 3 años</div>
     <div class="table-wrap tarjetas"><div class="table-scroll"><table id="botellaTable"><thead><tr>
-      <th>Cliente</th><th>Distrito</th><th>Producto</th><th>Compra</th><th>Próxima renovación (3 años)</th>
+      <th>Cliente</th><th>Asesor de seguimiento</th><th>Producto</th><th>Próxima renovación (3 años)</th><th>Gestión</th><th></th>
     </tr></thead><tbody id="botellaBody"></tbody></table></div></div>
   </div>
 </div>
@@ -353,6 +401,15 @@
   <div class="detail-panel"><div class="detail-header"><div><h2 id="fichaTitle">Cliente</h2><div class="sub" id="fichaSub"></div></div><button class="detail-close" onclick="closeFicha()" aria-label="Cerrar">✕</button></div>
   <div class="detail-body" id="fichaBody"></div></div>
 </div>
+<div class="overlay" id="gestOverlay" onclick="if(event.target.id==='gestOverlay')cerrarGestion()">
+  <div class="detail-panel"><div class="detail-header"><div><h2 id="gestTitle">Registrar gestión</h2><div class="sub" id="gestSub"></div></div><button class="detail-close" onclick="cerrarGestion()" aria-label="Cerrar">✕</button></div>
+  <div class="detail-body form-g" id="gestBody"></div></div>
+</div>
+<div class="overlay" id="loteOverlay" onclick="if(event.target.id==='loteOverlay')cerrarLote()">
+  <div class="detail-panel"><div class="detail-header"><div><h2>⬆ Cargar resultados en lote</h2><div class="sub">Gestiones y llamadas de una tanda: por archivo o por la API del bot</div></div><button class="detail-close" onclick="cerrarLote()" aria-label="Cerrar">✕</button></div>
+  <div class="detail-body" id="loteBody"></div></div>
+</div>
+<datalist id="dlAsesores"></datalist><datalist id="dlTandas"></datalist>
 <div class="toast" id="toast" aria-live="polite"></div>
 
 <script>
@@ -372,8 +429,22 @@ const KW = {
 const TIENE_TXT = { ollas: 'Ollas', sartenes: 'Sartenes', filtro: 'Filtro de agua', cocina: 'Cocina', presion: 'Olla a presión', aire: 'Purificador', repuesto: 'Repuestos' };
 const TIPO_TXT = { bienvenida: 'Al recibir · video de lavado', semana1: 'Semana 1 · Nutri Sensor', mes1: 'Mes 1 · brillo y Rena Lite', fincuotas: 'Un mes antes de terminar cuotas',
                    prefiltro: 'Pre-filtro de agua', filtroppal: 'Filtro principal', aire: 'Filtro de aire', botella: 'Botella filtrante (3 años)' };
-const ESTADO_TXT = { vencido: 'Vencido', proximo: 'Próximo', pendiente: 'Programado', hecho: 'Enviado', omitido: 'Omitido', caducado: 'Fuera de plazo', al_dia: 'Al día', avisado: 'Avisado', cerrado: 'Ya no aplica' };
-const MODO_TXT = { whatsapp: 'WhatsApp', aviso: 'avisado en persona', omitido: 'omitido', cambio: 'cambio hecho', noaplica: 'ya no aplica' };
+const ESTADO_TXT = { vencido: 'Vencido', proximo: 'Próximo', pendiente: 'Programado', hecho: 'Enviado', omitido: 'Omitido', caducado: 'Fuera de plazo', al_dia: 'Al día', avisado: 'Avisado', cerrado: 'Ya no aplica', excluido: 'Excluido' };
+const MODO_TXT = { whatsapp: 'WhatsApp desde Bienvenida', aviso: 'avisado en persona', omitido: 'omitido', cambio: 'cambio hecho', noaplica: 'ya no aplica', por_su_cuenta: 'compró el repuesto por su cuenta' };
+/* gestiones de post venta: contactos con el cliente (crm_gestiones) y avisos a su asesor (crm_avisos_asesor) */
+const CANALES = ['llamada', 'llamada_auto', 'whatsapp', 'video', 'aviso_asesor', 'visita'];
+const CANAL_TXT = { llamada_auto: 'Llamada automática', llamada: 'Llamada', whatsapp: 'Mensaje directo', video: 'Video enviado', aviso_asesor: 'Aviso al asesor', visita: 'Visita coordinada' };
+const CANAL_ICO = { llamada_auto: '🤖', llamada: '📞', whatsapp: '💬', video: '🎬', aviso_asesor: '👤', visita: '🏠' };
+const RES_TXT = { pidio_visita: 'Pidió visita', no_desea: 'No usa el filtro / no desea', contesto: 'Contestó sin marcar', colgo: 'Colgó', buzon: 'Buzón de voz', no_contesta: 'No contesta', numero_errado: 'Número errado' };
+const RES_MSG = { no_contesta: 'Sin respuesta aún', contesto: 'Respondió', pidio_visita: 'Pidió visita', no_desea: 'No desea', numero_errado: 'Número errado o sin WhatsApp' };
+const ACC_TXT = { volver_a_llamar: 'Volver a llamar', enviar_video: 'Enviar video', coordinar_visita: 'Coordinar visita', ninguna: 'Ninguna' };
+const ACC_SUG = { pidio_visita: 'coordinar_visita', contesto: 'enviar_video', colgo: 'enviar_video', buzon: 'volver_a_llamar', no_contesta: 'volver_a_llamar', no_desea: 'ninguna', numero_errado: 'ninguna' };
+const ETAPA_TXT = { 1: '1.er cambio', 2: '2.º cambio', 3: '3.er cambio' };
+const SEG_TXT = { pendiente: 'por revisar', contactado: 'sí lo contactó', no_contactado: 'no lo contactó' };
+const REP_TXT = { prefiltro: 'pre-filtro del Aqua Nano', filtroppal: 'filtro principal del Aqua Nano', aire: 'filtro del purificador de aire', botella: 'botella filtrante' };
+const DIAS_SEG = 5;        // a los 5 días del aviso al asesor toca revisar si ya contactó al cliente
+let POST = {};             // crm_cliente_post por cliente_id: asesor de seguimiento, referencia, nota, exclusión, repuesto en mano
+let CFG = { asesores: [], admin: false };   // crm_post_config(): asesores del equipo con su celular
 
 /* ============ utilidades ============ */
 function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -387,7 +458,7 @@ function monthsDiff(s){ const d=parseDate(s); if(!d) return null; return (TODAY.
 function diasDesde(s){ const d=parseDate(s); if(!d) return null; return Math.round((TODAY-d)/86400000); }
 function money(v){ if(v===''||v==null) return '—'; return 'S/ '+Number(v).toLocaleString('es-PE',{minimumFractionDigits:2,maximumFractionDigits:2}); }
 function money0(v){ return 'S/'+Math.round(v).toLocaleString('es-PE'); }
-function district(p){ return p['Ciudad'] ? String(p['Ciudad']).split(',')[0].trim() : '—'; }
+function district(p){ return distritoDe(p['Ciudad'])||'—'; }
 function fechaOrden(p){ return parseDate(p['Delivery Date'])||parseDate(p['Fecha Ordenado']); }
 function isDelivered(p){ return String(p['Estatus']).toUpperCase().includes('ENTREGADA'); }
 function isRejected(p){ return String(p['Estatus']).toUpperCase().includes('RECHAZADA'); }
@@ -399,7 +470,7 @@ function statusBadge(e){ const u=String(e).toUpperCase();
   if(u.includes('CANCELADO')||u.includes('CANCELADA')) return '<span class="badge badge-cancelado">CANCELADO</span>';
   return '<span class="badge badge-otro">'+esc(e||'—')+'</span>'; }
 function estadoBadge(a){ const t=ESTADO_TXT[a.estado]||a.estado; let extra='';
-  if(a.estado==='vencido') extra=' '+Math.abs(a.dias)+'d'; else if(a.estado==='proximo') extra=' en '+a.dias+'d'; else if(a.estado==='hecho'&&a.hecho_el) extra=' '+fmtCorta(a.hecho_el); else if(a.estado==='avisado'&&a.ultimo_aviso) extra=' '+fmtCorta(a.ultimo_aviso);
+  if(a.estado==='vencido') extra=' '+Math.abs(a.dias)+'d'; else if(a.estado==='proximo') extra=' en '+a.dias+'d'; else if(a.estado==='hecho'&&a.hecho_el) extra=' '+fmtCorta(a.hecho_el); else if(a.estado==='avisado'&&a.ultimo_aviso) extra=' '+fmtCorta(a.ultimo_aviso); else if(a.estado==='excluido'&&a.excluido_hasta) extra=' hasta '+fmtCorta(a.excluido_hasta);
   return '<span class="badge badge-'+esc(a.estado)+'">'+esc(t+extra)+'</span>'; }
 function plano(s){ return String(s==null?'':s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(); }
 function titulo(n){ const MIN={de:1,del:1,la:1,las:1,los:1,y:1,e:1}; return String(n||'').toLowerCase().replace(/\s+/g,' ').trim().split(' ').map((p,i)=>i>0&&MIN[p]?p:p.charAt(0).toUpperCase()+p.slice(1)).join(' '); }
@@ -411,6 +482,49 @@ function labelTable(tableId){ const t=document.getElementById(tableId); if(!t) r
   t.querySelectorAll('tbody tr').forEach(tr=>[...tr.children].forEach((td,i)=>{ if(!td.hasAttribute('data-th')) td.setAttribute('data-th', ths[i]||''); })); }
 function toast(msg, mal){ const t=document.getElementById('toast'); t.textContent=msg; t.className='toast on'+(mal?' mal':''); clearTimeout(toast.t); toast.t=setTimeout(()=>{ t.className='toast'; },2800); }
 function tieneDe(p){ const r={}; Object.keys(KW).forEach(k=>{ if(hasKw(p['Productos'],KW[k])) r[k]=true; }); return r; }
+function celE164(c){ const d=celWA(c); return d?'+51'+d:''; }
+function partesCiudad(s){ return String(s||'').split(',').map(x=>x.trim()).filter(x=>x&&x.toUpperCase()!=='PE'); }   // «Distrito, Provincia[, Departamento][, PE]»
+function provinciaDe(s){ const p=partesCiudad(s); return p[1]?titulo(p[1]):''; }
+function deptoDe(s){ const p=partesCiudad(s); return p[2]?titulo(p[2]):''; }
+function distritoDe(s){ const p=partesCiudad(s); return p[0]?titulo(p[0]):''; }
+function urlSegura(u){ return /^https?:\/\//i.test(String(u||''))?String(u):'#'; }
+function primerNombre(n){ return titulo(n).split(' ')[0]||''; }
+/* fechas con hora (las gestiones): se muestran en la hora de este dispositivo */
+function tsDe(s){ if(!s) return null; if(s instanceof Date) return s; const t=String(s); if(/^\d{4}-\d{2}-\d{2}$/.test(t)) return new Date(+t.slice(0,4), +t.slice(5,7)-1, +t.slice(8,10), 12); const d=new Date(t); return isNaN(d)?null:d; }
+function hhmm(d){ return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
+function fmtTs(s){ const d=tsDe(s); return d?fmtDate(d)+' '+hhmm(d):'—'; }
+function isoLocal(d){ return isoDe(d)+'T'+hhmm(d); }            // para <input type="datetime-local">
+function sumarDias(d,n){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()+n); }
+/* gestiones: textos y resúmenes */
+function claseG(g){ return g.canal==='whatsapp'&&g.video?'video':g.canal; }
+function resTxt(g){ if(g.canal==='visita') return g.visita_fecha?'para el '+fmtDate(g.visita_fecha):'coordinada'; return ((g.canal==='whatsapp'?RES_MSG:RES_TXT)[g.resultado])||g.resultado||''; }
+function accTxt(k){ return ACC_TXT[k]||k||''; }
+// historial de un ciclo: contactos con el cliente (g), avisos al asesor (a) y lo anotado del ciclo (s); lo más reciente primero
+function histDe(a){ const l=[];
+  (a.gestiones_post||[]).forEach(g=>l.push({k:'g', ts:tsDe(g.fecha), a, g}));
+  (a.avisos_asesor||[]).forEach(v=>l.push({k:'a', ts:tsDe(v.fecha), a, v}));
+  (a.gestiones||[]).forEach(s=>l.push({k:'s', ts:tsDe(s.fecha), a, s}));
+  return l.sort((x,y)=>(y.ts||0)-(x.ts||0)); }
+function ultimaDe(a){ return histDe(a).find(h=>h.k!=='s')||null; }       // última gestión de post venta del ciclo
+function txtHist(h){
+  if(h.k==='g'){ const g=h.g; return CANAL_TXT[claseG(g)]+(g.intento?' ('+g.intento+'.º intento)':'')+(g.canal==='visita'?(g.visita_fecha?' para el '+fmtDate(g.visita_fecha):''):': '+resTxt(g)); }
+  if(h.k==='a') return 'Aviso a '+titulo(h.v.asesor)+': '+SEG_TXT[h.v.estado];
+  return MODO_TXT[h.s.modo]||h.s.modo; }
+// lo que toca hacer después: la acción siguiente de la última gestión, una visita por venir o un aviso al asesor por revisar
+function proximaDe(a){ const out=[], gs=a.gestiones_post||[], g=gs[0], avs=a.avisos_asesor||[];
+  if(g&&g.accion&&g.accion!=='ninguna'&&!(g.accion==='coordinar_visita'&&avs.some(v=>tsDe(v.fecha)>tsDe(g.fecha)))) out.push({txt:accTxt(g.accion), fecha:g.accion_fecha||null});
+  const vis=gs.find(x=>x.canal==='visita'&&x.visita_fecha&&x.visita_fecha>=hoyISO()); if(vis) out.push({txt:'Visita', fecha:vis.visita_fecha});
+  const v=a.aviso_asesor; if(v&&v.estado==='pendiente') out.push({txt:'Revisar si '+primerNombre(v.asesor)+' lo contactó', fecha:v.revisar_el});
+  return out; }
+function tandasDe(a){ const s=new Set(); (a.gestiones_post||[]).forEach(g=>{ if(g.tanda) s.add(g.tanda); }); (a.avisos_asesor||[]).forEach(v=>{ if(v.tanda) s.add(v.tanda); }); return s; }
+function tandasConocidas(){ const s=new Set(); ciclos().forEach(a=>tandasDe(a).forEach(t=>s.add(t))); return [...s].sort((x,y)=>(+x.slice(1))-(+y.slice(1))); }
+function tandaActual(){ const l=tandasConocidas(); return l.length?l[l.length-1]:''; }
+function celAsesor(nombre){ const n=plano(nombre).trim(); if(!n) return null; const e=(CFG.asesores||[]).find(x=>plano(x.nombre)===n); return e&&/^9\d{8}$/.test(String(e.celular||''))?e.celular:null; }
+function postDe(id){ return POST[id]||{}; }
+function excluidoHasta(id){ const p=postDe(id); return p.excluido_hasta&&p.excluido_hasta>=hoyISO()?p.excluido_hasta:null; }
+function llenarListas(){ const a=document.getElementById('dlAsesores'), t=document.getElementById('dlTandas');
+  if(a) a.innerHTML=(CFG.asesores||[]).map(x=>'<option value="'+esc(x.nombre)+'">').join('');
+  if(t){ const l=tandasConocidas(), n=l.length?+l[l.length-1].slice(1)+1:1; t.innerHTML=l.concat('T'+n).map(x=>'<option value="'+esc(x)+'">').join(''); } }
 
 /* ============ clientes (agrupados por cliente_id) ============ */
 let CLIENTES = [];
@@ -421,9 +535,11 @@ function armarClientes(){
     if(isDelivered(p)){ c.entregadas++; c.total+=parseFloat(p['Total'])||0; Object.assign(c.tiene, tieneDe(p)); } });
   CLIENTES=Object.values(m).map(c=>{ c.ordenes.sort((a,b)=>(fechaOrden(b)||0)-(fechaOrden(a)||0)); const u=c.ordenes.find(isDelivered)||c.ordenes[0];
     c.nombre=u['Cliente']; c.celular=(c.ordenes.find(p=>p['Celular'])||{})['Celular']||''; c.email=(c.ordenes.find(p=>p['Email'])||{})['Email']||''; c.direccion=u['Dirección']||'';
-    c.distrito=district(u); c.ultima=fechaOrden(c.ordenes.find(isDelivered)||u); c.vendedor=u['Vendedor'];
+    c.distrito=district(u); c.ciudad=u['Ciudad']||''; c.ultima=fechaOrden(c.ordenes.find(isDelivered)||u); c.vendedor=u['Vendedor'];
+    c.vendBO=new Set(c.ordenes.map(p=>p['Vendedor BO']||p['Vendedor']).filter(Boolean)); c.comodin=c.vendBO.size>=3;      // pedidos de 3 o más vendedores: posible nombre «comodín»
     c.acciones=ACCIONES.filter(a=>String(a.cliente_id)===String(c.id));
     c.pend=c.acciones.filter(a=>a.estado==='vencido'||a.estado==='proximo'||a.estado==='avisado'); c.venc=c.acciones.filter(a=>a.estado==='vencido');
+    c.celMal=!celWA(c.celular); c.errado=c.acciones.some(a=>a.numero_errado);
     c.cuotas=c.ordenes.filter(p=>p['Crédito/Contado']==='Crédito'&&p['Cuotas']&&!isRejected(p)&&!isCancelled(p)&&(monthsDiff(p['Fecha Ordenado'])||0)<+p['Cuotas']).length;
     return c; });
 }
@@ -514,9 +630,10 @@ function buscarGlobal(){
 }
 function cerrarBusqueda(){ globalResults.hidden=true; globalSearch.value=''; }
 document.addEventListener('click',e=>{ if(!e.target.closest('.gsearch')) globalResults.hidden=true; });
-document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ globalResults.hidden=true; closeOverlay(); closeFicha(); } });
+document.addEventListener('keydown',e=>{ if(e.key!=='Escape') return; globalResults.hidden=true; if(GEST){ cerrarGestion(); return; } if(LOTE){ cerrarLote(); return; } if(overlay.classList.contains('active')){ closeOverlay(); return; } closeFicha(); });
 
 /* ============ pestaña Clientes ============ */
+let VISTA_CLI=[];      // lo que se ve en la pestaña Clientes: es lo que sale en el Excel
 function renderClientes(){
   const q=plano((cliSearch.value||'').trim()), v=cliVend.value, d=cliDist.value, t=cliTiene.value, es=cliEstado.value;
   let l=CLIENTES.filter(c=>{
@@ -525,11 +642,12 @@ function renderClientes(){
     if(d&&!c.distritos.has(d)) return false;
     if(t&&!c.tiene[t]) return false;
     if(es==='pend'&&!c.pend.length) return false; if(es==='venc'&&!c.venc.length) return false; if(es==='cuotas'&&!c.cuotas) return false; if(es==='multi'&&c.ordenes.length<2) return false;
+    if(es==='cel'&&!(c.celMal||c.errado)) return false; if(es==='comodin'&&!c.comodin) return false; if(es==='excl'&&!excluidoHasta(c.id)) return false;
     return true; });
-  l.sort((a,b)=>(b.ultima||0)-(a.ultima||0));
+  l.sort((a,b)=>(b.ultima||0)-(a.ultima||0)); VISTA_CLI=l;
   cliCount.textContent=l.length+' cliente(s)';
   clientesBody.innerHTML=l.length?l.map(c=>`<tr class="fila" onclick="openFicha('${esc(c.id)}')">
-      <td class="ell" title="${esc(c.nombre)}"><strong>${esc(titulo(c.nombre))}</strong></td><td class="nw">${esc(c.distrito)}</td><td class="nw">${esc(c.celular||'—')}</td>
+      <td class="ell" title="${esc(c.nombre)}"><strong>${esc(titulo(c.nombre))}</strong>${c.comodin?' <span class="chip mal" title="Tiene pedidos de '+c.vendBO.size+' vendedores: puede ser un nombre comodín">¿comodín?</span>':''}${excluidoHasta(c.id)?' <span class="badge badge-excluido">excluido</span>':''}</td><td class="nw">${esc(c.distrito)}</td><td class="nw">${esc(c.celular||'—')}${c.errado?' <span class="chip mal">errado</span>':c.celMal?' <span class="chip mal">inválido</span>':''}</td>
       <td>${c.ordenes.length}${c.entregadas!==c.ordenes.length?' <span class="hint">('+c.entregadas+' entregadas)</span>':''}</td>
       <td class="num">${c.total?money0(c.total):'—'}</td><td class="nw">${fmtDate(c.ultima)}</td><td>${chipsTiene(c.tiene)}</td>
       <td>${c.venc.length?'<span class="badge badge-vencido">'+c.venc.length+' vencido(s)</span> ':''}${c.pend.length-c.venc.length>0?'<span class="badge badge-proximo">'+(c.pend.length-c.venc.length)+' próximo(s)</span>':''}${!c.pend.length?'<span class="hint">—</span>':''}</td></tr>`).join('')
@@ -539,51 +657,208 @@ function renderClientes(){
 
 /* ============ ficha del cliente ============ */
 let FICHA=null;
-function openFicha(id){ const c=clientePorId(id); if(!c){ toast('No encontré ese cliente', true); return; } FICHA={id, fechaPara:null}; renderFicha(); fichaOverlay.classList.add('active'); }
+function openFicha(id){ const c=clientePorId(id); if(!c){ toast('No encontré ese cliente', true); return; } FICHA={id, fechaPara:null, fechaModo:'cambio', editar:false, histTodo:false}; renderFicha(); fichaOverlay.classList.add('active'); }
 function closeFicha(){ fichaOverlay.classList.remove('active'); FICHA=null; }
 function refrescarFicha(){ if(FICHA&&fichaOverlay.classList.contains('active')) renderFicha(); }
-function gestionesDe(acs){ const l=[]; acs.forEach(a=>(a.gestiones||[]).forEach(g=>l.push({a,g}))); l.sort((x,y)=>String(y.g.fecha).localeCompare(String(x.g.fecha))||(y.g.id-x.g.id)); return l; }
+function asesorSeg(c){ return String(postDe(c.id).asesor_seguimiento||'').trim()||c.vendedor||''; }
 function lineaCiclo(a){ const desde=a.ultimo_cambio?'último cambio '+fmtDate(a.ultimo_cambio):a.src==='repuesto'?'repuesto comprado el '+fmtDate(a.base):'desde la entrega del '+fmtDate(a.base);
   return (a.sistema?bonito(a.sistema):(a.tipo==='aire'?'Purificador de aire':a.tipo==='botella'?'Botella filtrante':'Aqua Nano (solo repuestos)'))+' · '+desde+' · cada '+a.intervalo+' meses · vence '+fmtDate(a.vence); }
+function chipsCiclo(a){ const px=proximaDe(a); let h='';
+  if(a.etapa) h+='<span class="chip" title="Número de cambio de este repuesto">'+ETAPA_TXT[a.etapa]+'</span>';
+  if(a.tanda) h+='<span class="chip on" title="Última tanda en que se gestionó">'+esc(a.tanda)+'</span>';
+  if(a.gestionado_etapa) h+='<span class="chip ok" title="Ya tiene gestión en esta etapa: no hace falta volver a llamar">✓ ya gestionado'+(a.intentos_etapa>1?' ×'+a.intentos_etapa:'')+'</span>';
+  if(a.en_mano) h+='<span class="chip mano" title="Ya tiene el repuesto: solo falta cambiarlo">🧰 tiene el repuesto</span>';
+  px.forEach(p=>{ h+='<span class="chip sig'+(p.fecha&&p.fecha<=hoyISO()?' hoy':'')+'" title="Lo que sigue">→ '+esc(p.txt)+(p.fecha?' · '+esc(fmtCorta(p.fecha)):'')+'</span>'; });
+  return h; }
 function botonesCiclo(a){
   const k=esc(a.clave);
-  if(FICHA&&FICHA.fechaPara===a.clave) return `<label class="hint">Fecha del cambio <input type="date" id="fechaCambio" value="${hoyISO()}" max="${hoyISO()}"></label><button class="mini-btn done" onclick="confirmarCambio('${k}')">Guardar</button><button class="mini-btn" onclick="FICHA.fechaPara=null;renderFicha()">Cancelar</button>`;
+  if(FICHA&&FICHA.fechaPara===a.clave){ const pc=FICHA.fechaModo==='por_su_cuenta';
+    return `<label class="hint">${pc?'¿Cuándo lo compró o lo cambió?':'Fecha del cambio'} <input type="date" id="fechaCambio" value="${hoyISO()}" max="${hoyISO()}"></label><button class="mini-btn done" onclick="confirmarCambio('${k}')">Guardar</button><button class="mini-btn" onclick="FICHA.fechaPara=null;renderFicha()">Cancelar</button>${pc?'<span class="hint" style="flex-basis:100%">El plazo vuelve a empezar desde esa fecha y no se le descuenta un repuesto del kit.</span>':''}`; }
   if(a.estado==='cerrado'){ const u=(a.gestiones||[]).filter(g=>g.modo==='noaplica').pop(); return '<span class="hint">Marcado como «ya no aplica»'+(u?' el '+fmtDate(u.fecha):'')+'.</span>'+(u?` <button class="mini-btn link" onclick="anularGestion(${u.id})">reabrir</button>`:''); }
-  let h=`<button class="mini-btn done" onclick="FICHA.fechaPara='${k}';renderFicha();setTimeout(()=>{const i=document.getElementById('fechaCambio');if(i)i.focus();},0)">✓ Cambio hecho</button>`;
+  let h=`<button class="mini-btn done" onclick="pedirFecha('${k}','cambio')">✓ Cambio hecho</button>`;
   if(a.estado==='vencido'||a.estado==='proximo'||a.estado==='avisado') h+=`<button class="mini-btn wa" onclick="abrirBienvenida('${esc(a.cliente_id)}','filtros')">💬 Avisar (Bienvenida)</button>`;
-  h+=`<button class="mini-btn link" onclick="registrarGestion('${k}','noaplica')">Ya no aplica</button>`;
+  h+=`<button class="mini-btn reg" onclick="abrirGestion('${k}')">📝 Registrar gestión</button>`;
+  h+=`<button class="mini-btn" onclick="marcarEnMano('${k}',${a.en_mano?'false':'true'})">${a.en_mano?'🧰 Ya no lo tiene':'🧰 Tiene el repuesto'}</button>`;
+  h+=`<button class="mini-btn link" onclick="pedirFecha('${k}','por_su_cuenta')">Compró por su cuenta</button>`;
+  h+=`<button class="mini-btn link" onclick="marcarCiclo('${k}','noaplica')">Ya no aplica</button>`;
   return h;
 }
+function pedirFecha(clave, modo){ if(!FICHA) return; FICHA.fechaPara=clave; FICHA.fechaModo=modo; renderFicha(); setTimeout(()=>{ const i=document.getElementById('fechaCambio'); if(i) i.focus(); },0); }
+function filaHist(h){
+  const rep=TIPO_TXT[h.a.tipo]||h.a.tipo;
+  if(h.k==='g'){ const g=h.g, cl=claseG(g);
+    const det=[g.etapa?ETAPA_TXT[g.etapa]:'', g.tanda||'', g.accion&&g.accion!=='ninguna'?'sigue: '+accTxt(g.accion).toLowerCase()+(g.accion_fecha?' el '+fmtDate(g.accion_fecha):''):'', g.call_id?'CallSid '+g.call_id:'', g.origen==='bot'?'por el bot':g.origen==='campana'?'carga en lote':''].filter(Boolean).join(' · ');
+    return `<li><span><b>${CANAL_ICO[cl]} ${esc(CANAL_TXT[cl])}</b>${g.intento?' · '+g.intento+'.º intento':''} · <span class="res res-${esc(g.resultado)}">${esc(resTxt(g))}</span>
+      <span class="meta">${esc(fmtTs(g.fecha))} · ${esc(rep)}${det?' · '+esc(det):''}${g.grabacion_url?' · <a href="'+esc(urlSegura(g.grabacion_url))+'" target="_blank" rel="noopener">grabación</a>':''}</span>${g.nota?'<span class="meta nota">'+esc(g.nota)+'</span>':''}</span>
+      <span class="nw"><button class="mini-btn link" onclick="abrirGestion('${esc(h.a.clave)}',${g.id})">editar</button><button class="mini-btn link" onclick="anularPost(${g.id},'gestion')">deshacer</button></span></li>`; }
+  if(h.k==='a'){ const v=h.v, toca=v.estado==='pendiente'&&v.revisar_el<=hoyISO();
+    return `<li><span><b>👤 Aviso a ${esc(titulo(v.asesor))}</b> · <span class="res res-${esc(v.estado)}">${esc(SEG_TXT[v.estado])}</span>
+      <span class="meta">${esc(fmtTs(v.fecha))} · ${esc(rep)}${v.etapa?' · '+ETAPA_TXT[v.etapa]:''}${v.tanda?' · '+esc(v.tanda):''} · ${v.estado==='pendiente'?(toca?'tocaba revisar el ':'se revisa el ')+fmtDate(v.revisar_el):'revisado el '+fmtDate(tsDe(v.revisado_el))}</span>${v.nota?'<span class="meta nota">'+esc(v.nota)+'</span>':''}
+      <span class="acc-acts">${v.estado==='pendiente'?`<button class="mini-btn done" onclick="revisarAviso(${v.id},'contactado')">✓ Sí lo contactó</button><button class="mini-btn" onclick="revisarAviso(${v.id},'no_contactado')">✗ No lo contactó</button>`:`<button class="mini-btn link" onclick="revisarAviso(${v.id},'pendiente')">volver a «por revisar»</button>`}</span></span>
+      <span class="nw"><button class="mini-btn link" onclick="anularPost(${v.id},'aviso')">deshacer</button></span></li>`; }
+  const s=h.s; return `<li><span>${esc(MODO_TXT[s.modo]||s.modo)}<span class="meta">${esc(fmtDate(s.fecha))} · ${esc(rep)}</span>${s.texto?'<span class="meta nota">'+esc(String(s.texto).slice(0,160))+'</span>':''}</span><button class="mini-btn link" onclick="anularGestion(${s.id})">deshacer</button></li>`;
+}
+function formPost(c,p){ const exh=excluidoHasta(c.id);
+  return `<div class="form-post">
+    <label>Asesor de seguimiento <span class="hint">vacío = el vendedor del pedido (${esc(titulo(c.vendedor))})</span><input id="p_asesor" list="dlAsesores" value="${esc(p.asesor_seguimiento||'')}" placeholder="${esc(titulo(c.vendedor))}" autocomplete="off"></label>
+    <label>Referencia de la dirección<input id="p_ref" maxlength="300" value="${esc(p.referencia||'')}" placeholder="Ej.: frente al parque, portón verde"></label>
+    <label>Nota libre<textarea id="p_nota" maxlength="1500" rows="2" placeholder="Lo que conviene saber antes de llamar o visitar">${esc(p.nota||'')}</textarea></label>
+    <div class="dos"><label>Excluir de post venta hasta<input type="date" id="p_exh" min="${hoyISO()}" value="${esc(exh||'')}"></label><label>Motivo de la exclusión<input id="p_exm" maxlength="300" value="${esc(exh?(p.excluido_motivo||''):'')}" placeholder="Ej.: de viaje hasta enero"></label></div>
+    <label>Celular <span class="hint">9 dígitos empezando en 9; se corrige en todos sus pedidos</span><input id="p_cel" inputmode="numeric" maxlength="15" value="${esc(c.celular||'')}"></label>
+    <div class="acc-acts"><button class="mini-btn done" onclick="guardarFormPost()">Guardar</button><button class="mini-btn" onclick="FICHA.editar=false;renderFicha()">Cancelar</button></div></div>`; }
 function renderFicha(){
   const c=clientePorId(FICHA.id); if(!c){ closeFicha(); return; }
-  const cel=celWA(c.celular), acs=c.acciones, unos=acs.filter(a=>a.clase!=='ciclo').sort((a,b)=>String(a.vence).localeCompare(String(b.vence))), cics=acs.filter(a=>a.clase==='ciclo').sort((a,b)=>(({prefiltro:0,filtroppal:1,aire:2,botella:3}[a.tipo]??9)-({prefiltro:0,filtroppal:1,aire:2,botella:3}[b.tipo]??9)));
+  const ord={prefiltro:0,filtroppal:1,aire:2,botella:3};
+  const cel=celWA(c.celular), p=postDe(c.id), acs=c.acciones, unos=acs.filter(a=>a.clase!=='ciclo').sort((a,b)=>String(a.vence).localeCompare(String(b.vence))), cics=acs.filter(a=>a.clase==='ciclo').sort((a,b)=>(ord[a.tipo]??9)-(ord[b.tipo]??9));
+  const exh=excluidoHasta(c.id), aseg=asesorSeg(c), cambiado=plano(aseg)!==plano(c.vendedor);
   fichaTitle.textContent=titulo(c.nombre);
   fichaSub.textContent=[c.distrito!=='—'?c.distrito:'', c.ordenes.length+(c.ordenes.length===1?' compra':' compras'), c.total?money0(c.total):''].filter(Boolean).join(' · ');
   const f=(l,v,extra)=>v&&v!=='—'?`<div class="detail-field"${extra||''}><label>${l}</label><span>${v}</span></div>`:'';
-  let h='<div class="detail-section"><h3>👤 Datos</h3><div class="detail-grid">'+
-    f('Celular', c.celular?esc(c.celular)+(cel?` · <a href="https://wa.me/51${cel}" target="_blank" rel="noopener">abrir chat</a>`:''):'')+
-    f('Asesor(a)', esc(titulo(c.vendedor)))+f('Email', esc(c.email))+f('Dirección', esc(c.direccion), ' style="grid-column:1/-1"')+
-    '</div><div style="margin-top:8px">'+chipsTiene(c.tiene)+'</div></div>';
-  h+='<div class="detail-section"><h3>🛒 Compras</h3><ul class="lista">'+c.ordenes.map(p=>`<li class="clic" onclick="openDetail(${p['N° Orden']})"><span><b>${esc(fmtDate(fechaOrden(p)||p['Fecha Ordenado']))}</b> · ${esc(productoCorto(p['Productos']))}<span class="meta">Pedido ${p['N° Orden']} · ${esc(p['Vendedor'])}${p['Crédito/Contado']==='Crédito'?' · '+(p['Cuotas']||'')+' cuotas':' · contado'}</span></span><span class="nw" style="text-align:right">${statusBadge(p['Estatus'])}<span class="meta">${money(p['Total'])}</span></span></li>`).join('')+'</ul></div>';
-  if(cics.length){ h+='<div class="detail-section"><h3>💧 Filtros</h3>'+cics.map(a=>`<div class="acc-item"><div class="cab"><b>${esc(TIPO_TXT[a.tipo]||a.tipo)}</b>${estadoBadge(a)}</div><div class="sub">${esc(lineaCiclo(a))}${a.cambios?' · '+a.cambios+' cambio(s) anotado(s)':''}${a.ultimo_aviso?' · avisado el '+fmtDate(a.ultimo_aviso):''}</div><div class="acc-acts">${botonesCiclo(a)}</div></div>`).join('')+'</div>'; }
+  let h='<div class="detail-section"><h3>👤 Datos <button class="mini-btn" onclick="FICHA.editar=!FICHA.editar;renderFicha()">'+(FICHA.editar?'Cerrar':'✏️ Editar datos de post venta')+'</button></h3>';
+  if(exh) h+='<p class="aviso-ex">⏸ Excluido de post venta hasta el '+fmtDate(exh)+(p.excluido_motivo?': '+esc(p.excluido_motivo):'')+' <button class="mini-btn link" onclick="guardarPost({excluido_hasta:\'\'},\'Exclusión quitada\')">quitar</button></p>';
+  if(c.comodin) h+='<p class="hint" style="margin-bottom:8px">⚠️ Tiene pedidos de '+c.vendBO.size+' vendedores distintos: puede ser un nombre «comodín». Abre cada pedido y usa «Corregir cliente» para poner al cliente real.</p>';
+  h+='<div class="detail-grid">'+
+    f('Celular', (c.celular?esc(c.celular):'')+(cel?` · <a href="https://wa.me/51${cel}" target="_blank" rel="noopener">abrir chat</a>`:' <span class="chip mal">'+(c.celular?'no es un celular válido':'sin celular')+'</span>')+(c.errado?' <span class="chip mal">☎ número errado</span>':''))+
+    f('Asesor de seguimiento', esc(titulo(aseg))+(cambiado?' <span class="hint">· vendió '+esc(titulo(c.vendedor))+'</span>':''))+
+    f('Email', esc(c.email))+f('Provincia', esc([provinciaDe(c.ciudad), deptoDe(c.ciudad)].filter(Boolean).join(', ')))+f('Dirección', esc(c.direccion), ' style="grid-column:1/-1"')+
+    f('Referencia', esc(p.referencia||''), ' style="grid-column:1/-1"')+f('Nota', esc(p.nota||''), ' style="grid-column:1/-1"')+'</div>';
+  if(FICHA.editar) h+=formPost(c,p);
+  h+='<div style="margin-top:8px">'+chipsTiene(c.tiene)+'</div></div>';
+  h+='<div class="detail-section"><h3>🛒 Compras</h3><ul class="lista">'+c.ordenes.map(o=>`<li class="clic" onclick="openDetail(${o['N° Orden']})"><span><b>${esc(fmtDate(fechaOrden(o)||o['Fecha Ordenado']))}</b> · ${esc(productoCorto(o['Productos']))}<span class="meta">Pedido ${o['N° Orden']} · ${esc(o['Vendedor'])}${o['Crédito/Contado']==='Crédito'?' · '+(o['Cuotas']||'')+' cuotas':' · contado'}</span></span><span class="nw" style="text-align:right">${statusBadge(o['Estatus'])}<span class="meta">${money(o['Total'])}</span></span></li>`).join('')+'</ul></div>';
+  if(cics.length){ h+='<div class="detail-section"><h3>💧 Filtros</h3>'+cics.map(a=>`<div class="acc-item" data-ciclo="${esc(a.tipo)}"><div class="cab"><b>${esc(TIPO_TXT[a.tipo]||a.tipo)}</b>${estadoBadge(a)}</div><div class="sub">${esc(lineaCiclo(a))}${a.cambios?' · '+a.cambios+' cambio(s) anotado(s)':''}${a.ultimo_aviso?' · avisado el '+fmtDate(a.ultimo_aviso):''}</div><div style="margin-top:5px">${chipsCiclo(a)}</div><div class="acc-acts">${botonesCiclo(a)}</div></div>`).join('')+'</div>'; }
+  const hist=[]; acs.forEach(a=>histDe(a).forEach(x=>hist.push(x))); hist.sort((x,y)=>(y.ts||0)-(x.ts||0));
+  if(hist.length){ const ver=FICHA.histTodo?hist:hist.slice(0,8);
+    h+='<div class="detail-section" id="fichaHist"><h3>📝 Historial de gestiones <span class="hint" style="text-transform:none;font-weight:400">'+hist.length+' anotada(s)</span></h3><ul class="lista">'+ver.map(filaHist).join('')+'</ul>'+(hist.length>ver.length?'<button class="mini-btn link" onclick="FICHA.histTodo=true;renderFicha()">ver las '+hist.length+'</button>':'')+'</div>'; }
   h+='<div class="detail-section"><h3>💬 Mensajes de bienvenida <button class="mini-btn wa" onclick="abrirBienvenida(\''+esc(c.id)+'\',\'clientes\')">Enviar desde Bienvenida</button></h3>';
   h+=unos.length?'<ul class="lista">'+unos.map(a=>`<li><span>${esc(TIPO_TXT[a.tipo]||a.tipo)}<span class="meta">Pedido ${a.n_orden} · ${a.estado==='hecho'?'enviado':'toca'} el ${fmtDate(a.estado==='hecho'?a.hecho_el:a.vence)}</span></span>${estadoBadge(a)}</li>`).join('')+'</ul>':'<p class="hint">Sin mensajes pendientes ni recientes. Los mensajes se mandan y anotan desde Bienvenida.</p>';
   h+='</div>';
-  const hist=gestionesDe(acs);
-  if(hist.length){ h+='<div class="detail-section"><h3>📝 Lo anotado</h3><ul class="lista">'+hist.map(x=>`<li><span>${esc(fmtDate(x.g.fecha))} · ${esc(TIPO_TXT[x.a.tipo]||x.a.tipo)} · ${esc(MODO_TXT[x.g.modo]||x.g.modo)}${x.g.texto?'<span class="meta">'+esc(String(x.g.texto).slice(0,120))+'</span>':''}</span><button class="mini-btn link" onclick="anularGestion(${x.g.id})">deshacer</button></li>`).join('')+'</ul></div>'; }
   fichaBody.innerHTML=h;
 }
-async function confirmarCambio(clave){ const i=document.getElementById('fechaCambio'); const f=i&&/^\d{4}-\d{2}-\d{2}$/.test(i.value)?i.value:hoyISO(); if(f>hoyISO()){ toast('La fecha no puede ser futura', true); return; } await registrarGestion(clave,'cambio',f); }
-async function registrarGestion(clave, modo, fechaISO){
+/* datos de post venta del cliente: crm_cliente_post_guardar valida la sesión y cambia solo lo que llega */
+async function guardarPost(datos, msg, sinRecargar, cid){
+  const id=cid||(FICHA&&FICHA.id); if(!SB||!id) return false;
+  const {error}=await SB.rpc('crm_cliente_post_guardar',{p_cliente:id, p_datos:datos});
+  if(error){ toast('No se pudo guardar: '+error.message, true); return false; }
+  if(msg) toast(msg); if(!sinRecargar) await recargarAcciones(); return true; }
+async function guardarFormPost(){
+  const c=FICHA&&clientePorId(FICHA.id); if(!c) return; const p=postDe(c.id), v=id=>String((document.getElementById(id)||{}).value||''), d={};
+  if(v('p_asesor').trim()!==String(p.asesor_seguimiento||'')) d.asesor_seguimiento=plano(v('p_asesor'))===plano(c.vendedor)?'':v('p_asesor').trim();
+  if(v('p_ref').trim()!==String(p.referencia||'')) d.referencia=v('p_ref').trim();
+  if(v('p_nota').trim()!==String(p.nota||'')) d.nota=v('p_nota').trim();
+  const exh=excluidoHasta(c.id)||'';
+  if(v('p_exh')!==exh||(v('p_exh')&&v('p_exm').trim()!==String(p.excluido_motivo||''))){
+    if(v('p_exh')&&!v('p_exm').trim()){ toast('Escribe el motivo de la exclusión', true); return; }
+    d.excluido_hasta=v('p_exh'); d.excluido_motivo=v('p_exm').trim(); }
+  const celN=v('p_cel').replace(/\D/g,'').replace(/^51(?=9\d{8}$)/,''), celA=String(c.celular||'').replace(/\D/g,''), cambiaCel=celN!==celA;
+  if(cambiaCel&&!/^9\d{8}$/.test(celN)){ toast('El celular debe tener 9 dígitos y empezar en 9', true); return; }
+  if(!Object.keys(d).length&&!cambiaCel){ FICHA.editar=false; renderFicha(); return; }
+  if(Object.keys(d).length&&!(await guardarPost(d, null, true))) return;
+  if(cambiaCel&&!(await corregirCelular(c, celN))) return;
+  FICHA.editar=false; toast('Guardado');
+  if(cambiaCel){ await loadData(); boot(); refrescarFicha(); } else await recargarAcciones();
+}
+// el celular se corrige pedido por pedido con la función que ya existe (guarda el del back office y resiste las recargas)
+async function corregirCelular(c, cel){
+  for(const o of c.ordenes){ const {error}=await SB.rpc('crm_pedido_corregir_cliente',{p_n_orden:o['N° Orden'], p_cliente:o['Cliente'], p_celular:cel, p_direccion:''});
+    if(error){ toast('No se pudo corregir el celular: '+error.message, true); return false; } }
+  return true; }
+async function marcarEnMano(clave, valor){ const a=ACCIONES.find(x=>x.clave===clave); if(!a) return; await guardarPost({en_mano:{tipo:a.tipo, valor}}, valor?'Anotado: ya tiene el repuesto en mano':'Marca quitada', false, a.cliente_id); }
+/* estado del ciclo (crm_seguimiento): cambio hecho, compró por su cuenta, ya no aplica */
+async function confirmarCambio(clave){ const i=document.getElementById('fechaCambio'); const f=i&&/^\d{4}-\d{2}-\d{2}$/.test(i.value)?i.value:hoyISO(); if(f>hoyISO()){ toast('La fecha no puede ser futura', true); return; } await marcarCiclo(clave, FICHA&&FICHA.fechaModo==='por_su_cuenta'?'por_su_cuenta':'cambio', f); }
+async function marcarCiclo(clave, modo, fechaISO){
   const a=ACCIONES.find(x=>x.clave===clave); if(!a||!SB) return;
   const f=parseDate(fechaISO||hoyISO());
   const {error}=await SB.from('crm_seguimiento').insert({n_orden:a.n_orden, tipo:a.tipo, fecha_gestion:fmtDate(f), modo, cliente_id:a.cliente_id||null});
   if(error){ toast('No se pudo guardar: '+error.message, true); return; }
   if(FICHA) FICHA.fechaPara=null;
-  toast(modo==='cambio'?'Cambio anotado: el ciclo vuelve a empezar':'Anotado: ya no aplica');
+  toast(modo==='cambio'?'Cambio anotado: el ciclo vuelve a empezar':modo==='por_su_cuenta'?'Anotado: lo compró por su cuenta; el plazo vuelve a empezar':'Anotado: ya no aplica');
   await recargarAcciones();
 }
 async function anularGestion(id){ if(!SB) return; const {error}=await SB.from('crm_seguimiento').update({anulado:true}).eq('id',id); if(error){ toast('No se pudo deshacer: '+error.message, true); return; } toast('Deshecho'); await recargarAcciones(); }
+async function anularPost(id, que){ if(!SB) return; const {error}=await SB.rpc('crm_gestion_anular',{p_id:id, p_que:que}); if(error){ toast('No se pudo deshacer: '+error.message, true); return; } toast('Deshecho'); await recargarAcciones(); }
+async function revisarAviso(id, estado){ if(!SB) return; const {error}=await SB.rpc('crm_aviso_revisar',{p_id:id, p_estado:estado, p_nota:null}); if(error){ toast('No se pudo guardar: '+error.message, true); return; }
+  toast(estado==='contactado'?'Anotado: el asesor sí lo contactó':estado==='no_contactado'?'Anotado: no lo contactó. Puedes avisarle de nuevo o cambiar el asesor de seguimiento.':'Vuelve a «por revisar»'); await recargarAcciones(); }
+
+/* ============ registrar o corregir una gestión ============ */
+let GEST=null;
+function abrirGestion(clave, id){
+  const a=ACCIONES.find(x=>x.clave===clave); if(!a){ toast('No encontré ese repuesto', true); return; }
+  const ahora=new Date();
+  if(id){ const g=(a.gestiones_post||[]).find(x=>x.id===id); if(!g) return;
+    GEST={clave, id, v:{canal:claseG(g), fecha:isoLocal(tsDe(g.fecha)||ahora), intento:g.intento||'', resultado:g.resultado||'', call_id:g.call_id||'', grabacion_url:g.grabacion_url||'', etapa:g.etapa||'', tanda:g.tanda||'', accion:g.accion||'', accion_fecha:g.accion_fecha||'', nota:g.nota||'', visita_fecha:g.visita_fecha||'', asesor:'', revisar_el:''}};
+  } else {
+    const u=(a.gestiones_post||[])[0], sug=u&&u.accion==='enviar_video'?'video':u&&u.accion==='coordinar_visita'?'aviso_asesor':'llamada';
+    GEST={clave, id:null, v:{canal:sug, fecha:isoLocal(ahora), intento:'1', resultado:'', call_id:'', grabacion_url:'', etapa:a.etapa||'', tanda:tandaActual(), accion:'', accion_fecha:'', nota:'', visita_fecha:'', asesor:titulo(a.vendedor||''), revisar_el:isoDe(sumarDias(ahora, DIAS_SEG)), nota_cliente:a.nota||''}};
+  }
+  llenarListas(); renderGestion(); gestOverlay.classList.add('active');
+}
+function cerrarGestion(){ gestOverlay.classList.remove('active'); GEST=null; }
+function leerGestion(){ if(!GEST) return; document.querySelectorAll('#gestBody [data-g]').forEach(el=>{ GEST.v[el.dataset.g]=el.value; }); }
+function setCanal(c){ leerGestion(); GEST.v.canal=c; renderGestion(); }
+function setRepuesto(clave){ leerGestion(); const n=ACCIONES.find(x=>x.clave===clave); if(!n) return; GEST.clave=clave; GEST.v.etapa=n.etapa||''; GEST.v.asesor=titulo(n.vendedor||''); renderGestion(); }
+function sugerirAccion(res){ const s=document.querySelector('#gestBody [data-g="accion"]'); if(s&&!GEST.id) s.value=ACC_SUG[res]||''; }
+function textoAviso(a, asesor){ const u=(a.gestiones_post||[])[0];
+  return 'Hola '+primerNombre(asesor)+' 👋, te escribimos de la oficina. A tu cliente *'+titulo(a.cliente)+'* ('+(a.celular||'sin celular')+') le toca el cambio de su '+(REP_TXT[a.tipo]||'repuesto')+' (vence el '+fmtDate(a.vence)+').'+(u&&u.resultado==='pidio_visita'?' Pidió que lo visiten.':'')+' ¿Lo puedes contactar estos días y nos cuentas cómo te fue? Gracias 🙌'; }
+function waAsesorHtml(a, asesor){ const tel=celAsesor(asesor);
+  return tel?'<a class="mini-btn wa" style="text-decoration:none;display:inline-block" target="_blank" rel="noopener" href="https://wa.me/51'+tel+'?text='+encodeURIComponent(textoAviso(a, asesor))+'">💬 Abrir el WhatsApp de '+esc(primerNombre(asesor))+' con el aviso listo</a>'
+            :'<span class="hint">'+(String(asesor||'').trim()?'No tengo el celular de ese nombre en el equipo: avísale por tu cuenta y anótalo aquí.':'Escribe el nombre del asesor.')+'</span>'; }
+function pintarWaAsesor(nombre){ const a=GEST&&ACCIONES.find(x=>x.clave===GEST.clave), el=document.getElementById('waAsesor'); if(a&&el) el.innerHTML=waAsesorHtml(a, nombre); }
+function renderGestion(){
+  const a=GEST&&ACCIONES.find(x=>x.clave===GEST.clave); if(!a){ cerrarGestion(); return; }
+  const v=GEST.v, c=v.canal, edit=!!GEST.id, llamada=c==='llamada'||c==='llamada_auto', msg=c==='whatsapp'||c==='video';
+  const cic=ciclos().filter(x=>String(x.cliente_id)===String(a.cliente_id)&&x.estado!=='cerrado');
+  gestTitle.textContent=(edit?'Editar gestión — ':'Registrar gestión — ')+titulo(a.cliente);
+  gestSub.textContent=[TIPO_TXT[a.tipo]||a.tipo, 'vence '+fmtDate(a.vence), a.celular||'sin celular'].join(' · ');
+  const op=(val,txt,sel)=>`<option value="${esc(val)}"${String(val)===String(sel)?' selected':''}>${esc(txt)}</option>`;
+  let h='';
+  if(!edit&&cic.length>1) h+=`<label>Repuesto<select id="g_rep" onchange="setRepuesto(this.value)">${cic.map(x=>op(x.clave,(TIPO_TXT[x.tipo]||x.tipo)+' · vence '+fmtDate(x.vence),a.clave)).join('')}</select></label>`;
+  h+='<div class="seg" role="group" aria-label="Tipo de gestión">'+CANALES.map(k=>`<button type="button" data-canal="${k}" class="${k===c?'on':''}"${edit?' disabled':''} onclick="setCanal('${k}')">${CANAL_ICO[k]} ${CANAL_TXT[k]}</button>`).join('')+'</div>';
+  h+=`<div class="dos"><label>Fecha y hora<input type="datetime-local" data-g="fecha" value="${esc(v.fecha)}"></label>`;
+  if(llamada) h+=`<label>Intento N.º<select data-g="intento">${op('','—',v.intento)}${[1,2,3,4].map(n=>op(n,n,v.intento)).join('')}${+v.intento>4?op(v.intento,v.intento,v.intento):''}</select></label>`;
+  else if(c==='aviso_asesor') h+=`<label>Revisar si lo contactó el<input type="date" data-g="revisar_el" value="${esc(v.revisar_el)}"></label>`;
+  else if(c==='visita') h+=`<label>Día de la visita<input type="date" data-g="visita_fecha" value="${esc(v.visita_fecha)}"></label>`;
+  else h+='<span></span>';
+  h+='</div>';
+  if(llamada) h+=`<label>Resultado<select data-g="resultado" onchange="sugerirAccion(this.value)">${op('','Elige el resultado…',v.resultado)}${Object.keys(RES_TXT).map(k=>op(k,RES_TXT[k],v.resultado)).join('')}</select></label>`;
+  if(msg) h+=`<label>Respuesta del cliente<select data-g="resultado">${Object.keys(RES_MSG).map(k=>op(k,RES_MSG[k],RES_MSG[v.resultado]?v.resultado:'no_contesta')).join('')}</select></label>`;
+  if(c==='aviso_asesor') h+=`<label>¿A quién se avisó?<input data-g="asesor" list="dlAsesores" value="${esc(v.asesor)}" autocomplete="off" oninput="pintarWaAsesor(this.value)"></label><div id="waAsesor">${waAsesorHtml(a, v.asesor)}</div><p class="hint">A los ${DIAS_SEG} días aparece en «Avisos a asesores» (pestaña Filtros) para marcar si ya contactó al cliente.</p>`;
+  if(llamada) h+=`<div class="dos"><label>CallSid<input data-g="call_id" maxlength="120" value="${esc(v.call_id)}" placeholder="CAxxxxxxxx"></label><label>Enlace a la grabación<input data-g="grabacion_url" type="url" maxlength="500" value="${esc(v.grabacion_url)}" placeholder="https://…"></label></div>`;
+  h+=`<div class="dos"><label>Etapa del recambio<select data-g="etapa">${op('','—',v.etapa)}${[1,2,3].map(n=>op(n,ETAPA_TXT[n],v.etapa)).join('')}</select></label><label>Tanda<input data-g="tanda" list="dlTandas" maxlength="5" value="${esc(v.tanda)}" placeholder="T1, T2…" autocomplete="off"></label></div>`;
+  if(c!=='aviso_asesor') h+=`<div class="dos"><label>Acción siguiente<select data-g="accion">${op('','—',v.accion)}${Object.keys(ACC_TXT).map(k=>op(k,ACC_TXT[k],v.accion)).join('')}</select></label><label>¿Para cuándo?<input type="date" data-g="accion_fecha" value="${esc(v.accion_fecha)}"></label></div>`;
+  h+=`<label>Nota de esta gestión<textarea data-g="nota" rows="2" maxlength="1500" placeholder="Lo que dijo, a qué hora conviene llamar, etc.">${esc(v.nota)}</textarea></label>`;
+  if(!edit) h+=`<label>Nota fija del cliente <span class="hint">queda en su ficha y en la lista; se puede guardar sola</span><textarea data-g="nota_cliente" rows="2" maxlength="1500" placeholder="Lo que conviene saber siempre de este cliente">${esc(v.nota_cliente)}</textarea></label>`;
+  h+=`<div class="acc-acts"><button class="btn green" id="gestGuardar" onclick="guardarGestion()">${edit?'Guardar cambios':'Guardar gestión'}</button>${edit?'':'<button class="btn ghost" onclick="guardarSoloNota()">Guardar solo la nota del cliente</button>'}<button class="btn" onclick="cerrarGestion()">Cancelar</button></div>`;
+  gestBody.innerHTML=h;
+}
+async function guardarSoloNota(){ if(!GEST) return; leerGestion(); const a=ACCIONES.find(x=>x.clave===GEST.clave); if(!a) return;
+  if(await guardarPost({nota:String(GEST.v.nota_cliente||'').trim()}, 'Nota del cliente guardada', false, a.cliente_id)) cerrarGestion(); }
+async function guardarGestion(){
+  if(!GEST||!SB) return; leerGestion();
+  const a=ACCIONES.find(x=>x.clave===GEST.clave), v=GEST.v, c=v.canal, llamada=c==='llamada'||c==='llamada_auto'; if(!a) return;
+  const f=v.fecha?new Date(v.fecha):null; if(!f||isNaN(f)){ toast('Pon la fecha y la hora', true); return; }
+  if(f>new Date(Date.now()+3600e3)){ toast('La fecha no puede ser futura', true); return; }
+  if(llamada&&!v.resultado){ toast('Elige el resultado de la llamada', true); return; }
+  if(c==='aviso_asesor'&&!String(v.asesor).trim()){ toast('Escribe a quién se avisó', true); return; }
+  const tanda=String(v.tanda||'').trim(); if(tanda&&!/^t?\d{1,3}$/i.test(tanda)){ toast('La tanda se escribe T1, T2…', true); return; }
+  if(String(v.grabacion_url||'').trim()&&!/^https?:\/\//i.test(v.grabacion_url.trim())){ toast('El enlace a la grabación debe empezar con https://', true); return; }
+  const b=document.getElementById('gestGuardar'); if(b) b.disabled=true;
+  let error;
+  if(GEST.id){ const d={fecha:f.toISOString(), etapa:v.etapa, tanda, nota:v.nota, accion:v.accion, accion_fecha:v.accion_fecha};
+    if(llamada) Object.assign(d,{intento:v.intento, resultado:v.resultado, call_id:v.call_id, grabacion_url:v.grabacion_url}); else if(c==='visita') d.visita_fecha=v.visita_fecha; else d.resultado=v.resultado||'no_contesta';
+    ({error}=await SB.rpc('crm_gestion_editar',{p_id:GEST.id, p_datos:d}));
+  } else {
+    const fila={cliente_id:a.cliente_id, n_orden:a.n_orden, tipo:a.tipo, canal:c, fecha:f.toISOString(), etapa:v.etapa, tanda, nota:v.nota, celular:celWA(a.celular)||''};
+    if(c==='aviso_asesor') Object.assign(fila,{asesor:String(v.asesor).trim(), revisar_el:v.revisar_el});
+    else { Object.assign(fila,{accion:v.accion, accion_fecha:v.accion_fecha});
+      if(llamada) Object.assign(fila,{intento:v.intento, resultado:v.resultado, call_id:v.call_id, grabacion_url:v.grabacion_url}); else if(c==='visita') fila.visita_fecha=v.visita_fecha; else fila.resultado=v.resultado||'no_contesta'; }
+    ({error}=await SB.rpc('crm_gestion_registrar',{p_fila:fila}));
+  }
+  if(error){ if(b) b.disabled=false; toast('No se pudo guardar: '+error.message, true); return; }
+  const editaba=!!GEST.id, notaCli=String(v.nota_cliente||'').trim();
+  if(!editaba&&notaCli!==String(a.nota||'')) await guardarPost({nota:notaCli}, null, true, a.cliente_id);
+  cerrarGestion(); toast(editaba?'Gestión corregida':c==='aviso_asesor'?'Aviso anotado: se revisa en '+DIAS_SEG+' días':'Gestión anotada');
+  await recargarAcciones();
+}
 // crm_acciones devuelve más de 1000 filas y Supabase corta cada respuesta en 1000:
 // sin paginar se perdían todos los ciclos de filtros (vienen al final). Se pide por páginas.
 async function fetchAcciones(){ const out=[], seen=new Set(), step=1000;
@@ -596,7 +871,8 @@ async function cargarReglas(){ try{ const {data,error}=await SB.from('crm_reglas
 function reTxt(re){ if(!re) return ''; return String(re).replace(/^\(|\)$/g,'').split('|').map(x=>x.replace(/\\\(/g,'(').replace(/ \?/g,' ').trim()).join(', '); }
 function renderReglas(){ const el=document.getElementById('reglasBody'); if(!el) return;
   if(!REGLAS.length){ el.innerHTML='<p class="hint">No se pudieron leer las reglas.</p>'; return; }
-  const uso=t=>{ if(t==='autocompra'){ const n=PEDIDOS.filter(p=>p['Autocompra']).length; return n+' pedidos marcados como autocompra · '+PEDIDOS.filter(p=>p['Autocompra']&&p['Vendedor BO']).length+' con vendedor corregido'; } const l=ACCIONES.filter(a=>a.tipo===t); if(!l.length) return 'Sin acciones todavía.'; const n=k=>l.filter(a=>a.estado===k).length;
+  const uso=t=>{ if(t==='gestiones'){ let g=0, v=0; ciclos().forEach(a=>{ g+=(a.gestiones_post||[]).length; v+=(a.avisos_asesor||[]).length; }); return g+' gestiones anotadas · '+v+' avisos a asesores · '+ciclos().filter(enTanda).length+' en la tanda del mes'; }
+    if(t==='autocompra'){ const n=PEDIDOS.filter(p=>p['Autocompra']).length; return n+' pedidos marcados como autocompra · '+PEDIDOS.filter(p=>p['Autocompra']&&p['Vendedor BO']).length+' con vendedor corregido'; } const l=ACCIONES.filter(a=>a.tipo===t); if(!l.length) return 'Sin acciones todavía.'; const n=k=>l.filter(a=>a.estado===k).length;
     return l.length+' acciones · '+n('vencido')+' vencidas · '+n('proximo')+' próximas'+(l[0].clase==='ciclo'?' · '+n('al_dia')+' al día':' · '+n('hecho')+' enviadas'); };
   const card=r=>`<div class="regla ${r.tipo_regla==='ciclo'?'ciclo':r.tipo_regla==='ajuste'?'ajuste':''} ${r.activo?'':'off'}"><h4>${esc(r.nombre)}<span class="badge ${r.activo?'badge-aldia':'badge-cad'}">${r.activo?'activa':'apagada'}</span></h4><dl>
     <dt>Aplica a</dt><dd>${esc(r.aplica_a)}</dd><dt>Cuándo</dt><dd>${esc(r.cuando)}</dd><dt>Acción</dt><dd>${esc(r.accion)}</dd>
@@ -607,7 +883,9 @@ function renderReglas(){ const el=document.getElementById('reglasBody'); if(!el)
     '<div class="reglas-h">🔁 Ciclos por cliente (se repiten)</div><div class="regla-grid">'+c.map(card).join('')+'</div>'+
     (aj.length?'<div class="reglas-h">⚙️ Ajustes de datos al cargar pedidos</div><div class="regla-grid">'+aj.map(card).join('')+'</div>':'')+
     '<p class="hint">Mensajes por pedido: vencidos hasta 45 días se muestran; después pasan a «fuera de plazo». Ciclos: se avisan desde 90 días antes y quedan vencidos hasta que se anote el cambio o «ya no aplica».</p>'; }
-async function recargarAcciones(){ try{ ACCIONES=(await fetchAcciones()).filter(a=>a&&a.estado!=='caducado'); }catch(e){ toast('No se pudieron releer las gestiones: '+(e.message||e), true); }
+async function cargarPost(){ try{ const {data,error}=await SB.from('crm_cliente_post').select('*'); if(error) throw error; POST={}; (data||[]).forEach(r=>{ POST[r.cliente_id]=r; }); }catch(e){ console.error(e); } }
+async function cargarCfg(){ try{ const {data,error}=await SB.rpc('crm_post_config'); if(error) throw error; if(data) CFG=data; }catch(e){ console.error(e); } }
+async function recargarAcciones(){ try{ const [acc]=await Promise.all([fetchAcciones(), cargarPost()]); ACCIONES=acc.filter(a=>a&&a.estado!=='caducado'); }catch(e){ toast('No se pudieron releer las gestiones: '+(e.message||e), true); }
   armarClientes(); renderFiltros(); renderClientes(); updateTabBadge(); refrescarFicha(); }
 function abrirBienvenida(cid, vista){
   const w=window.open('about:blank','_blank'); const ir=hash=>{ const u=BIENVENIDA_URL+'#'+hash; if(w) w.location=u; else location.href=u; };
@@ -617,8 +895,23 @@ function abrirBienvenida(cid, vista){
 }
 
 /* ============ detalle de orden ============ */
+let DET_N=null, DET_EDIT=false;
+function formCorregir(p){ return `<div class="form-post"><p class="hint">Para cuando el pedido salió a nombre de otra persona (por ejemplo, un nombre «comodín»). Se guarda lo que decía el back office y la corrección se mantiene aunque se vuelva a cargar el reporte.</p>
+    <label>Nombre real del cliente<input id="k_nombre" maxlength="120" value="${esc(p['Cliente']||'')}"></label>
+    <div class="dos"><label>Celular <span class="hint">9 dígitos empezando en 9</span><input id="k_cel" inputmode="numeric" maxlength="15" value="${esc(p['Celular']||'')}"></label><label>Dirección<input id="k_dir" maxlength="300" value="${esc(p['Dirección']||'')}"></label></div>
+    <div class="acc-acts"><button class="mini-btn done" onclick="guardarCorreccion(${p['N° Orden']})">Guardar corrección</button><button class="mini-btn" onclick="DET_EDIT=false;openDetail(${p['N° Orden']})">Cancelar</button></div></div>`; }
+async function guardarCorreccion(n){
+  const p=PEDIDOS.find(x=>x['N° Orden']==n); if(!p||!SB) return; const v=id=>String((document.getElementById(id)||{}).value||'').trim();
+  const nombre=v('k_nombre'), cel=v('k_cel').replace(/\D/g,'').replace(/^51(?=9\d{8}$)/,''), dir=v('k_dir');
+  if(!nombre){ toast('Falta el nombre del cliente', true); return; }
+  if(cel&&!/^9\d{8}$/.test(cel)){ toast('El celular debe tener 9 dígitos y empezar en 9', true); return; }
+  const {error}=await SB.rpc('crm_pedido_corregir_cliente',{p_n_orden:n, p_cliente:nombre, p_celular:cel!==String(p['Celular']||'').replace(/\D/g,'')?cel:'', p_direccion:dir!==String(p['Dirección']||'')?dir:''});
+  if(error){ toast('No se pudo corregir: '+error.message, true); return; }
+  DET_EDIT=false; toast('Cliente corregido'); const ficha=FICHA&&FICHA.id; await loadData(); boot(); if(ficha&&!clientePorId(ficha)) closeFicha(); else refrescarFicha(); openDetail(n);
+}
 function openDetail(orden){
   const p=PEDIDOS.find(x=>x['N° Orden']==orden); if(!p) return;
+  if(DET_N!=orden){ DET_N=orden; DET_EDIT=false; }
   const c=clienteDeOrden(p);
   detailTitle.textContent='Pedido '+p['N° Orden']+' — '+titulo(p['Cliente']);
   detailSub.textContent=[p['Período'], p['Estatus']].filter(Boolean).join(' · ');
@@ -635,8 +928,11 @@ function openDetail(orden){
     <div class="detail-section"><h3>📋 Pedido</h3><div class="detail-grid">
       ${f('Fecha de pedido',esc(p['Fecha Ordenado']))}${f('Antigüedad',m!=null?m+' meses':'')}${f('Despacho',esc(p['Fecha Despacho']))}${f('Entrega',esc(p['Delivery Date']))}
       ${f('Tipo de orden',esc(p['Tipo Orden']))}${f('Almacén',esc(p['Almacén']))}${f('GDR',esc(p['GDR #']))}${f('Puntos',p['Puntos'])}</div></div>
-    <div class="detail-section"><h3>👤 Cliente ${c?`<button class="mini-btn" onclick="closeOverlay();openFicha('${esc(c.id)}')">Ver ficha</button>`:''}</h3><div class="detail-grid">
-      ${f('Nombre',esc(titulo(p['Cliente'])))}${f('Distrito',esc(district(p)))}${f('Celular',esc(p['Celular']))}${f('Email',esc(p['Email']))}${f('Dirección',esc(p['Dirección']),' style="grid-column:1/-1"')}</div></div>
+    <div class="detail-section"><h3>👤 Cliente <span><button class="mini-btn" onclick="DET_EDIT=!DET_EDIT;openDetail(${p['N° Orden']})">${DET_EDIT?'Cerrar':'✏️ Corregir cliente'}</button>${c?` <button class="mini-btn" onclick="closeOverlay();openFicha('${esc(c.id)}')">Ver ficha</button>`:''}</span></h3>
+      ${p['Cliente corregido']?`<p class="hint" style="margin:-2px 0 8px">✏️ Corregido a mano. En el back office figura: ${esc([p['Cliente BO']?titulo(p['Cliente BO']):'', p['Celular BO'], p['Dirección BO']].filter(Boolean).join(' · ')||'lo mismo')}.</p>`:''}
+      <div class="detail-grid">
+      ${f('Nombre',esc(titulo(p['Cliente'])))}${f('Distrito',esc([district(p), provinciaDe(p['Ciudad'])].filter(x=>x&&x!=='—').join(', ')))}${f('Celular',esc(p['Celular'])+(p['Celular']&&!celWA(p['Celular'])?' <span class="chip mal">no es un celular válido</span>':''))}${f('Email',esc(p['Email']))}${f('Dirección',esc(p['Dirección']),' style="grid-column:1/-1"')}</div>
+      ${DET_EDIT?formCorregir(p):''}</div>
     <div class="detail-section"><h3>🏷️ Vendedor</h3>${p['Autocompra']?`<p class="hint" style="margin:-2px 0 8px"><span class="badge badge-auto">autocompra</span> El asesor se compró a sí mismo (precio con decimales).${p['Vendedor BO']?' En el back office figura de vendedor '+esc(titulo(p['Vendedor BO']))+', su reclutador.':''}${p['Cliente BO']?' En el back office figura de cliente '+esc(titulo(p['Cliente BO']))+' (datos de la oficina).':''}${p['Celular BO']?' Celular del back office: '+esc(p['Celular BO'])+'.':''}</p>`:''}<div class="detail-grid">${f('Nombre',esc(p['Vendedor']))}${f('Código',p['ID Vendedor'])}${f('Oficina',esc(p['Código Oficina']))}${f('Comisionable',esc(p['Comisionable']))}${f('Valor comisionable',money_(p['Commissionable Value']))}</div></div>
     <div class="detail-section"><h3>💰 Pago</h3><div class="detail-grid">${f('Tipo',esc(p['Crédito/Contado']))}${f('Depósito',money_(p['Depósito']))}${f('Financiado',money_(p['Financiado']))}${f('Interés',money_(p['Interés']))}${f('Gastos',money_(p['Expenses']))}${f('Total',`<span style="color:#c0392b;font-size:16px">${money(p['Total'])}</span>`)}</div></div>
     ${ci}
@@ -648,56 +944,106 @@ function openDetail(orden){
 }
 function closeOverlay(){ overlay.classList.remove('active'); }
 
-/* ============ FILTROS / MANTENIMIENTO (ciclos de crm_acciones) ============ */
+/* ============ FILTROS / POST VENTA (ciclos de crm_acciones) ============ */
 function ciclos(){ return ACCIONES.filter(a=>a.clase==='ciclo'); }
+function abierto(a){ return a.estado!=='cerrado'&&a.estado!=='excluido'; }
+function enJuego(a){ return a.estado==='vencido'||a.estado==='proximo'||a.estado==='avisado'; }      // ya toca: a 90 días o menos de vencer (o vencido)
+function enTanda(a){ return abierto(a)&&a.dias<=30&&!a.gestionado_etapa; }      // «Tanda del mes»: vence en 30 días (o ya venció) y sin gestión en la etapa
 function badgeCiclo(a){ if(!a) return '<span class="hint" title="Sin fecha conocida: no compró este repuesto y el sistema es anterior a este registro">—</span>';
-  return '<div class="nw">'+fmtDate(a.vence)+'</div>'+estadoBadge(a); }
+  return '<div><div class="nw">'+fmtDate(a.vence)+'</div>'+estadoBadge(a)+(a.etapa&&a.estado!=='al_dia'&&a.estado!=='cerrado'?' <span class="chip" title="Número de cambio de este repuesto">'+ETAPA_TXT[a.etapa].replace(' cambio','')+'</span>':'')+'</div>'; }
 function waterRecords(){
   const m={};
   ciclos().filter(a=>a.tipo==='prefiltro'||a.tipo==='filtroppal').forEach(a=>{ const r=m[a.cliente_id]=m[a.cliente_id]||{id:a.cliente_id, cliente:a.cliente, ciudad:a.ciudad, pre:null, main:null}; if(a.tipo==='prefiltro') r.pre=a; else r.main=a; });
-  return Object.values(m).map(r=>{ const any=r.pre||r.main; r.sistema=any.sistema; r.sysDate=any.fecha_sistema; r.repDates=[r.pre&&r.pre.fecha_repuesto?'Pre '+fmtDate(r.pre.fecha_repuesto):'', r.main&&r.main.fecha_repuesto?'Ppal '+fmtDate(r.main.fecha_repuesto):''].filter(Boolean);
-    const sts=[r.pre,r.main].filter(Boolean).map(x=>x.estado); r.worst=sts.includes('vencido')?'vencido':sts.includes('proximo')?'proximo':sts.includes('avisado')?'avisado':sts.every(s=>s==='cerrado')?'cerrado':'al_dia'; r.due=Math.min(...[r.pre,r.main].filter(Boolean).map(x=>+parseDate(x.vence))); return r; });
+  return Object.values(m).map(r=>{ const any=r.pre||r.main; r.cics=[r.pre,r.main].filter(Boolean); r.sistema=any.sistema; r.sysDate=any.fecha_sistema; r.repDates=[r.pre&&r.pre.fecha_repuesto?'Pre '+fmtDate(r.pre.fecha_repuesto):'', r.main&&r.main.fecha_repuesto?'Ppal '+fmtDate(r.main.fecha_repuesto):''].filter(Boolean);
+    const sts=r.cics.map(x=>x.estado); r.worst=sts.includes('vencido')?'vencido':sts.includes('proximo')?'proximo':sts.includes('avisado')?'avisado':sts.every(s=>s==='cerrado')?'cerrado':sts.every(s=>s==='excluido'||s==='cerrado')?'excluido':'al_dia'; r.due=Math.min(...r.cics.map(x=>+parseDate(x.vence)));
+    const ab=r.cics.filter(abierto).sort((x,y)=>x.dias-y.dias); r.princ=ab[0]||r.pre||r.main;   // el repuesto que manda en la fila: el abierto que vence primero
+    return r; });
 }
 function airRecords(){ return ciclos().filter(a=>a.tipo==='aire'); }
 function bottleRecords(){ return ciclos().filter(a=>a.tipo==='botella'); }
 function updateTabBadge(){ const v=ciclos().filter(a=>a.estado==='vencido').length; const b=document.getElementById('tabVenc'); b.textContent=v; b.style.display=v>0?'inline-block':'none'; }
+// qué ciclos pasan los filtros de la pestaña (estado o vista, gestión, tanda, asesor y búsqueda)
+function filtroCiclos(){
+  const est=filtroEstado.value, ges=filtroGestion.value, tan=filtroTanda.value, ase=filtroAsesor.value, q=plano((filtroSearch.value||'').trim()), dig=q.replace(/\D/g,'');
+  return a=>{
+    if(est==='tanda'){ if(!enTanda(a)) return false; } else if(est==='v30'){ if(!(abierto(a)&&a.dias<=30)) return false; } else if(est&&a.estado!==est) return false;
+    if(ges==='sin'&&(a.gestionado_etapa||!enJuego(a))) return false;
+    if(ges==='con'&&!a.gestionado_etapa) return false;
+    if(ges==='accion'&&!proximaDe(a).length) return false;
+    if(ges==='aviso'&&!a.aviso_por_revisar) return false;
+    if(ges==='mano'&&!a.en_mano) return false;
+    if(ges==='errado'&&!(a.numero_errado||!celWA(a.celular))) return false;
+    if(tan==='sin'){ if(tandasDe(a).size||!enJuego(a)) return false; } else if(tan&&!tandasDe(a).has(tan)) return false;
+    if(ase&&a.vendedor!==ase) return false;
+    if(q&&!(plano(a.cliente).includes(q)||(dig.length>=4&&String(a.celular||'').replace(/\D/g,'').includes(dig)))) return false;
+    return true; };
+}
+function verFiltros(estado, gestion){ filtroEstado.value=estado||''; filtroGestion.value=gestion||''; renderFiltros(); const t=document.getElementById('filtrosTable'); if(t&&t.scrollIntoView) t.scrollIntoView({block:'nearest'}); }
+function limpiarFiltros(){ filtroSearch.value=''; filtroTipo.value=''; filtroEstado.value=''; filtroGestion.value=''; filtroTanda.value=''; filtroAsesor.value=''; renderFiltros(); }
+function celdaCliente(a){ const mal=a.numero_errado?'☎ número errado':!celWA(a.celular)?'☎ celular inválido':'';
+  return `<div class="cdiv"><strong>${esc(titulo(a.cliente))}</strong><span class="sub2">${esc([distritoDe(a.ciudad), a.celular].filter(Boolean).join(' · '))}${mal?' <span class="chip mal">'+mal+'</span>':''}</span>${a.nota?'<span class="sub2 nota" title="'+esc(a.nota)+'">📝 '+esc(String(a.nota).slice(0,70))+(String(a.nota).length>70?'…':'')+'</span>':''}</div>`; }
+function celdaAsesor(a){ return `<div class="cdiv">${esc(titulo(a.vendedor||'—'))}${a.asesor_fijado&&plano(a.asesor_fijado)!==plano(a.vendedor_pedido)?'<span class="sub2">vendió '+esc(titulo(a.vendedor_pedido||''))+'</span>':''}</div>`; }
+function celdaGestion(a){ if(!a) return '—'; const u=ultimaDe(a), px=proximaDe(a);
+  return '<div class="ug">'+(u?esc(fmtCorta(u.ts))+' · '+esc(txtHist(u)):'<span class="hint">Sin gestión</span>')+'<div>'+
+    (a.tanda?'<span class="chip on">'+esc(a.tanda)+'</span>':'')+(a.gestionado_etapa?'<span class="chip ok" title="Ya tiene gestión en esta etapa: no hace falta volver a llamar">✓ ya gestionado</span>':'')+
+    (a.en_mano?'<span class="chip mano" title="Ya tiene el repuesto: solo falta cambiarlo">🧰 en mano</span>':'')+
+    px.map(p=>'<span class="chip sig'+(p.fecha&&p.fecha<=hoyISO()?' hoy':'')+'" title="Lo que sigue">→ '+esc(p.txt)+(p.fecha?' · '+esc(fmtCorta(p.fecha)):'')+'</span>').join('')+'</div></div>'; }
+function botonGestion(a){ return a&&a.estado!=='cerrado'?`<button class="mini-btn reg" onclick="event.stopPropagation();abrirGestion('${esc(a.clave)}')" title="Registrar gestión o nota">📝 Gestión</button>`:''; }
+function opcionesSelect(id, vals, txt){ const el=document.getElementById(id), cur=el.value, sig=vals.join('|'); if(el.dataset.sig===sig) return; el.dataset.sig=sig;
+  el.innerHTML='<option value="">'+el.options[0].text+'</option>'+vals.map(v=>'<option value="'+esc(v)+'">'+esc(txt?txt(v):v)+'</option>').join(''); el.value=vals.includes(cur)?cur:''; }
+let VISTA={agua:[],aire:[],botella:[]};      // lo que se ve en la pestaña Filtros: es lo que sale en el Excel
+function renderAvisos(){
+  const el=document.getElementById('avisosWrap'); if(!el) return 0;
+  const pend=[]; ciclos().forEach(a=>(a.avisos_asesor||[]).forEach(v=>{ if(v.estado==='pendiente'&&isoDe(tsDe(v.fecha))>=String(a.inicio_etapa||'')) pend.push({a,v}); }));
+  pend.sort((x,y)=>String(x.v.revisar_el).localeCompare(String(y.v.revisar_el)));
+  const toca=pend.filter(x=>x.v.revisar_el<=hoyISO()), espera=pend.filter(x=>x.v.revisar_el>hoyISO());
+  const fila=x=>`<div class="av-row"><span><b>${esc(titulo(x.a.cliente))}</b> · ${esc(TIPO_TXT[x.a.tipo]||x.a.tipo)}<span class="sub2">Se avisó a ${esc(titulo(x.v.asesor))} el ${esc(fmtDate(tsDe(x.v.fecha)))} · ${x.v.revisar_el<=hoyISO()?'tocaba revisar el ':'se revisa el '}${esc(fmtDate(x.v.revisar_el))}</span></span>
+    <span class="acts"><button class="mini-btn done" onclick="revisarAviso(${x.v.id},'contactado')">✓ Sí lo contactó</button><button class="mini-btn" onclick="revisarAviso(${x.v.id},'no_contactado')">✗ No lo contactó</button><button class="mini-btn link" onclick="openFicha('${esc(x.a.cliente_id)}')">ficha</button></span></div>`;
+  el.innerHTML=pend.length?'<div class="avisos"><h4>👤 Avisos a asesores<span class="hint">a los '+DIAS_SEG+' días se revisa si ya contactó al cliente</span></h4>'+
+    (toca.length?toca.map(fila).join(''):'<p class="hint">Ninguno por revisar hoy.</p>')+
+    (espera.length?'<details><summary>'+espera.length+' en espera (todavía no pasan los '+DIAS_SEG+' días)</summary>'+espera.map(fila).join('')+'</details>':'')+'</div>':'';
+  return toca.length;
+}
 function renderFiltros(){
-  const w=waterRecords(), a=airRecords(), all=ciclos();
+  const w=waterRecords(), all=ciclos(), pasa=filtroCiclos();
+  opcionesSelect('filtroTanda', tandasConocidas().concat('sin'), v=>v==='sin'?'Sin tanda':'Tanda '+v);
+  opcionesSelect('filtroAsesor', [...new Set(all.map(a=>a.vendedor).filter(Boolean))].sort((x,y)=>plano(x).localeCompare(plano(y))), titulo);
   f_agua.textContent=w.length; f_agua_sub.textContent=w.filter(r=>r.repDates.length).length+' compraron repuestos';
   f_venc.textContent=all.filter(x=>x.estado==='vencido').length; f_prox.textContent=all.filter(x=>x.estado==='proximo').length; f_avis.textContent=all.filter(x=>x.estado==='avisado').length;
-  const tipo=filtroTipo.value, est=filtroEstado.value, q=plano((filtroSearch.value||'').trim());
+  f_tanda.textContent=all.filter(enTanda).length; f_seg.textContent=renderAvisos();
+  const tipo=filtroTipo.value, est=filtroEstado.value, hayFiltro=!!(est||filtroGestion.value||filtroTanda.value||filtroAsesor.value||(filtroSearch.value||'').trim());
+  const ord={vencido:0,proximo:1,avisado:2,al_dia:3,excluido:4,cerrado:5};
   let rowsW=(tipo==='aire'||tipo==='botella')?[]:w;
   if(tipo==='repuesto') rowsW=rowsW.filter(r=>r.repDates.length);
-  if(q) rowsW=rowsW.filter(r=>plano(r.cliente).includes(q));
-  if(est) rowsW=rowsW.filter(r=>r.worst===est||(r.pre&&r.pre.estado===est)||(r.main&&r.main.estado===est));
-  const ord={vencido:0,proximo:1,avisado:2,al_dia:3,cerrado:4};
-  rowsW.sort((x,y)=>(ord[x.worst]-ord[y.worst])||(x.due-y.due));
+  rowsW=rowsW.filter(r=>r.cics.some(pasa));
+  rowsW.forEach(r=>{ r.foco=hayFiltro?(r.cics.filter(pasa).sort((x,y)=>x.dias-y.dias)[0]||r.princ):r.princ; });      // la gestión que se muestra: la del repuesto que pasó el filtro
+  if(est==='tanda'||est==='v30') rowsW.sort((x,y)=>x.foco.dias-y.foco.dias); else rowsW.sort((x,y)=>(ord[x.worst]-ord[y.worst])||(x.due-y.due));
   filtrosCount.textContent=rowsW.length+' clientes con filtro de agua';
   filtrosBody.innerHTML=rowsW.length?rowsW.map(r=>`<tr class="fila" onclick="openFicha('${esc(r.id)}')">
-      <td class="ell" title="${esc(r.cliente)}"><strong>${esc(titulo(r.cliente))}</strong></td><td class="nw">${esc(String(r.ciudad||'').split(',')[0]||'—')}</td>
-      <td class="ell w" title="${esc(r.sistema||'')}">${esc(r.sistema?bonito(r.sistema):'Sistema anterior (solo repuestos)')}</td>
-      <td class="nw">${r.sysDate?fmtDate(r.sysDate):'—'}</td><td class="nw">${r.repDates.length?'<span class="badge badge-otro">'+r.repDates.join(' · ')+'</span>':'—'}</td>
-      <td class="nw">${badgeCiclo(r.pre)}</td><td class="nw">${badgeCiclo(r.main)}</td></tr>`).join('')
-    :'<tr><td colspan="7" class="no-results">Sin resultados.</td></tr>';
+      <td>${celdaCliente(r.foco)}</td><td>${celdaAsesor(r.foco)}</td>
+      <td><div class="cdiv">${esc(r.sistema?bonito(r.sistema):'Sistema anterior (solo repuestos)')}${r.sysDate?'<span class="sub2">comprado el '+fmtDate(r.sysDate)+'</span>':''}</div></td>
+      <td class="nw">${r.repDates.length?'<span class="badge badge-otro">'+r.repDates.join(' · ')+'</span>':'—'}</td>
+      <td class="nw">${badgeCiclo(r.pre)}</td><td class="nw">${badgeCiclo(r.main)}</td><td>${celdaGestion(r.foco)}</td><td class="nw">${botonGestion(r.foco)}</td></tr>`).join('')
+    :'<tr><td colspan="8" class="no-results">'+(est==='tanda'?'Nadie pendiente en la tanda del mes: todos los que vencen en 30 días ya tienen gestión.':'Sin resultados.')+'</td></tr>';
   labelTable('filtrosTable');
-  let rowsA=(tipo==='agua'||tipo==='botella')?[]:a;
+  let rowsA=(tipo==='agua'||tipo==='botella')?[]:airRecords();
   if(tipo==='repuesto') rowsA=rowsA.filter(x=>x.fecha_repuesto);
-  if(q) rowsA=rowsA.filter(x=>plano(x.cliente).includes(q));
-  if(est) rowsA=rowsA.filter(x=>x.estado===est);
-  rowsA.sort((x,y)=>(ord[x.estado]-ord[y.estado])||String(x.vence).localeCompare(String(y.vence)));
-  if(rowsA.length){ aireWrap.style.display='block';
-    aireBody.innerHTML=rowsA.map(x=>`<tr class="fila" onclick="openFicha('${esc(x.cliente_id)}')"><td class="ell"><strong>${esc(titulo(x.cliente))}</strong></td><td class="nw">${esc(String(x.ciudad||'').split(',')[0]||'—')}</td><td class="ell w">${esc(x.sistema?bonito(x.sistema):'Purificador de aire')}</td>
-      <td class="nw">${x.fecha_sistema?fmtDate(x.fecha_sistema):'—'}</td><td class="nw">${x.fecha_repuesto?'<span class="badge badge-otro">'+fmtDate(x.fecha_repuesto)+'</span>':'—'}</td><td class="nw">${badgeCiclo(x)}</td></tr>`).join('');
-    labelTable('aireTable');
-  } else { aireWrap.style.display=tipo==='aire'?'block':'none'; aireBody.innerHTML='<tr><td colspan="6" class="no-results">No hay purificadores de aire registrados.</td></tr>'; }
+  rowsA=rowsA.filter(pasa).sort((x,y)=>(ord[x.estado]-ord[y.estado])||String(x.vence).localeCompare(String(y.vence)));
+  aireWrap.style.display=rowsA.length||tipo==='aire'?'block':'none';
+  aireBody.innerHTML=rowsA.length?rowsA.map(x=>`<tr class="fila" onclick="openFicha('${esc(x.cliente_id)}')"><td>${celdaCliente(x)}</td><td>${celdaAsesor(x)}</td>
+      <td><div class="cdiv">${esc(x.sistema?bonito(x.sistema):'Purificador de aire')}${x.fecha_sistema?'<span class="sub2">comprado el '+fmtDate(x.fecha_sistema)+'</span>':''}</div></td>
+      <td class="nw">${x.fecha_repuesto?'<span class="badge badge-otro">'+fmtDate(x.fecha_repuesto)+'</span>':'—'}</td><td class="nw">${badgeCiclo(x)}</td><td>${celdaGestion(x)}</td><td class="nw">${botonGestion(x)}</td></tr>`).join('')
+    :'<tr><td colspan="7" class="no-results">No hay purificadores de aire en este filtro.</td></tr>';
+  if(rowsA.length) labelTable('aireTable');
   let rowsB=(tipo&&tipo!=='botella')?[]:bottleRecords();
-  if(q) rowsB=rowsB.filter(x=>plano(x.cliente).includes(q));
-  if(est) rowsB=rowsB.filter(x=>x.estado===est);
-  rowsB.sort((x,y)=>(ord[x.estado]-ord[y.estado])||String(x.vence).localeCompare(String(y.vence)));
+  rowsB=rowsB.filter(pasa).sort((x,y)=>(ord[x.estado]-ord[y.estado])||String(x.vence).localeCompare(String(y.vence)));
   botellaWrap.style.display=rowsB.length||tipo==='botella'?'block':'none';
-  botellaBody.innerHTML=rowsB.length?rowsB.map(x=>`<tr class="fila" onclick="openFicha('${esc(x.cliente_id)}')"><td class="ell"><strong>${esc(titulo(x.cliente))}</strong></td><td class="nw">${esc(String(x.ciudad||'').split(',')[0]||'—')}</td><td class="ell w">${esc(x.sistema?bonito(x.sistema):'Botella filtrante')}</td>
-      <td class="nw">${x.fecha_sistema?fmtDate(x.fecha_sistema):'—'}</td><td class="nw">${badgeCiclo(x)}</td></tr>`).join(''):'<tr><td colspan="5" class="no-results">Sin botellas en este filtro.</td></tr>';
+  botellaBody.innerHTML=rowsB.length?rowsB.map(x=>`<tr class="fila" onclick="openFicha('${esc(x.cliente_id)}')"><td>${celdaCliente(x)}</td><td>${celdaAsesor(x)}</td>
+      <td><div class="cdiv">${esc(x.sistema?bonito(x.sistema):'Botella filtrante')}${x.fecha_sistema?'<span class="sub2">comprada el '+fmtDate(x.fecha_sistema)+'</span>':''}</div></td>
+      <td class="nw">${badgeCiclo(x)}</td><td>${celdaGestion(x)}</td><td class="nw">${botonGestion(x)}</td></tr>`).join(''):'<tr><td colspan="6" class="no-results">Sin botellas en este filtro.</td></tr>';
   if(rowsB.length) labelTable('botellaTable');
+  VISTA={agua:rowsW, aire:rowsA, botella:rowsB, pasa};
+  llenarListas();
 }
 
 /* ============ ANÁLISIS ============ */
@@ -819,20 +1165,154 @@ function renderCuotas(){
 
 /* ============ exportar a Excel ============ */
 function cargarXLSX(){ return new Promise((ok,ko)=>{ if(window.XLSX) return ok(); const s=document.createElement('script'); s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'; s.onload=ok; s.onerror=()=>ko(new Error('No se pudo cargar la librería de Excel')); document.head.appendChild(s); }); }
-function filasExport(tab){
-  if(tab==='pedidos') return filtered.map(p=>({'N° Orden':p['N° Orden'],'Período':p['Período'],'Fecha':p['Fecha Ordenado'],'Entrega':p['Delivery Date'],'Estatus':p['Estatus'],'Vendedor':p['Vendedor'],'Cliente':p['Cliente'],'Celular':p['Celular'],'Distrito':district(p),'Pago':p['Crédito/Contado'],'Cuotas':p['Cuotas'],'Total':p['Total'],'Puntos':p['Puntos'],'Productos':p['Productos']}));
-  if(tab==='clientes'){ const rows=[...clientesBody.querySelectorAll('tr.fila')].map(tr=>tr.getAttribute('onclick').match(/'([^']+)'/)[1]); return rows.map(id=>clientePorId(id)).filter(Boolean).map(c=>({'Cliente':c.nombre,'Distrito':c.distrito,'Celular':c.celular,'Email':c.email,'Compras':c.ordenes.length,'Entregadas':c.entregadas,'Total':Math.round(c.total*100)/100,'Última compra':fmtDate(c.ultima),'Tiene':Object.keys(TIENE_TXT).filter(k=>c.tiene[k]).map(k=>TIENE_TXT[k]).join(', '),'Pendientes':c.pend.length,'Vencidos':c.venc.length,'Asesor':c.vendedor})); }
-  if(tab==='filtros'){ const rows=[...filtrosBody.querySelectorAll('tr.fila')].map(tr=>tr.getAttribute('onclick').match(/'([^']+)'/)[1]); const w=waterRecords(); const out=rows.map(id=>w.find(r=>String(r.id)===id)).filter(Boolean).map(r=>({'Cliente':r.cliente,'Distrito':String(r.ciudad||'').split(',')[0],'Celular':(r.pre||r.main).celular,'Sistema':r.sistema||'Sistema anterior (solo repuestos)','Compra sistema':r.sysDate?fmtDate(r.sysDate):'','Último repuesto':r.repDates.join(' · '),'Pre-filtro vence':r.pre?fmtDate(r.pre.vence):'','Pre-filtro estado':r.pre?ESTADO_TXT[r.pre.estado]:'','Filtro principal vence':r.main?fmtDate(r.main.vence):'','Filtro principal estado':r.main?ESTADO_TXT[r.main.estado]:''}));
-    airRecords().forEach(x=>out.push({'Cliente':x.cliente,'Distrito':String(x.ciudad||'').split(',')[0],'Celular':x.celular,'Sistema':x.sistema||'Purificador de aire','Compra sistema':x.fecha_sistema?fmtDate(x.fecha_sistema):'','Último repuesto':x.fecha_repuesto?fmtDate(x.fecha_repuesto):'','Filtro de aire vence':fmtDate(x.vence),'Filtro de aire estado':ESTADO_TXT[x.estado]}));
-    bottleRecords().forEach(x=>out.push({'Cliente':x.cliente,'Distrito':String(x.ciudad||'').split(',')[0],'Celular':x.celular,'Sistema':x.sistema||'Botella filtrante','Compra sistema':x.fecha_sistema?fmtDate(x.fecha_sistema):'','Botella renovar':fmtDate(x.vence),'Botella estado':ESTADO_TXT[x.estado]})); return out; }
-  if(tab==='cuotas') return CUOTAS_ROWS.map(({p,m,pa,re,done})=>({'N° Orden':p['N° Orden'],'Fecha compra':p['Fecha Ordenado'],'Cliente':p['Cliente'],'Celular':p['Celular'],'Vendedor':p['Vendedor'],'Total':p['Total'],'Cuotas':p['Cuotas'],'Meses':m,'Pagadas (est.)':pa,'Restantes':re,'Estado':done?'Terminado':'En curso'}));
+// fechas de verdad para Excel (número de serie con formato), sin depender de la zona horaria
+function xFecha(v){ const d=v instanceof Date?v:parseDate(v); if(!d) return ''; return {t:'n', v:Math.round(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())/864e5)+25569, z:'dd/mm/yyyy'}; }
+function xFechaHora(v){ const d=tsDe(v); if(!d) return ''; return {t:'n', v:Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes())/864e5+25569, z:'dd/mm/yyyy hh:mm'}; }
+function siNo(b){ return b?'sí':'no'; }
+function filaCiclo(a){ const u=ultimaDe(a), px=proximaDe(a)[0], av=a.aviso_asesor, exh=a.excluido_hasta&&a.excluido_hasta>=hoyISO()?a.excluido_hasta:null;
+  return {'Cliente':titulo(a.cliente), 'Celular':a.celular||'', 'Celular +51':celE164(a.celular), 'Celular válido':siNo(celWA(a.celular)), 'Número errado':a.numero_errado?'sí':'',
+    'Distrito':distritoDe(a.ciudad), 'Provincia':provinciaDe(a.ciudad), 'Dirección':a.direccion||'', 'Referencia':a.referencia||'',
+    'Vendedor':a.vendedor_pedido||'', 'Asesor de seguimiento':a.vendedor||'', 'N° Orden':a.n_orden,
+    'Repuesto':TIPO_TXT[a.tipo]||a.tipo, 'Sistema':a.sistema||'', 'Compra del sistema':xFecha(a.fecha_sistema), 'Fecha último repuesto':xFecha(a.fecha_repuesto), 'Último cambio anotado':xFecha(a.ultimo_cambio),
+    'Vence':xFecha(a.vence), 'Días para vencer':a.dias, 'Estado':ESTADO_TXT[a.estado]||a.estado, 'Etapa del recambio':a.etapa?ETAPA_TXT[a.etapa]:'', 'Tanda':a.tanda||'',
+    'Ya gestionado en la etapa':siNo(a.gestionado_etapa), 'Gestiones en la etapa':a.intentos_etapa||0,
+    'Última gestión (fecha)':u?xFechaHora(u.ts):'', 'Última gestión':u?txtHist(u):'', 'Acción siguiente':px?px.txt:'', 'Fecha de la acción':px&&px.fecha?xFecha(px.fecha):'',
+    'Aviso al asesor':av?titulo(av.asesor)+': '+SEG_TXT[av.estado]:'', 'Repuesto en mano':a.en_mano?'sí':'',
+    'Excluido hasta':xFecha(exh), 'Motivo de la exclusión':exh?(a.excluido_motivo||''):'', 'Nota':a.nota||''}; }
+function filaAgua(r){ const a=r.foco||r.princ, u=ultimaDe(a);
+  return {'Cliente':titulo(r.cliente), 'Celular':a.celular||'', 'Celular +51':celE164(a.celular), 'Distrito':distritoDe(r.ciudad), 'Provincia':provinciaDe(r.ciudad), 'Dirección':a.direccion||'', 'Referencia':a.referencia||'',
+    'Vendedor':a.vendedor_pedido||'', 'Asesor de seguimiento':a.vendedor||'', 'N° Orden':a.n_orden,
+    'Sistema':r.sistema||'Sistema anterior (solo repuestos)', 'Compra del sistema':xFecha(r.sysDate),
+    'Fecha último repuesto (pre-filtro)':xFecha(r.pre&&r.pre.fecha_repuesto), 'Fecha último repuesto (principal)':xFecha(r.main&&r.main.fecha_repuesto),
+    'Pre-filtro vence':xFecha(r.pre&&r.pre.vence), 'Pre-filtro estado':r.pre?ESTADO_TXT[r.pre.estado]:'', 'Pre-filtro etapa':r.pre&&r.pre.etapa?ETAPA_TXT[r.pre.etapa]:'',
+    'Filtro principal vence':xFecha(r.main&&r.main.vence), 'Filtro principal estado':r.main?ESTADO_TXT[r.main.estado]:'', 'Filtro principal etapa':r.main&&r.main.etapa?ETAPA_TXT[r.main.etapa]:'',
+    'Tanda':a.tanda||'', 'Ya gestionado en la etapa':siNo(a.gestionado_etapa), 'Última gestión (fecha)':u?xFechaHora(u.ts):'', 'Última gestión':u?txtHist(u):'',
+    'Repuesto en mano':a.en_mano?'sí':'', 'Nota':a.nota||''}; }
+function filaCliente(c){ const p=postDe(c.id), exh=excluidoHasta(c.id);
+  return {'Cliente':c.nombre, 'Celular':c.celular||'', 'Celular +51':celE164(c.celular), 'Celular válido':siNo(!c.celMal), 'Número errado':c.errado?'sí':'', 'Email':c.email||'',
+    'Dirección':c.direccion||'', 'Distrito':c.distrito!=='—'?c.distrito:'', 'Provincia':provinciaDe(c.ciudad), 'Departamento':deptoDe(c.ciudad), 'Referencia':p.referencia||'',
+    'Compras':c.ordenes.length, 'Entregadas':c.entregadas, 'Total':Math.round(c.total*100)/100, 'Última compra':xFecha(c.ultima),
+    'Tiene':Object.keys(TIENE_TXT).filter(k=>c.tiene[k]).map(k=>TIENE_TXT[k]).join(', '), 'Pendientes':c.pend.length, 'Vencidos':c.venc.length,
+    'Vendedor':c.vendedor||'', 'Asesor de seguimiento':asesorSeg(c), 'Excluido de post venta hasta':xFecha(exh), 'Nota':p.nota||''}; }
+function hojasExport(tab){
+  if(tab==='pedidos') return [{nombre:'Pedidos', filas:filtered.map(p=>({'N° Orden':p['N° Orden'],'Período':p['Período'],'Fecha':p['Fecha Ordenado'],'Entrega':p['Delivery Date'],'Estatus':p['Estatus'],'Vendedor':p['Vendedor'],'Cliente':p['Cliente'],'Celular':p['Celular'],'Distrito':district(p),'Pago':p['Crédito/Contado'],'Cuotas':p['Cuotas'],'Total':p['Total'],'Puntos':p['Puntos'],'Productos':p['Productos']}))}];
+  if(tab==='clientes') return [{nombre:'Clientes', filas:VISTA_CLI.map(filaCliente)}];
+  if(tab==='filtros'){ const pasa=VISTA.pasa||(()=>true);
+    return [{nombre:'Agua por cliente', filas:VISTA.agua.map(filaAgua)},
+            {nombre:'Por repuesto', filas:VISTA.agua.flatMap(r=>r.cics.filter(pasa)).concat(VISTA.aire, VISTA.botella).map(filaCiclo)}]; }
+  if(tab==='cuotas') return [{nombre:'Cuotas', filas:CUOTAS_ROWS.map(({p,m,pa,re,done})=>({'N° Orden':p['N° Orden'],'Fecha compra':p['Fecha Ordenado'],'Cliente':p['Cliente'],'Celular':p['Celular'],'Vendedor':p['Vendedor'],'Total':p['Total'],'Cuotas':p['Cuotas'],'Meses':m,'Pagadas (est.)':pa,'Restantes':re,'Estado':done?'Terminado':'En curso'}))}];
   return [];
 }
+function anchosHoja(filas){ const ks=Object.keys(filas[0]||{}); return ks.map(k=>({wch:Math.min(46, Math.max(k.length+1, ...filas.slice(0,200).map(f=>{ const v=f[k]; return v&&typeof v==='object'?(v.z&&v.z.length>10?16:11):String(v==null?'':v).length+1; })))})); }
 async function exportar(tab){
-  try{ const rows=filasExport(tab); if(!rows.length){ toast('No hay filas para exportar', true); return; }
-    await cargarXLSX(); const ws=XLSX.utils.json_to_sheet(rows); const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, tab.charAt(0).toUpperCase()+tab.slice(1));
-    XLSX.writeFile(wb, 'renaware-'+tab+'-'+hoyISO()+'.xlsx'); toast(rows.length+' filas exportadas'); }
+  try{ const hojas=hojasExport(tab).filter(h=>h.filas.length); if(!hojas.length){ toast('No hay filas para exportar', true); return; }
+    await cargarXLSX(); const wb=XLSX.utils.book_new();
+    hojas.forEach(h=>{ const ws=XLSX.utils.json_to_sheet(h.filas); ws['!cols']=anchosHoja(h.filas); XLSX.utils.book_append_sheet(wb, ws, h.nombre); });
+    XLSX.writeFile(wb, 'renaware-'+tab+'-'+hoyISO()+'.xlsx'); toast(hojas[0].filas.length+' filas exportadas'+(hojas.length>1?' ('+hojas.length+' hojas)':'')); }
   catch(e){ toast(e.message||'No se pudo exportar', true); }
+}
+
+/* ============ carga en lote (CSV o Excel) y API del bot ============ */
+let LOTE=null;
+const LOTE_COLS={ n_orden:['n_orden','n_de_orden','no_orden','nro_orden','numero_de_orden','orden','pedido','n_pedido','n_de_pedido'], cliente_id:['cliente_id'], celular:['celular','celular_51','telefono','numero','to','phone'],
+  tipo:['tipo','repuesto','filtro'], canal:['canal','gestion','tipo_de_gestion','tipo_gestion'], fecha:['fecha','fecha_y_hora','fecha_hora','fecha_gestion','fecha_de_la_gestion','timestamp','date'], hora:['hora'],
+  intento:['intento','n_intento','intento_n','intentos','attempt'], resultado:['resultado','respuesta','result','estado_llamada'], etapa:['etapa','etapa_del_recambio'], tanda:['tanda'],
+  accion:['accion','accion_siguiente','siguiente_accion'], accion_fecha:['accion_fecha','fecha_accion','fecha_de_la_accion'], nota:['nota','notas','comentario','comentarios','observacion','observaciones'],
+  call_id:['call_id','callsid','call_sid','sid'], grabacion_url:['grabacion_url','grabacion','enlace_a_la_grabacion','enlace_grabacion','recording_url','recordingurl'],
+  asesor:['asesor','a_quien','destinatario','asesor_avisado'], revisar_el:['revisar_el'], visita_fecha:['visita_fecha','fecha_visita','fecha_de_la_visita'], lote:['lote'], _cliente:['cliente','nombre'] };
+const LOTE_FECHAS=['fecha','accion_fecha','visita_fecha','revisar_el'];
+function claveCol(h){ const k=plano(h).replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,''); for(const c in LOTE_COLS) if(LOTE_COLS[c].includes(k)) return c; return null; }
+function dos(n){ return String(n).padStart(2,'0'); }
+// una fecha del archivo → texto «dd/mm/aaaa hh:mm» tal como se ve en la hoja (la base lo toma como hora de Lima)
+function fechaLote(v, conHora){
+  if(v==null||v==='') return '';
+  if(typeof v==='number'&&v>20000&&v<80000){ const d=new Date(Math.round((v-25569)*864e5)); return dos(d.getUTCDate())+'/'+dos(d.getUTCMonth()+1)+'/'+d.getUTCFullYear()+(conHora&&v%1?' '+dos(d.getUTCHours())+':'+dos(d.getUTCMinutes()):''); }
+  if(v instanceof Date) return dos(v.getDate())+'/'+dos(v.getMonth()+1)+'/'+v.getFullYear()+(conHora?' '+hhmm(v):'');
+  return String(v).trim(); }
+function normTipo(v){ const k=plano(v); return /pre/.test(k)?'prefiltro':/princip|ppal|elemento/.test(k)?'filtroppal':/aire|purific/.test(k)?'aire':/botella/.test(k)?'botella':String(v).trim(); }
+function normRes(v){ const k=plano(v).trim(); if(!k) return '';
+  if(/errad|equivocad|no existe|sin whatsapp|fuera de servicio/.test(k)) return 'numero_errado'; if(k==='1'||/pidi|pide|visita/.test(k)) return 'pidio_visita'; if(k==='2'||/no desea|no usa|no quiere/.test(k)) return 'no_desea';
+  if(/buz/.test(k)) return 'buzon'; if(/colg|cuelg/.test(k)) return 'colgo'; if(/no contest|sin respuesta|no respon/.test(k)) return 'no_contesta'; if(/contest|respond|sin marcar/.test(k)) return 'contesto'; return String(v).trim(); }
+function abrirLote(){ LOTE={filas:null, vacias:0, ign:[], nombre:'', lote:'', res:null, llave:null, claves:null, confirma:null}; renderLote(); loteOverlay.classList.add('active'); cargarClaves(); }
+function cerrarLote(){ loteOverlay.classList.remove('active'); LOTE=null; }
+async function leerLote(input){
+  const file=input.files&&input.files[0]; if(!file||!LOTE) return;
+  try{ await cargarXLSX();
+    const wb=/\.(csv|txt|tsv)$/i.test(file.name)?XLSX.read(await file.text(),{type:'string', raw:true}):XLSX.read(await file.arrayBuffer(),{type:'array'});
+    const crudo=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:'', raw:true});
+    if(!crudo.length) throw new Error('el archivo no tiene filas');
+    const mapa={}, ign=[]; Object.keys(crudo[0]).forEach(h=>{ const k=claveCol(h); if(k&&!Object.values(mapa).includes(k)) mapa[h]=k; else ign.push(h); });
+    if(!Object.values(mapa).some(k=>k==='n_orden'||k==='cliente_id'||k==='celular')) throw new Error('falta una columna para ubicar al cliente: N° Orden o Celular');
+    let vacias=0; const filas=[];
+    crudo.forEach((r,i)=>{ const o={_fila:i+2};
+      for(const h in mapa){ const k=mapa[h]; let v=r[h];
+        if(LOTE_FECHAS.includes(k)) v=fechaLote(v, k==='fecha'); else if(k==='hora'&&typeof v==='number'&&v<1){ const m=Math.round(v*1440); v=dos(Math.floor(m/60))+':'+dos(m%60); } else v=String(v==null?'':v).trim();
+        if(v!=='') o[k]=v; }
+      if(o.hora){ if(o.fecha&&!/\d:\d\d/.test(o.fecha)) o.fecha+=' '+o.hora; delete o.hora; }
+      if(o.tipo) o.tipo=normTipo(o.tipo); if(o.resultado) o.resultado=normRes(o.resultado);
+      if(o.celular) o.celular=String(o.celular).replace(/\D/g,'').slice(-9); if(o.n_orden) o.n_orden=String(o.n_orden).replace(/\D/g,'');
+      const llamada=!o.canal||/llamada|auto|bot/.test(plano(o.canal));
+      if(llamada&&!o.resultado){ vacias++; return; }                 // filas de la plantilla que no se llenaron: no se cargan
+      filas.push(o); });
+    Object.assign(LOTE,{filas, vacias, ign, nombre:file.name, res:null}); if(!LOTE.lote) LOTE.lote=file.name.replace(/\.[^.]+$/,'').slice(0,60);
+  }catch(e){ toast('No pude leer el archivo: '+(e.message||e), true); }
+  renderLote();
+}
+async function subirLote(){
+  if(!LOTE||!LOTE.filas||!LOTE.filas.length||!SB) return; const val=id=>String((document.getElementById(id)||{}).value||'').trim();
+  const tanda=val('l_tanda'), canal=val('l_canal')||'llamada_auto', ahora=new Date(), lote=val('l_lote')||'carga-'+hoyISO()+'-'+hhmm(ahora).replace(':','');
+  if(tanda&&!/^t?\d{1,3}$/i.test(tanda)){ toast('La tanda se escribe T1, T2…', true); return; }
+  const filas=LOTE.filas.map(o=>{ const f=Object.assign({},o); delete f._cliente; delete f._fila; if(tanda&&!f.tanda) f.tanda=tanda; if(!f.canal) f.canal=canal; return f; });
+  const b=document.getElementById('l_subir'); if(b){ b.disabled=true; b.textContent='Cargando…'; }
+  const tot={insertadas:0, duplicadas:0, avisos:0, malas:[]};
+  for(let i=0;i<filas.length;i+=500){ const {data,error}=await SB.rpc('crm_gestiones_cargar',{p_filas:filas.slice(i,i+500), p_lote:lote});
+    if(error){ toast('No se pudo cargar: '+error.message, true); if(b){ b.disabled=false; b.textContent='Cargar'; } return; }
+    tot.insertadas+=data.insertadas||0; tot.duplicadas+=data.duplicadas||0; tot.avisos+=data.avisos||0;
+    (data.sin_cliente||[]).forEach(x=>tot.malas.push({o:LOTE.filas[i+x.fila-1], por:'no encontré al cliente con ese N° de orden o celular'}));
+    (data.errores||[]).forEach(x=>tot.malas.push({o:LOTE.filas[i+x.fila-1], por:x.error})); }
+  LOTE.res=tot; LOTE.filas=null; renderLote(); toast(tot.insertadas+' gestiones cargadas'); await recargarAcciones();
+}
+async function plantillaLote(){
+  try{ await cargarXLSX();
+    let pend=ciclos().filter(enTanda); if(!pend.length) pend=ciclos().filter(a=>abierto(a)&&a.dias<=30); pend.sort((x,y)=>x.dias-y.dias);
+    const l=tandasConocidas(), sig='T'+(l.length?+l[l.length-1].slice(1)+1:1);
+    const filas=(pend.length?pend:[null]).map(a=>({'N° Orden':a?a.n_orden:'', 'Cliente':a?titulo(a.cliente):'', 'Celular':a?(celE164(a.celular)||a.celular||''):'', 'Repuesto':a?(TIPO_TXT[a.tipo]||a.tipo):'Pre-filtro de agua', 'Vence':a?xFecha(a.vence):'',
+      'Etapa':a&&a.etapa?a.etapa:'', 'Tanda':sig, 'Gestión':'Llamada automática', 'Fecha':'', 'Intento':'', 'Resultado':'', 'CallSid':'', 'Grabación':'', 'Acción siguiente':'', 'Fecha acción':'', 'Asesor':a?titulo(a.vendedor||''):'', 'Nota':''}));
+    const val=[['Columna','Valores que se aceptan'],['Gestión',Object.values(CANAL_TXT).join(' · ')],['Resultado (llamadas)',Object.values(RES_TXT).join(' · ')+' (o 1 = pidió visita, 2 = no desea)'],['Resultado (mensaje o video)',Object.values(RES_MSG).join(' · ')],
+      ['Acción siguiente',Object.values(ACC_TXT).join(' · ')],['Repuesto','Pre-filtro · Filtro principal · Filtro de aire · Botella filtrante'],['Fecha','dd/mm/aaaa hh:mm (hora de Lima)'],['Intento','1 a 4'],['Etapa','1, 2 o 3'],['Tanda','T1, T2…'],
+      ['Para ubicar al cliente','N° Orden o Celular (uno de los dos basta)'],['Aviso al asesor','Gestión = Aviso al asesor y el nombre en «Asesor»'],['Filas sin resultado','Las llamadas sin «Resultado» no se cargan']];
+    const wb=XLSX.utils.book_new(), ws=XLSX.utils.json_to_sheet(filas); ws['!cols']=anchosHoja(filas); XLSX.utils.book_append_sheet(wb, ws, 'Resultados');
+    const wv=XLSX.utils.aoa_to_sheet(val); wv['!cols']=[{wch:28},{wch:110}]; XLSX.utils.book_append_sheet(wb, wv, 'Valores');
+    XLSX.writeFile(wb, 'renaware-plantilla-gestiones-'+hoyISO()+'.xlsx'); toast('Plantilla con '+pend.length+' pendiente(s) de la tanda');
+  }catch(e){ toast(e.message||'No se pudo armar la plantilla', true); }
+}
+async function cargarClaves(){ if(!SB||!LOTE) return; const {data,error}=await SB.from('crm_bot_claves').select('id,nombre,activo,creado_en,ultimo_uso').order('id',{ascending:false}); if(!LOTE) return; LOTE.claves=error?[]:(data||[]); renderLote(); }
+async function crearClave(){ if(!SB||!LOTE) return; const n=String((document.getElementById('l_clave_nombre')||{}).value||'').trim(); const {data,error}=await SB.rpc('crm_bot_clave_crear',{p_nombre:n||'Bot post venta'}); if(error){ toast('No se pudo crear la llave: '+error.message, true); return; } LOTE.llave=data; await cargarClaves(); }
+async function anularClave(id){ if(!SB||!LOTE) return; if(LOTE.confirma!==id){ LOTE.confirma=id; renderLote(); return; } const {error}=await SB.rpc('crm_bot_clave_anular',{p_id:id}); if(error){ toast('No se pudo anular: '+error.message, true); return; } LOTE.confirma=null; toast('Llave anulada: el bot que la use deja de entrar'); await cargarClaves(); }
+function copiarLlave(){ const t=LOTE&&LOTE.llave; if(!t) return; (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('Llave copiada')).catch(()=>toast('No se pudo copiar: selecciónala y cópiala a mano', true)); }
+function renderLote(){
+  if(!LOTE) return; const L=LOTE, base=SB_URL+'/rest/v1/rpc/'; let h='<div class="pasos">';
+  h+='<div><b class="t">Plantilla con la tanda del mes</b><p class="hint" style="margin-bottom:6px">Un Excel con los que vencen en 30 días y aún no tienen gestión, listo para llenar el resultado de cada llamada. También sirve el Excel de la pestaña Filtros o el archivo que entregue el sistema de llamadas.</p><button class="btn ghost" onclick="plantillaLote()">⬇ Descargar plantilla</button></div>';
+  h+='<div><b class="t">Subir los resultados (Excel o CSV)</b><p class="hint" style="margin-bottom:6px">Columnas que reconoce: N° Orden o Celular, Gestión, Fecha, Intento, Resultado, CallSid, Grabación, Tanda, Etapa, Acción siguiente, Fecha acción, Asesor, Nota. Lo demás se ignora.</p><input type="file" id="l_file" accept=".csv,.txt,.xlsx,.xls" onchange="leerLote(this)">';
+  if(L.filas){ const sinId=L.filas.filter(o=>!(o.n_orden||o.cliente_id||o.celular)).length, cols=['_fila','_cliente','n_orden','celular','tipo','canal','fecha','intento','resultado','tanda','etapa','accion','asesor','nota'].filter(k=>k==='_fila'||L.filas.some(o=>o[k]));
+    const nom={_fila:'Fila',_cliente:'Cliente',n_orden:'N° Orden',celular:'Celular',tipo:'Repuesto',canal:'Gestión',fecha:'Fecha',intento:'Intento',resultado:'Resultado',tanda:'Tanda',etapa:'Etapa',accion:'Acción',asesor:'Asesor',nota:'Nota'};
+    h+=`<p style="margin:10px 0 6px;font-size:12.5px"><b>${esc(L.nombre)}</b>: ${L.filas.length} gestión(es) para cargar${L.vacias?' · '+L.vacias+' fila(s) sin resultado no se cargan':''}${sinId?' · <span style="color:#922b21">'+sinId+' sin N° de orden ni celular</span>':''}${L.ign.length?'<span class="sub2">Columnas que no se usan: '+esc(L.ign.join(', '))+'</span>':''}</p>`;
+    h+='<div class="prev"><table><thead><tr>'+cols.map(k=>'<th>'+nom[k]+'</th>').join('')+'</tr></thead><tbody>'+L.filas.slice(0,40).map(o=>'<tr class="'+(o.n_orden||o.cliente_id||o.celular?'':'mal')+'">'+cols.map(k=>'<td>'+esc(k==='resultado'?(RES_TXT[o[k]]||o[k]||''):k==='tipo'?(TIPO_TXT[o[k]]||o[k]||''):String(o[k]==null?'':o[k]).slice(0,60))+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>'+(L.filas.length>40?'<p class="hint">… y '+(L.filas.length-40)+' más.</p>':'');
+    h+=`<div class="form-g" style="margin-top:10px"><div class="dos"><label>Tanda para las filas que no la traen<input id="l_tanda" list="dlTandas" maxlength="5" placeholder="T2" autocomplete="off"></label><label>Tipo de gestión si la fila no lo dice<select id="l_canal">${CANALES.filter(k=>k!=='aviso_asesor').map(k=>'<option value="'+k+'"'+(k==='llamada_auto'?' selected':'')+'>'+CANAL_TXT[k]+'</option>').join('')}</select></label></div>
+      <label>Nombre de la carga <span class="hint">para reconocerla después</span><input id="l_lote" maxlength="60" value="${esc(L.lote)}" oninput="LOTE.lote=this.value"></label>
+      <div class="acc-acts"><button class="btn green" id="l_subir" onclick="subirLote()"${L.filas.length?'':' disabled'}>Cargar ${L.filas.length} gestión(es)</button><button class="btn" onclick="LOTE.filas=null;renderLote()">Descartar</button></div></div>`; }
+  if(L.res){ const r=L.res;
+    h+=`<p style="margin:10px 0 6px;font-size:13px"><b>✓ ${r.insertadas} cargada(s)</b>${r.avisos?' ('+r.avisos+' aviso(s) al asesor)':''}${r.duplicadas?' · '+r.duplicadas+' ya estaban (no se repiten)':''}${r.malas.length?' · <span style="color:#922b21">'+r.malas.length+' con problema</span>':''}</p>`;
+    if(r.malas.length) h+='<div class="prev"><table><thead><tr><th>Fila</th><th>Cliente / dato</th><th>Qué pasó</th></tr></thead><tbody>'+r.malas.map(m=>'<tr class="mal"><td>'+esc(m.o?m.o._fila:'')+'</td><td>'+esc(m.o?[m.o._cliente, m.o.n_orden, m.o.celular].filter(Boolean).join(' · '):'')+'</td><td style="white-space:normal">'+esc(m.por)+'</td></tr>').join('')+'</tbody></table></div><p class="hint">Corrige esas filas en el archivo y súbelo de nuevo: las que ya entraron no se duplican.</p>'; }
+  h+='</div>';
+  h+='<div><b class="t">O que el bot los mande solo (API)</b><p class="hint" style="margin-bottom:6px">Sin entrar a la página, con una llave propia. Cada llamada es un POST con las cabeceras <b>apikey</b> (la pública de la plataforma, abajo) y <b>Content-Type: application/json</b>.</p>'+
+    '<div class="codigo">POST '+esc(base)+'crm_bot_pendientes\n{"p_clave":"LLAVE","p_dias":30,"p_tipo":"prefiltro"}\n→ la lista para llamar: cliente, celular (+51…), etapa, vence, asesor, ya gestionado, número errado…\n\nPOST '+esc(base)+'crm_bot_registrar\n{"p_clave":"LLAVE","p_filas":[{"cliente_id":"…","tipo":"prefiltro","canal":"llamada_auto",\n  "fecha":"2026-11-20T10:15:00-05:00","intento":1,"resultado":"pidio_visita",\n  "tanda":"T2","call_id":"CA…","grabacion_url":"https://…"}]}\n→ {"insertadas":1,"duplicadas":0,"sin_cliente":[],"errores":[]}\n\napikey: '+esc(SB_KEY)+'</div>'+
+    '<p class="hint" style="margin:6px 0">Resultados: pidio_visita (o 1), no_desea (o 2), contesto, colgo, buzon, no_contesta, numero_errado. En vez de cliente_id sirve n_orden o celular. Un mismo call_id no se carga dos veces.</p>';
+  if(L.llave) h+='<div class="llave"><b>Llave nueva (se muestra una sola vez):</b><br><code id="l_llave">'+esc(L.llave)+'</code><div class="acc-acts"><button class="mini-btn done" onclick="copiarLlave()">Copiar</button><span class="hint">Guárdala donde corre el bot. Si se pierde, se anula y se crea otra.</span></div></div>';
+  h+='<div style="margin-top:8px">'+(L.claves===null?'<span class="hint">Leyendo llaves…</span>':L.claves.length?'<ul class="lista">'+L.claves.map(k=>`<li><span>${k.activo?'🔑':'🚫'} ${esc(k.nombre)}<span class="meta">creada el ${esc(fmtDate(tsDe(k.creado_en)))} · ${k.ultimo_uso?'último uso '+esc(fmtTs(k.ultimo_uso)):'sin usar'}${k.activo?'':' · anulada'}</span></span>${k.activo?`<button class="mini-btn${L.confirma===k.id?' reg':' link'}" onclick="anularClave(${k.id})">${L.confirma===k.id?'¿Seguro? Sí, anular':'anular'}</button>`:''}</li>`).join('')+'</ul>':'<span class="hint">Todavía no hay llaves.</span>')+'</div>';
+  h+='<div class="acc-acts" style="margin-top:8px"><input id="l_clave_nombre" class="mini-input" maxlength="60" placeholder="Nombre de la llave (ej.: Bot de llamadas)" style="flex:1;min-width:180px"><button class="mini-btn reg" onclick="crearClave()">Crear llave</button></div></div>';
+  h+='</div>';
+  loteBody.innerHTML=h;
 }
 
 /* ============ pestañas y arranque ============ */
@@ -870,7 +1350,7 @@ function boot(){
 <script>
 const SB_URL="https://kiexpdaaoegbtesqmaff.supabase.co", SB_KEY="sb_publishable_pftOAOUR51_Q5gq-Qqra-g_cc0rzhth";
 const SB = (window.supabase&&window.supabase.createClient)? window.supabase.createClient(SB_URL,SB_KEY) : null;
-const COLS = [["N° Orden","n_orden","int"],["Período","periodo","t"],["Fecha Ordenado","fecha_ordenado","t"],["Fecha Comisión","fecha_comision","t"],["Fecha Entrega Aprox.","fecha_entrega_aprox","t"],["Fecha Despacho","fecha_despacho","t"],["Fecha Enviado","fecha_enviado","t"],["Delivery Date","delivery_date","t"],["GDR #","gdr","t"],["Estatus","estatus","t"],["Vendedor","vendedor","t"],["ID Vendedor","id_vendedor","int"],["Código Oficina","codigo_oficina","t"],["Almacén","almacen","t"],["Tipo Orden","tipo_orden","t"],["Comisionable","comisionable","t"],["Document Type","document_type","t"],["Commissionable Value","commissionable_value","num"],["Puntos","puntos","int"],["Cliente","cliente","t"],["Cliente ID","cliente_id","t"],["Dirección","direccion","t"],["Ciudad","ciudad","t"],["Celular","celular","t"],["Email","email","t"],["Crédito/Contado","credito_contado","t"],["Cuotas","cuotas","int"],["Tasa","tasa","t"],["Cupón","cupon","num"],["Depósito","deposito","num"],["Financiado","financiado","num"],["Interés","interes","num"],["Expenses","expenses","num"],["Total","total","num"],["Productos","productos","t"],["Notas","notas","t"],["Autocompra","autocompra","bool"],["Vendedor BO","vendedor_bo","t"],["Cliente BO","cliente_bo","t"],["Celular BO","celular_bo","t"]];
+const COLS = [["N° Orden","n_orden","int"],["Período","periodo","t"],["Fecha Ordenado","fecha_ordenado","t"],["Fecha Comisión","fecha_comision","t"],["Fecha Entrega Aprox.","fecha_entrega_aprox","t"],["Fecha Despacho","fecha_despacho","t"],["Fecha Enviado","fecha_enviado","t"],["Delivery Date","delivery_date","t"],["GDR #","gdr","t"],["Estatus","estatus","t"],["Vendedor","vendedor","t"],["ID Vendedor","id_vendedor","int"],["Código Oficina","codigo_oficina","t"],["Almacén","almacen","t"],["Tipo Orden","tipo_orden","t"],["Comisionable","comisionable","t"],["Document Type","document_type","t"],["Commissionable Value","commissionable_value","num"],["Puntos","puntos","int"],["Cliente","cliente","t"],["Cliente ID","cliente_id","t"],["Dirección","direccion","t"],["Ciudad","ciudad","t"],["Celular","celular","t"],["Email","email","t"],["Crédito/Contado","credito_contado","t"],["Cuotas","cuotas","int"],["Tasa","tasa","t"],["Cupón","cupon","num"],["Depósito","deposito","num"],["Financiado","financiado","num"],["Interés","interes","num"],["Expenses","expenses","num"],["Total","total","num"],["Productos","productos","t"],["Notas","notas","t"],["Autocompra","autocompra","bool"],["Vendedor BO","vendedor_bo","t"],["Cliente BO","cliente_bo","t"],["Celular BO","celular_bo","t"],["Dirección BO","direccion_bo","t"],["Cliente corregido","cliente_corregido","bool"]];
 function mapDbRow(r){ const o={}; COLS.forEach(([h,c,t])=>{ let v=r[c]; if(v===null||v===undefined) v=''; else if((t==='int'||t==='num')&&v!=='') v=Number(v); o[h]=v; }); return o; }
 async function fetchAll(table, cols, orderCol){ const out=[], step=1000;
   for(let from=0;;from+=step){ const {data,error}=await SB.from(table).select(cols).order(orderCol).range(from,from+step-1);
@@ -882,6 +1362,7 @@ async function loadData(){
   catch(e){ PEDIDOS=[]; showLoadError('⚠️ No se pudieron cargar los pedidos ('+(e.message||e)+'). Revisa tu conexión o vuelve a ingresar.'); }
   try{ ACCIONES=(await fetchAcciones()).filter(a=>a&&a.estado!=='caducado'); }
   catch(e){ ACCIONES=[]; console.error(e); showLoadError('⚠️ Los pedidos cargaron, pero no las gestiones de clientes ('+(e.message||e)+').'); }
+  await Promise.all([cargarPost(), cargarCfg()]);
   cargarReglas();
 }
 async function doLogin(){ const m=document.getElementById('authMsg'); m.textContent='Ingresando…';
