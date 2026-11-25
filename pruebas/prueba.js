@@ -618,9 +618,10 @@ async function main() {
   console.log('13. Análisis');
   {
     const dbA = crearBase(datosAnalisis());
+    const listo = (p) => p.waitForFunction(() => document.getElementById('authGate').style.display === 'none' && document.querySelectorAll('#chart_dia .vz-hit').length > 0, null, { timeout: 15000 });
     const entrar = async (vp) => { const o = await abrir(vp, dbA);
       await o.ctx.addInitScript((s) => { localStorage.setItem('sb-kiexpdaaoegbtesqmaff-auth-token', JSON.stringify(s)); localStorage.setItem('rw_ped_tab', 'tab-analytics'); }, sesionFalsa());
-      await o.page.goto(URL0); await o.page.waitForFunction(() => document.getElementById('authGate').style.display === 'none' && document.querySelectorAll('#chart_dia .vz-hit').length > 0, null, { timeout: 15000 }); return o; };
+      await o.page.goto(URL0); await listo(o.page); return o; };
     const { ctx: ctxA, page: pa } = await entrar({ width: 1280, height: 900 });
     const t = (sel) => pa.evaluate((s) => { const e = document.querySelector(s); return e ? e.textContent.replace(/\s+/g, ' ').trim() : null; }, sel);
     const n = (sel) => pa.evaluate((s) => document.querySelectorAll(s).length, sel);
@@ -629,43 +630,57 @@ async function main() {
     const tip = () => pa.evaluate(() => { const e = document.getElementById('vzTip'); return e && e.style.display === 'block' ? [...e.children].map((c) => [...c.children].length ? [...c.children].map((x) => x.textContent).filter(Boolean).join(' | ') : c.textContent) : null; });
     const igual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
     const sobre = async (sel, p) => { const l = (p || pa).locator(sel); await l.scrollIntoViewIfNeeded(); await esperar(80); await l.hover(); };      // el tooltip se quita al deslizar: primero se trae a la vista
+    const partida = () => pa.evaluate(() => [...document.querySelectorAll('#mix_seg i')].map((e) => getComputedStyle(e).flexGrow + ' ' + getComputedStyle(e).backgroundColor));
+    const marcas = () => pa.evaluate(() => [...document.querySelectorAll('#chart_mix .vz-sc svg > path, #chart_mix .vz-sc svg > rect:not(.vz-hit)')].map((e) => { const b = e.getBBox(); return getComputedStyle(e).fill + ' ' + Math.round(b.height); }));
+    const eje = (id) => lista('#' + id + ' .vz-wrap > svg text');
+    const elegido = (id) => pa.evaluate((i) => [...document.querySelectorAll('#' + i + ' button')].filter((b) => b.classList.contains('on') && b.getAttribute('aria-pressed') === 'true').map((b) => b.dataset.v).join(','), id);
+    const POR_PEDIDOS = [['Autocompra (precio de asesor)', '36%', '4 pedidos · S/6,377 (28% del monto)'], ['Compra propia a precio regular', '9%', '1 pedido · S/600 (2% del monto)'], ['Venta a terceros', '55%', '6 pedidos · S/16,000 (70% del monto)']];
+    const POR_MONTO = [['Autocompra (precio de asesor)', '28%', 'S/6,377 · 4 pedidos (36% de los pedidos)'], ['Compra propia a precio regular', '2%', 'S/600 · 1 pedido (9% de los pedidos)'], ['Venta a terceros', '70%', 'S/16,000 · 6 pedidos (55% de los pedidos)']];
 
     const cal = await pa.evaluate(() => ['2025-05-15', '2025-12-24', '2025-12-25', '2026-10-28', '2026-10-29', '2026-11-11', '2026-12-24'].map((f) => { const i = pbIndice(parseDate(f)); return pbNombre(i) + ' ' + pbRango(i); }));
     ok(igual(cal, ['2025-PB11 15-28 may', '2025-PB26 11-24 dic', '2026-PB01 25 dic-7 ene', '2026-PB22 15-28 oct', '2026-PB23 29 oct-11 nov', '2026-PB23 29 oct-11 nov', '2027-PB01 24 dic-6 ene']), 'el calendario de períodos (14 días desde el 25/12/2025) da el período de cada fecha', cal);
 
-    // resumen: tres formas de compra, sobre los entregados
-    ok((await t('#mix_sub')) === '11 pedidos entregados', 'autocompras: cuenta solo los entregados', await t('#mix_sub'));
+    // resumen: tres formas de compra, solo entregados, y por monto mientras no se pida otra cosa
+    ok((await t('#mix_sub')) === 'solo entregados: 11 pedidos · S/22,977', 'autocompras: cuenta solo los entregados (ni rechazados ni cancelados)', await t('#mix_sub'));
     let f = await fichas('mix_tiles');
-    ok(igual(f, [['Autocompra (precio de asesor)', '36%', '4 pedidos · S/6,377 (28% del monto)'], ['Compra propia a precio regular', '9%', '1 pedido · S/600 (2% del monto)'], ['Venta a terceros', '55%', '6 pedidos · S/16,000 (70% del monto)']]),
-      'separa autocompra, compra propia a precio regular (el asesor es su propio cliente, aunque el nombre venga en mayúsculas) y venta a terceros; los % suman 100', f);
-    ok(igual(await pa.evaluate(() => [...document.querySelectorAll('#mix_seg i')].map((e) => getComputedStyle(e).flexGrow + ' ' + getComputedStyle(e).backgroundColor)), ['4 rgb(244, 114, 48)', '1 rgb(0, 184, 148)', '6 rgb(37, 125, 224)']), 'la barra partida va en proporción a los pedidos y con el color de cada forma de compra');
-    ok(/Autocompra \(precio de asesor\) 36% · Compra propia a precio regular 9% · Venta a terceros 55%/.test(await pa.getAttribute('#mix_seg', 'aria-label')), 'la barra partida se describe con texto');
+    ok(igual(f, POR_MONTO) && (await elegido('mix_medida')) === 'monto', 'por defecto el porcentaje es del monto entregado; separa autocompra, compra propia a precio regular (aunque el nombre venga en mayúsculas) y venta a terceros, y suma 100', f);
+    ok(igual(await partida(), ['6377 rgb(244, 114, 48)', '600 rgb(0, 184, 148)', '16000 rgb(37, 125, 224)']), 'la barra partida va en proporción al monto y con el color de cada forma de compra', await partida());
+    ok(/Autocompra \(precio de asesor\) 28% · Compra propia a precio regular 2% · Venta a terceros 70%/.test(await pa.getAttribute('#mix_seg', 'aria-label')), 'la barra partida se describe con texto');
     ok((await t('#mix_ases')) === 'De 4 asesores con pedidos entregados, 3 vendieron a terceros y 1 solo compró para sí.', 'dice cuántos asesores vendieron a terceros y cuántos solo se compraron a sí mismos', await t('#mix_ases'));
     ok(igual(await lista('#mix_leg span'), ['Autocompra (precio de asesor)', 'Compra propia a precio regular', 'Venta a terceros']), 'el gráfico por período lleva leyenda');
 
-    // por período (el del reporte): % de pedidos, cantidad y monto
+    // por período (el del reporte): % del monto
     ok(await n('#chart_mix .vz-hit') === 3 && igual(await lista('#chart_mix .vz-sc text:not(.rot)'), ['PB21', '01-14 oct', 'PB22', '15-28 oct', 'PB23', '29 oct-11 nov']), 'por período: una columna por período con entregados', await lista('#chart_mix .vz-sc text'));
-    ok(igual(await lista('#chart_mix .vz-wrap > svg text'), ['0%', '25%', '50%', '75%', '100%']), 'por defecto mide el % de los pedidos del período');
-    const marcas = () => pa.evaluate(() => [...document.querySelectorAll('#chart_mix .vz-sc svg > path, #chart_mix .vz-sc svg > rect:not(.vz-hit)')].map((e) => { const b = e.getBBox(); return getComputedStyle(e).fill + ' ' + Math.round(b.height); }));
+    ok(igual(await eje('chart_mix'), ['0%', '25%', '50%', '75%', '100%']) && igual(await lista('#mix_vista button'), ['% del monto', 'Soles']) && (await elegido('mix_vista')) === 'pct', 'por período empieza en % del monto', await lista('#mix_vista button'));
     let m = await marcas();
-    ok(igual(m, ['rgb(244, 114, 48) 53', 'rgb(37, 125, 224) 105', 'rgb(244, 114, 48) 40', 'rgb(0, 184, 148) 38', 'rgb(37, 125, 224) 78', 'rgb(244, 114, 48) 80', 'rgb(37, 125, 224) 78']),
-      'apila autocompra abajo y terceros arriba, con 2 px de aire entre tramos; el pedido que comisionó en el PB23 cuenta en el PB23', m);
+    ok(igual(m, ['rgb(244, 114, 48) 35', 'rgb(37, 125, 224) 123', 'rgb(244, 114, 48) 29', 'rgb(0, 184, 148) 8', 'rgb(37, 125, 224) 118', 'rgb(244, 114, 48) 62', 'rgb(37, 125, 224) 96']),
+      'apila autocompra abajo y terceros arriba en proporción al monto, con 2 px de aire entre tramos; el pedido que comisionó en el PB23 cuenta en el PB23', m);
     await sobre('#chart_mix .vz-hit >> nth=1');
-    ok(igual(await tip(), ['2026-PB22 (15-28 oct)', 'Autocompra (precio de asesor) | 1 · 25%', 'Compra propia a precio regular | 1 · 25%', 'Venta a terceros | 2 · 50%', '4 pedidos entregados · S/9,300']), 'al pasar por una columna sale el detalle de las tres formas de compra', await tip());
+    ok(igual(await tip(), ['2026-PB22 (15-28 oct)', 'Autocompra (precio de asesor) | S/1,700 · 18%', 'Compra propia a precio regular | S/600 · 7%', 'Venta a terceros | S/7,000 · 75%', '4 pedidos entregados · S/9,300']), 'al pasar por una columna sale el monto y el % de las tres formas de compra', await tip());
     await pa.mouse.move(5, 5); ok((await tip()) === null, 'y se quita al salir');
     await pa.focus('#chart_mix .vz-hit >> nth=2');
-    ok(((await tip()) || [])[0] === '2026-PB23 (29 oct-11 nov)' && /Autocompra \(precio de asesor\) 2 · 50%/.test(await pa.getAttribute('#chart_mix .vz-hit >> nth=2', 'aria-label')), 'con el teclado sale lo mismo y la columna se describe con texto', await tip());
+    ok(((await tip()) || [])[0] === '2026-PB23 (29 oct-11 nov)' && /Autocompra \(precio de asesor\) S\/3,826 · 39%/.test(await pa.getAttribute('#chart_mix .vz-hit >> nth=2', 'aria-label')), 'con el teclado sale lo mismo y la columna se describe con texto', await tip());
     await pa.evaluate(() => document.activeElement.blur());
-    await pa.click('#mix_modo button[data-m="n"]');
-    ok(igual(await lista('#chart_mix .vz-wrap > svg text'), ['0', '1', '2', '3', '4']) && (await pa.getAttribute('#mix_modo button[data-m="n"]', 'aria-pressed')) === 'true', '«Pedidos» pone el eje en cantidad de pedidos', await lista('#chart_mix .vz-wrap > svg text'));
-    await pa.click('#mix_modo button[data-m="monto"]');
-    ok(igual(await lista('#chart_mix .vz-wrap > svg text'), ['0', 'S/5K', 'S/10K']), '«Monto S/» pone el eje en soles', await lista('#chart_mix .vz-wrap > svg text'));
-    await pa.click('#mix_modo button[data-m="pct"]');
     ok(!(await pa.isVisible('#mix_tabla')), 'la tabla del gráfico empieza oculta');
     await pa.click('#card_mix button:has-text("Ver tabla")');
-    ok(await pa.isVisible('#mix_tabla') && igual(await lista('#mix_tabla tbody tr:first-child td'), ['2026-PB23 (29 oct-11 nov)', '4', '2', '50%', '0', '0%', '2', '50%', 'S/3,826', 'S/9,826']) && await n('#mix_tabla tbody tr') === 3,
+    ok(await pa.isVisible('#mix_tabla') && igual(await lista('#mix_tabla tbody tr:first-child td'), ['2026-PB23 (29 oct-11 nov)', 'S/3,826', '39%', 'S/0', '0%', 'S/6,000', '61%', 'S/9,826', '4']) && await n('#mix_tabla tbody tr') === 3,
       '«Ver tabla» muestra los mismos números, del período más reciente al más antiguo', await lista('#mix_tabla tbody tr:first-child td'));
     await pa.locator('#card_mix').scrollIntoViewIfNeeded(); await foto('analisis-autocompras', pa);
+    await pa.click('#mix_vista button[data-v="abs"]');
+    ok(igual(await eje('chart_mix'), ['0', 'S/5K', 'S/10K']) && (await elegido('mix_vista')) === 'abs', '«Soles» pone el eje en soles', await eje('chart_mix'));
+
+    // por pedidos: cambia el resumen, la barra y el gráfico a la vez
+    await pa.click('#mix_medida button[data-v="n"]');
+    f = await fichas('mix_tiles');
+    ok(igual(f, POR_PEDIDOS) && (await elegido('mix_medida')) === 'n' && igual(await partida(), ['4 rgb(244, 114, 48)', '1 rgb(0, 184, 148)', '6 rgb(37, 125, 224)']), '«Por pedidos» pasa el resumen y la barra a cantidad de pedidos', f);
+    ok(igual(await eje('chart_mix'), ['0', '1', '2', '3', '4']) && igual(await lista('#mix_vista button'), ['% de pedidos', 'Pedidos']), 'y el gráfico por período también', await eje('chart_mix'));
+    ok(igual(await lista('#mix_tabla tbody tr:first-child td'), ['2026-PB23 (29 oct-11 nov)', '2', '50%', '0', '0%', '2', '50%', 'S/9,826', '4']), 'y la tabla', await lista('#mix_tabla tbody tr:first-child td'));
+    await pa.click('#mix_vista button[data-v="pct"]');
+    m = await marcas();
+    ok(igual(m, ['rgb(244, 114, 48) 53', 'rgb(37, 125, 224) 105', 'rgb(244, 114, 48) 40', 'rgb(0, 184, 148) 38', 'rgb(37, 125, 224) 78', 'rgb(244, 114, 48) 80', 'rgb(37, 125, 224) 78']), 'en % de pedidos las columnas van en proporción a la cantidad', m);
+    await sobre('#chart_mix .vz-hit >> nth=1');
+    ok(igual(await tip(), ['2026-PB22 (15-28 oct)', 'Autocompra (precio de asesor) | 1 · 25%', 'Compra propia a precio regular | 1 · 25%', 'Venta a terceros | 2 · 50%', '4 pedidos entregados · S/9,300']), 'y el detalle sale en pedidos', await tip());
+    await pa.mouse.move(5, 5);
 
     // por vendedor: barra partida y orden
     const vend = () => pa.evaluate(() => [...document.querySelectorAll('#chart_vendedor .bar-row')].map((r) => r.querySelector('.bar-label').textContent + ' ' + r.querySelectorAll('.tres i').length + ' ' + r.querySelector('.bar-val').textContent));
@@ -678,38 +693,73 @@ async function main() {
     ok(igual(await tip(), ['Rita Solo Compra', 'Autocompra (precio de asesor) | 1 pedido · S/1,700', 'Compra propia a precio regular | 1 pedido · S/600', 'Venta a terceros | —', '2 pedidos entregados · S/2,300']), 'el detalle del vendedor sale al pasar por su fila', await tip());
     await pa.mouse.move(5, 5);
 
-    // ingreso por día: por la fecha en que se ordenó, todos los estados
+    // ingreso por día: por la fecha en que se ordenó; solo entregados mientras no se pida otra cosa
     f = await fichas('dia_tiles');
-    ok(igual(f, [['Pedidos ingresados', '14', 'S/26,377 · 6 períodos · 2.3 por período'], ['Entran el día de cierre', '64%', '9 pedidos el día 14 del período (miércoles)'], ['Entran en los últimos 3 días', '71%', '10 pedidos entre los días 12 y 14'], ['Día con más pedidos', '3', 'mié 11 nov 2026 · día 14 de PB23']]),
-      'ingreso por día: cuenta todos los pedidos (también rechazados y cancelados) de los últimos 6 períodos', f);
-    ok(await n('#chart_dia .vz-hit') === 84 && await n('#chart_dia .vz-sc svg > path') === 8, 'una columna por día (6 períodos × 14) y barra solo donde hubo pedidos', [await n('#chart_dia .vz-hit'), await n('#chart_dia .vz-sc svg > path')]);
-    ok(igual(await lista('#chart_dia .vz-sc text:not(.rot)'), ['2026-PB18', '20 ago-2 set', 'PB19', '3-16 set', 'PB20', '17-30 set', 'PB21', '1-14 oct', 'PB22', '15-28 oct', 'PB23', '29 oct-11 nov']), 'marca cada período con su nombre y sus fechas', await lista('#chart_dia .vz-sc text:not(.rot)'));
-    ok(igual(await lista('#chart_dia .vz-sc text.rot'), ['1', '3', '3', '3']), 'rotula solo el día más alto de cada período', await lista('#chart_dia .vz-sc text.rot'));
-    ok(igual(await lista('#chart_dper .vz-sc text.rot'), ['14%', '14%', '64%']) && await n('#chart_dper .vz-hit') === 14, 'por día del período: el 64 % entra el día 14', await lista('#chart_dper .vz-sc text.rot'));
-    ok(igual(await lista('#chart_dsem .vz-sc text.rot'), ['79%', '14%']) && igual(await lista('#chart_dsem .vz-sc text:not(.rot)'), ['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom']), 'por día de la semana: el 79 % entra un miércoles', await lista('#chart_dsem .vz-sc text.rot'));
-    await pa.selectOption('#diaRango', '2');
+    ok(igual(f, [['Pedidos entregados', '11', 'S/22,977 · 6 períodos · 1.8 por período'], ['Entran el día de cierre', '64%', '7 pedidos · S/9,977 el día 14 del período (miércoles)'], ['Entran en los últimos 3 días', '73%', '8 pedidos · S/13,977 entre los días 12 y 14'], ['Día con más pedidos', '3', 'mié 28 oct 2026 · día 14 de PB22']]),
+      'ingreso por día: por defecto cuenta solo los entregados de los últimos 6 períodos', f);
+    ok((await t('#dia_sub')) === 'por la fecha en que se ordenó · solo entregados' && (await pa.inputValue('#diaQue')) === 'ent' && (await elegido('dia_medida')) === 'n', 'y lo dice', await t('#dia_sub'));
+    ok(await n('#chart_dia .vz-hit') === 84 && await n('#chart_dia .vz-sc svg > path') === 7, 'una columna por día (6 períodos × 14) y barra solo donde hubo pedidos entregados', [await n('#chart_dia .vz-hit'), await n('#chart_dia .vz-sc svg > path')]);
+    ok(igual(await lista('#chart_dia .vz-sc text:not(.rot)'), ['2026-PB18', '20 ago-2 set', 'PB19', '3-16 set', 'PB20', '17-30 set', 'PB21', '1-14 oct', 'PB22', '15-28 oct', 'PB23', '29 oct-11 nov']), 'marca cada período con su nombre y sus fechas (el rango no cambia al quitar los rechazados)', await lista('#chart_dia .vz-sc text:not(.rot)'));
+    ok(igual(await lista('#chart_dia .vz-sc text.rot'), ['2', '3', '2']), 'rotula solo el día más alto de cada período', await lista('#chart_dia .vz-sc text.rot'));
+    ok(igual(await lista('#chart_dper .vz-sc text.rot'), ['18%', '64%']) && await n('#chart_dper .vz-hit') === 14 && (await t('#dper_sub')) === '% de los pedidos · 1 = jueves, 14 = miércoles de cierre', 'por día del período: el 64 % de los entregados entró el día 14', await lista('#chart_dper .vz-sc text.rot'));
+    ok(igual(await lista('#chart_dsem .vz-sc text.rot'), ['82%']) && igual(await lista('#chart_dsem .vz-sc text:not(.rot)'), ['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom']), 'por día de la semana: el 82 % entró un miércoles', await lista('#chart_dsem .vz-sc text.rot'));
+
+    // todos los pedidos: entran también rechazados, cancelados y en proceso
+    await pa.selectOption('#diaQue', 'todos');
     f = await fichas('dia_tiles');
-    ok(await n('#chart_dia .vz-hit') === 28 && igual(f.map((x) => x[1] + ' ' + x[2]), ['9 S/20,026 · 2 períodos · 4.5 por período', '67% 6 pedidos el día 14 del período (miércoles)', '78% 7 pedidos entre los días 12 y 14', '3 mié 11 nov 2026 · día 14 de PB23']), 'el rango cambia el gráfico y las cifras a la vez', f);
+    ok(igual(f, [['Pedidos ingresados', '14', 'S/26,377 · 6 períodos · 2.3 por período'], ['Entran el día de cierre', '64%', '9 pedidos · S/11,377 el día 14 del período (miércoles)'], ['Entran en los últimos 3 días', '71%', '10 pedidos · S/15,377 entre los días 12 y 14'], ['Día con más pedidos', '3', 'mié 11 nov 2026 · día 14 de PB23']]),
+      '«Todos los pedidos» suma rechazados y cancelados', f);
+    ok(await n('#chart_dia .vz-sc svg > path') === 8 && igual(await lista('#chart_dia .vz-sc text.rot'), ['1', '3', '3', '3']) && igual(await lista('#chart_dper .vz-sc text.rot'), ['14%', '14%', '64%']) && igual(await lista('#chart_dsem .vz-sc text.rot'), ['79%', '14%']) && /todos los pedidos/.test(await t('#dia_sub')),
+      'y los tres gráficos cambian con él', [await lista('#chart_dia .vz-sc text.rot'), await lista('#chart_dper .vz-sc text.rot'), await lista('#chart_dsem .vz-sc text.rot')]);
+    await sobre('#chart_dia .vz-hit[data-i="83"]');
+    ok(igual(await tip(), ['mié 11 nov 2026 · día 14 de PB23', 'Pedidos ingresados | 3', 'Monto | S/4,726', 'Entregados | 2', 'Rechazados o cancelados | 1', 'Autocompras | 2']), 'con todos, el día dice cuántos se entregaron y cuántos se rechazaron o cancelaron', await tip());
+    await pa.mouse.move(5, 5);
+
+    // por monto
+    await pa.selectOption('#diaQue', 'ent'); await pa.click('#dia_medida button[data-v="monto"]');
+    f = await fichas('dia_tiles');
+    ok(igual(f, [['Monto entregado', 'S/22,977', '11 pedidos · 6 períodos · S/3,829 por período'], ['Entra el día de cierre', '43%', '7 pedidos · S/9,977 el día 14 del período (miércoles)'], ['Entra en los últimos 3 días', '61%', '8 pedidos · S/13,977 entre los días 12 y 14'], ['Día con más monto', 'S/5,000', 'mié 4 nov 2026 · día 7 de PB23']]),
+      '«Monto» mide el ingreso en soles entregados', f);
+    ok(igual(await eje('chart_dia'), ['0', 'S/2K', 'S/4K', 'S/6K']) && igual(await lista('#chart_dia .vz-sc text.rot'), ['S/2.9K', 'S/4K', 'S/5K']) && igual(await lista('#chart_dper .vz-sc text.rot'), ['35%', '17%', '43%']) && igual(await lista('#chart_dsem .vz-sc text.rot'), ['17%', '78%']) && (await t('#dper_sub')) === '% del monto · 1 = jueves, 14 = miércoles de cierre',
+      'y los gráficos pasan a soles y a % del monto', [await eje('chart_dia'), await lista('#chart_dia .vz-sc text.rot'), await lista('#chart_dper .vz-sc text.rot'), await lista('#chart_dsem .vz-sc text.rot')]);
+    await sobre('#chart_dia .vz-hit[data-i="83"]');
+    ok(igual(await tip(), ['mié 11 nov 2026 · día 14 de PB23', 'Monto entregado | S/3,826', 'Pedidos | 2', 'Autocompras | 2']), 'por monto, el día lleva primero los soles', await tip());
+    await pa.mouse.move(5, 5);
+
+    // rango
+    await pa.click('#dia_medida button[data-v="n"]'); await pa.selectOption('#diaRango', '2');
+    f = await fichas('dia_tiles');
+    ok(await n('#chart_dia .vz-hit') === 28 && igual(f.map((x) => x[1] + ' ' + x[2]), ['8 S/19,126 · 2 períodos · 4.0 por período', '63% 5 pedidos · S/7,126 el día 14 del período (miércoles)', '75% 6 pedidos · S/11,126 entre los días 12 y 14', '3 mié 28 oct 2026 · día 14 de PB22']), 'el rango cambia el gráfico y las cifras a la vez', f);
     await sobre('#chart_dia .vz-hit[data-i="13"]');
-    ok(igual(await tip(), ['mié 28 oct 2026 · día 14 de PB22', 'Pedidos ingresados | 3', 'Monto | S/3,300', 'Entregados | 3', 'Rechazados o cancelados | 0', 'Autocompras | 1']), 'el día sale por la fecha en que se ordenó: el pedido del 28/10 cuenta en el PB22 aunque comisionó en el PB23', await tip());
+    ok(igual(await tip(), ['mié 28 oct 2026 · día 14 de PB22', 'Pedidos entregados | 3', 'Monto | S/3,300', 'Autocompras | 1']), 'el día sale por la fecha en que se ordenó: el pedido del 28/10 cuenta en el PB22 aunque comisionó en el PB23', await tip());
     await sobre('#chart_dia .vz-hit[data-i="0"]');
-    ok(igual(await tip(), ['jue 15 oct 2026 · día 1 de PB22', 'Pedidos ingresados | 0']), 'un día sin pedidos lo dice', await tip());
+    ok(igual(await tip(), ['jue 15 oct 2026 · día 1 de PB22', 'Pedidos entregados | 0']), 'un día sin pedidos lo dice', await tip());
     await pa.mouse.move(5, 5);
     await pa.click('#card_dia button:has-text("Ver tabla")');
-    ok(await n('#dia_tabla table') === 3 && igual(await lista('#dia_tabla .prev:last-child tbody tr:first-child td'), ['11/11/2026', 'mié', '2026-PB23', '14', '3', '33%', 'S/4,726', '2', '1', '2']) && await n('#dia_tabla .prev:last-child tbody tr') === 5,
+    ok(await n('#dia_tabla table') === 3 && igual(await lista('#dia_tabla .prev:last-child thead th'), ['Fecha', 'Día', 'Período', 'Día del período', 'Pedidos', 'Monto', '% de los pedidos', 'Autocompras']) && igual(await lista('#dia_tabla .prev:last-child tbody tr:first-child td'), ['11/11/2026', 'mié', '2026-PB23', '14', '2', 'S/3,826', '25%', '2']) && await n('#dia_tabla .prev:last-child tbody tr') === 5,
       'la tabla del ingreso trae el día del período, el día de la semana y cada día con pedidos', await lista('#dia_tabla .prev:last-child tbody tr:first-child td'));
-    ok(igual(await lista('#dia_tabla .vz-cap:first-child + .prev tbody tr:last-child td'), ['14', 'mié', '6', '67%', 'S/8,026', '5', '1', '3']), 'y el día 14 con sus entregados, rechazados y autocompras', await lista('#dia_tabla .vz-cap:first-child + .prev tbody tr:last-child td'));
+    ok(igual(await lista('#dia_tabla .vz-cap:first-child + .prev tbody tr:last-child td'), ['14', 'mié', '5', 'S/7,126', '63%', '3']), 'y el día 14 con sus pedidos, su monto y sus autocompras', await lista('#dia_tabla .vz-cap:first-child + .prev tbody tr:last-child td'));
     await pa.selectOption('#diaRango', '0');
-    ok(await n('#chart_dia .vz-hit') === 84 && (await fichas('dia_tiles'))[0][1] === '14', '«Todo» va desde el primer pedido');
+    ok(await n('#chart_dia .vz-hit') === 84 && (await fichas('dia_tiles'))[0][1] === '11', '«Todo» va desde el primer pedido');
     const sinDesborde = (p) => p.evaluate(() => ({ doc: document.documentElement.scrollWidth, vp: window.innerWidth }));
     let w = await sinDesborde(pa); ok(w.doc <= w.vp + 1, 'Análisis no se desborda a lo ancho', w);
-    await pa.selectOption('#diaRango', '6'); await pa.click('#card_dia button:has-text("Ocultar tabla")');
+
+    // lo elegido se recuerda al volver a entrar
+    await pa.selectOption('#diaQue', 'todos');
+    await pa.reload(); await listo(pa);
+    ok((await elegido('mix_medida')) === 'n' && igual(await fichas('mix_tiles'), POR_PEDIDOS) && (await pa.inputValue('#diaQue')) === 'todos' && (await pa.inputValue('#diaRango')) === '0' && (await fichas('dia_tiles'))[0].slice(0, 2).join(' ') === 'Pedidos ingresados 14',
+      'al volver a entrar se mantiene lo elegido (por pedidos, todos los pedidos, todo el rango)', [await elegido('mix_medida'), await pa.inputValue('#diaQue'), await pa.inputValue('#diaRango')]);
+    await pa.evaluate(() => localStorage.setItem('rw_ped_an', '{"medida":"otra","diaRango":"99","vista":"abs"}')); await pa.reload(); await listo(pa);
+    ok((await elegido('mix_medida')) === 'monto' && (await elegido('mix_vista')) === 'abs' && (await pa.inputValue('#diaRango')) === '6', 'una preferencia guardada que no vale se ignora', [await elegido('mix_medida'), await elegido('mix_vista'), await pa.inputValue('#diaRango')]);
+    await pa.click('#mix_vista button[data-v="pct"]');
     await pa.locator('#card_dia').scrollIntoViewIfNeeded(); await foto('analisis-ingreso', pa);
     await ctxA.close();
 
     // celular: entra en la pantalla y el día por día se desliza, empezando por lo más reciente
     const { ctx: ctxB, page: pb } = await entrar({ width: 390, height: 844 });
     w = await sinDesborde(pb); ok(w.doc <= w.vp + 1, 'celular: Análisis no se desborda a lo ancho', w);
+    const cajas = await pb.evaluate(() => ['#mix_medida', '#mix_vista', '#diaRango', '#diaQue', '#dia_medida'].map((s) => { const r = document.querySelector(s).getBoundingClientRect(); return r.left >= 0 && r.right <= window.innerWidth && r.width > 40; }));
+    ok(cajas.every(Boolean), 'celular: los controles de las dos tarjetas caben en la pantalla', cajas);
     const sc = await pb.evaluate(() => { const e = document.querySelector('#chart_dia .vz-sc'); return { ancho: e.clientWidth, total: e.scrollWidth, pos: Math.round(e.scrollLeft) }; });
     ok(sc.total > sc.ancho && sc.pos >= sc.total - sc.ancho - 1, 'celular: el día por día se desliza y arranca en lo más reciente', sc);
     ok(igual(await pb.evaluate(() => [...document.querySelectorAll('#chart_dper .vz-sc text.t2')].map((e) => e.textContent).join(' ')), 'ju vi sá do lu ma mi ju vi sá do lu ma mi'), 'celular: caben los 14 días del período con su día de la semana');
@@ -760,20 +810,22 @@ async function main() {
   async function analisisReal() {
     const ver = async (p, pref) => {
       const tx = (sel) => p.evaluate((s) => [...document.querySelectorAll(s)].map((e) => e.textContent.replace(/\s+/g, ' ').trim()), sel);
-      console.log('  ' + pref + ' autocompras:', (await tx('#mix_sub'))[0], '|', (await tx('#mix_tiles > div')).join(' | '));
+      const fichas = (id) => p.evaluate((i) => [...document.querySelectorAll('#' + i + ' > div')].map((d) => d.querySelector('.k').textContent.trim() + ': ' + d.querySelector('.v').textContent.trim() + ' (' + d.querySelector('.hint').textContent.replace(/\s+/g, ' ').trim() + ')').join(' | '), id);
+      for (const md of ['n', 'monto']) { await p.click('#mix_medida button[data-v="' + md + '"]'); await esperar(60); console.log('  ' + pref + ' autocompras por ' + md + ':', (await tx('#mix_sub'))[0], '|', await fichas('mix_tiles')); }
       console.log('  ' + pref + ' asesores:', (await tx('#mix_ases'))[0]);
-      for (const r of ['2', '6', '26', '0']) { await p.selectOption('#diaRango', r); await esperar(80); console.log('  ' + pref + ' ingreso (' + r + '):', (await tx('#dia_tiles > div')).join(' | ')); }
-      await p.selectOption('#diaRango', '6'); await esperar(80);
+      for (const q of ['todos', 'ent']) for (const md of ['monto', 'n']) for (const r of ['0', '6']) { await p.selectOption('#diaQue', q); await p.click('#dia_medida button[data-v="' + md + '"]'); await p.selectOption('#diaRango', r); await esperar(80);
+        console.log('  ' + pref + ' ingreso (' + q + ', ' + md + ', ' + r + '):', await fichas('dia_tiles')); }
       if (process.env.CAPTURAS) { for (const id of ['card_mix', 'card_dia']) await p.locator('#' + id).screenshot({ path: path.join(process.env.CAPTURAS, 'real-' + id + '-' + pref + '.png') });
         for (const [id, nombre] of [['chart_vendedor', 'vendedores'], ['chart_distrito', 'distritos'], ['chart_tipopago', 'pago'], ['chart_productos', 'productos']]) await p.locator('.analytics-card:has(#' + id + ')').screenshot({ path: path.join(process.env.CAPTURAS, 'real-' + nombre + '-' + pref + '.png') }); }
       const w = await p.evaluate(() => ({ doc: document.documentElement.scrollWidth, vp: window.innerWidth })); ok(w.doc <= w.vp + 1, pref + ': Análisis no se desborda con datos reales', w);
     };
     await page.click('.tab[data-tab="tab-analytics"]'); await esperar(200);
     ok(await cuenta('#chart_mix .vz-hit') === 14 && await cuenta('#chart_dia .vz-hit') === 84, 'Análisis pinta 14 períodos y 6 períodos de días', [await cuenta('#chart_mix .vz-hit'), await cuenta('#chart_dia .vz-hit')]);
-    await ver(page, 'escritorio');
-    if (process.env.CAPTURAS) { await page.click('#mix_modo button[data-m="n"]'); await page.locator('#card_mix').screenshot({ path: path.join(process.env.CAPTURAS, 'real-card_mix-pedidos.png') });
-      await page.click('#mix_modo button[data-m="monto"]'); await page.locator('#card_mix').screenshot({ path: path.join(process.env.CAPTURAS, 'real-card_mix-monto.png') }); await page.click('#mix_modo button[data-m="pct"]');
-      await page.selectOption('#diaRango', '0'); await esperar(100); await page.locator('#card_dia').screenshot({ path: path.join(process.env.CAPTURAS, 'real-card_dia-todo.png') }); await page.selectOption('#diaRango', '6');
+    await ver(page, 'escritorio');      // deja: por monto, solo entregados, en pedidos, 6 períodos
+    if (process.env.CAPTURAS) { const captura = (nombre) => page.locator('#card_' + nombre.split('-')[0]).screenshot({ path: path.join(process.env.CAPTURAS, 'real-card_' + nombre + '.png') });
+      await page.click('#mix_vista button[data-v="abs"]'); await captura('mix-soles'); await page.click('#mix_medida button[data-v="n"]'); await page.click('#mix_vista button[data-v="pct"]'); await captura('mix-pedidos'); await page.click('#mix_medida button[data-v="monto"]');
+      await page.click('#dia_medida button[data-v="monto"]'); await esperar(80); await captura('dia-monto'); await page.click('#dia_medida button[data-v="n"]');
+      await page.selectOption('#diaQue', 'todos'); await page.selectOption('#diaRango', '0'); await esperar(100); await captura('dia-todos-todo'); await page.selectOption('#diaRango', '6'); await page.selectOption('#diaQue', 'ent');
       for (const [sel, nombre] of [['#chart_mix .vz-hit >> nth=12', 'real-tooltip-periodo'], ['#chart_dia .vz-hit >> nth=55', 'real-tooltip-dia'], ['#chart_vendedor .bar-row >> nth=2', 'real-tooltip-vendedor']]) {
         await page.locator(sel).scrollIntoViewIfNeeded(); await esperar(120); await page.hover(sel); await esperar(60); await page.screenshot({ path: path.join(process.env.CAPTURAS, nombre + '.png') }); }
       await page.mouse.move(5, 5); }

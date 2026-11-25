@@ -38,22 +38,28 @@ con cada uno y qué sigue.
 - **Análisis** (pedidos entregados, salvo donde se indique): tendencia por
   período, último período contra el anterior, distritos, crédito y contado,
   productos y:
-  - **Autocompras vs. ventas a terceros**: qué parte de los pedidos y del monto
-    es *autocompra* (precio de asesor: la marca `autocompra` de la base),
-    *compra propia a precio regular* (el asesor figura como su propio cliente)
-    y *venta a terceros*; en total, por período (el del reporte; se puede ver
-    en %, en pedidos o en soles) y por vendedor. Dice además cuántos asesores
-    vendieron a terceros y cuántos solo se compraron a sí mismos.
-  - **Ingreso de pedidos por día**: todos los pedidos (también rechazados y
-    cancelados) por la fecha en que se ordenaron: día por día con los períodos
-    marcados, por día del período (1 = jueves, 14 = miércoles de cierre) y por
-    día de la semana. Rango: últimos 2, 6, 13 o 26 períodos, o todo.
+  - **Autocompras vs. ventas a terceros**: qué parte del **monto entregado** (o
+    de los pedidos: se elige arriba de la tarjeta) es *autocompra* (precio de
+    asesor: la marca `autocompra` de la base), *compra propia a precio regular*
+    (el asesor figura como su propio cliente) y *venta a terceros*. Solo cuentan
+    los pedidos entregados: no entran rechazados, cancelados ni los que siguen
+    en proceso. En total, por período (el del reporte; en % o en total) y por
+    vendedor. Dice además cuántos asesores vendieron a terceros y cuántos solo
+    se compraron a sí mismos.
+  - **Ingreso de pedidos por día**, por la fecha en que se ordenaron: día por
+    día con los períodos marcados, por día del período (1 = jueves, 14 =
+    miércoles de cierre) y por día de la semana. Por defecto, solo entregados y
+    en cantidad de pedidos; se puede pasar a todos los pedidos (con rechazados,
+    cancelados y en proceso) y a monto. Rango: últimos 2, 6, 13 o 26 períodos,
+    o todo.
 
-  Cada gráfico muestra el detalle al pasar el cursor o tocar y tiene «Ver
-  tabla». El calendario de períodos (14 días desde el jueves 25/12/2025 =
-  2026-PB01) es la misma cuenta que `periodo_indice()` en la base. El período
-  de un pedido es el de su reporte y puede ser el siguiente al de su fecha: por
-  eso el conteo por día no siempre calza con el conteo por período.
+  El monto es el total del pedido (el mismo de «Ventas entregadas»). Cada
+  gráfico muestra el detalle al pasar el cursor o tocar y tiene «Ver tabla»; lo
+  que se elige en estas tarjetas se recuerda en el dispositivo. El calendario
+  de períodos (14 días desde el jueves 25/12/2025 = 2026-PB01) es la misma
+  cuenta que `periodo_indice()` en la base. El período de un pedido es el de su
+  reporte y puede ser el siguiente al de su fecha: por eso el conteo por día no
+  siempre calza con el conteo por período.
 - **Cuotas** y **Reglas** (las reglas que generan todo, leídas de
   `crm_reglas`).
 
