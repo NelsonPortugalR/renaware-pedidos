@@ -4,7 +4,8 @@
 // RECHAZA cualquier escritura directa a una tabla que deba entrar por función: si la página lo intenta, falla.
 // Uso: NODE_PATH=$(npm root -g) node pruebas/prueba.js      (necesita playwright)
 // Sin internet hacen falta las dos librerías de la página:  npm i --no-save --prefix pruebas @supabase/supabase-js@2 xlsx@0.18.5
-// Capturas: CAPTURAS=/ruta/carpeta   ·   Con datos reales (no se guardan en el repo): DATOS=/ruta con pedidos.json y acciones.json
+// Capturas: CAPTURAS=/ruta/carpeta (ESCALA=2 para verlas en pantalla)   ·   Con datos reales (no se guardan en el repo): DATOS=/ruta con pedidos.json
+//   y acciones.json; si solo está pedidos.json, mira solo Análisis
 'use strict';
 const http = require('http');
 const fs = require('fs');
@@ -298,7 +299,7 @@ async function main() {
   const nav = await chromium.launch();
   const errores = [];
   async function abrir(vp, base) {
-    const ctx = await nav.newContext({ viewport: vp, timezoneId: 'America/Lima', locale: 'es-PE', deviceScaleFactor: 1 });
+    const ctx = await nav.newContext({ viewport: vp, timezoneId: 'America/Lima', locale: 'es-PE', deviceScaleFactor: +process.env.ESCALA || 1 });
     await ctx.route(SB + '/**', (r) => atender(r, base || db));
     await ctx.route('https://cdn.jsdelivr.net/**', (r) => LIB_SB ? r.fulfill({ status: 200, contentType: 'application/javascript', body: LIB_SB }) : r.continue());
     await ctx.route('https://cdnjs.cloudflare.com/**', (r) => LIB_XLSX ? r.fulfill({ status: 200, contentType: 'application/javascript', body: LIB_XLSX }) : r.continue());
