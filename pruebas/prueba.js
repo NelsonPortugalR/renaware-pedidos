@@ -83,6 +83,30 @@ function datosDePrueba() {
   const post = {}; post[C(7)] = { cliente_id: C(7), asesor_seguimiento: NELSON, excluido_hasta: null, excluido_motivo: null, referencia: null, nota: null, en_mano: {}, actualizado: '2026-11-18T00:00:00+00:00' };
   return { pedidos, ciclos, unos, post };
 }
+// Para la pestaña Análisis: 14 pedidos en 4 períodos, con las tres formas de compra y fechas escogidas.
+// Entregados: 4 autocompras (S/ 6,376.90), 1 compra propia a precio regular (S/ 600) y 6 ventas a terceros (S/ 16,000).
+function datosAnalisis() {
+  const RITA = 'Rita Solo Compra', A = (n) => 'a0000000-0000-4000-8000-0000000000' + String(n).padStart(2, '0');
+  const P21 = '2026-PB21 (01-14 oct)', P22 = '2026-PB22 (15-28 oct)', P23 = '2026-PB23 (29 oct-11 nov)';
+  const f = (n, fec, per, vend, cli, total, o) => pedido(9100000 + n, Object.assign({ fecha_ordenado: fec, periodo: per, vendedor: vend, cliente: cli, cliente_id: A(n), celular: '9591000' + String(n).padStart(2, '0'), total, productos: 'SET RENA LITE 04 UNIDADES (x1 S/' + total + ')', estatus: 'ENTREGADA' }, o));
+  const pedidos = [
+    f(1, '01/10/2026', P21, MIRIAM, 'Cliente Uno Tercero', 1000),                                 // jueves, día 1
+    f(2, '14/10/2026', P21, MIRIAM, 'Cliente Dos Tercero', 2000),                                 // miércoles de cierre
+    f(3, '14/10/2026', P21, OLGA, OLGA, 850.5, { autocompra: true }),
+    f(4, '14/10/2026', P21, OLGA, 'Cliente Rechazado', 500, { estatus: 'RECHAZADA' }),
+    f(5, '21/10/2026', P22, MIRIAM, 'Cliente Tres Tercero', 3000),                                // miércoles, día 7
+    f(6, '28/10/2026', P22, RITA, RITA, 1700.4, { autocompra: true }),
+    f(7, '28/10/2026', P22, RITA, 'RITA  SOLO COMPRA', 600),                                      // ella misma, a precio regular
+    f(8, '27/10/2026', P22, OLGA, 'Cliente Cuatro Tercero', 4000),                                // martes, día 13
+    f(9, '11/11/2026', P23, MIRIAM, MIRIAM, 2550.75, { autocompra: true }),
+    f(10, '11/11/2026', P23, OLGA, OLGA, 1275.25, { autocompra: true }),
+    f(11, '11/11/2026', P23, NELSON, 'Cliente Cancelado', 900, { estatus: 'CANCELADO' }),
+    f(12, '04/11/2026', P23, NELSON, 'Cliente Cinco Tercero', 5000),
+    f(13, '28/10/2026', P23, NELSON, 'Cliente Seis Tercero', 1000),                               // se ordenó en el PB22 y comisionó en el PB23
+    f(14, '20/08/2026', '2026-PB18 (20 ago-02 sep)', NELSON, 'Cliente Siete Rechazado', 2000, { estatus: 'RECHAZADA' })
+  ];
+  return { pedidos, ciclos: [], unos: [], post: {} };
+}
 const REGLAS = [
   { clave: 'gestiones', tipo_regla: 'ajuste', nombre: 'Gestiones de post venta', aplica_a: 'Ciclos de filtros y botella', cuando: 'Cada llamada, mensaje, video, visita o aviso al asesor', accion: 'Lo que llega al cliente o a su asesor cuenta como avisado 30 días.', orden: 6, activo: true },
   { clave: 'bienvenida', tipo_regla: 'una_vez', nombre: 'Al recibir su pedido', aplica_a: 'Todo pedido entregado', cuando: 'El día que recibe', accion: 'Video de lavado', dias: 0, orden: 10, activo: true },
@@ -94,18 +118,18 @@ const REGLAS = [
 const ASESORES = [{ nombre: MIRIAM, celular: '958000001' }, { nombre: NELSON, celular: '958000003' }, { nombre: OLGA, celular: '958000002' }, { nombre: 'Sin Celular Asesor', celular: null }];
 
 /* ---------------- Supabase falso ---------------- */
-function crearBase() {
+function crearBase(datos) {
   const db = { llamadas: [], directas: [], claves: [], idG: 100, idA: 100, idS: 1, idK: 1, real: false };
-  if (process.env.DATOS) {       // foto de la base real: se usa tal cual y solo se recalcula el ciclo que se toca
+  if (process.env.DATOS && !datos) {       // foto de la base real: se usa tal cual y solo se recalcula el ciclo que se toca
     db.real = true;
     db.pedidos = JSON.parse(fs.readFileSync(path.join(process.env.DATOS, 'pedidos.json'), 'utf8'));
-    const acc = JSON.parse(fs.readFileSync(path.join(process.env.DATOS, 'acciones.json'), 'utf8'));
+    const fAcc = path.join(process.env.DATOS, 'acciones.json'), acc = fs.existsSync(fAcc) ? JSON.parse(fs.readFileSync(fAcc, 'utf8')) : [];      // sin acciones.json solo se mira Análisis
     db.unosJson = acc.filter((a) => a.clase !== 'ciclo');
     db.ciclos = acc.filter((a) => a.clase === 'ciclo').map((a) => Object.assign(a, { seg: a.gestiones || [], _json: true }));
     db.post = {};
     db.ciclos.forEach((a) => { if (a.asesor_fijado || a.nota || a.referencia || a.excluido_hasta) db.post[a.cliente_id] = { cliente_id: a.cliente_id, asesor_seguimiento: a.asesor_fijado, excluido_hasta: a.excluido_hasta, excluido_motivo: a.excluido_motivo, referencia: a.referencia, nota: a.nota, en_mano: {}, actualizado: AHORA.toISOString() }; });
   } else {
-    Object.assign(db, datosDePrueba());
+    Object.assign(db, datos || datosDePrueba());
     db.unosJson = db.unos.map((u) => { const p = db.pedidos.find((x) => x.n_orden === u.n);
       return { clave: u.n + '::' + u.tipo, clase: 'uno', tipo: u.tipo, cliente_id: p.cliente_id, cliente: p.cliente, celular: p.celular, ciudad: p.ciudad, vendedor: p.vendedor, autocompra: false, n_orden: u.n, ordenes: [u.n], periodo: p.periodo,
         flags: {}, base: u.vence, vence: u.vence, dias: dias(HOY, u.vence), estado: u.estado, hecho_el: u.hecho_el || null, gestiones: [], vendedor_pedido: p.vendedor, compra_propia: false }; });
@@ -273,9 +297,9 @@ async function main() {
   const db = crearBase();
   const nav = await chromium.launch();
   const errores = [];
-  async function abrir(vp) {
+  async function abrir(vp, base) {
     const ctx = await nav.newContext({ viewport: vp, timezoneId: 'America/Lima', locale: 'es-PE', deviceScaleFactor: 1 });
-    await ctx.route(SB + '/**', (r) => atender(r, db));
+    await ctx.route(SB + '/**', (r) => atender(r, base || db));
     await ctx.route('https://cdn.jsdelivr.net/**', (r) => LIB_SB ? r.fulfill({ status: 200, contentType: 'application/javascript', body: LIB_SB }) : r.continue());
     await ctx.route('https://cdnjs.cloudflare.com/**', (r) => LIB_XLSX ? r.fulfill({ status: 200, contentType: 'application/javascript', body: LIB_XLSX }) : r.continue());
     await ctx.route(/renaware-bienvenida\.pages\.dev|wa\.me/, (r) => r.fulfill({ status: 200, contentType: 'text/html', body: '<p>fuera</p>' }));
@@ -589,11 +613,119 @@ async function main() {
   await foto('gestion-celular', movil);
   await ctxM.close();
 
+  /* ---- 13. Análisis: autocompras vs. terceros e ingreso de pedidos por día ---- */
+  console.log('13. Análisis');
+  {
+    const dbA = crearBase(datosAnalisis());
+    const entrar = async (vp) => { const o = await abrir(vp, dbA);
+      await o.ctx.addInitScript((s) => { localStorage.setItem('sb-kiexpdaaoegbtesqmaff-auth-token', JSON.stringify(s)); localStorage.setItem('rw_ped_tab', 'tab-analytics'); }, sesionFalsa());
+      await o.page.goto(URL0); await o.page.waitForFunction(() => document.getElementById('authGate').style.display === 'none' && document.querySelectorAll('#chart_dia .vz-hit').length > 0, null, { timeout: 15000 }); return o; };
+    const { ctx: ctxA, page: pa } = await entrar({ width: 1280, height: 900 });
+    const t = (sel) => pa.evaluate((s) => { const e = document.querySelector(s); return e ? e.textContent.replace(/\s+/g, ' ').trim() : null; }, sel);
+    const n = (sel) => pa.evaluate((s) => document.querySelectorAll(s).length, sel);
+    const lista = (sel) => pa.evaluate((s) => [...document.querySelectorAll(s)].map((e) => e.textContent.replace(/\s+/g, ' ').trim()), sel);
+    const fichas = (id) => pa.evaluate((i) => [...document.querySelectorAll('#' + i + ' > div')].map((d) => [d.querySelector('.k').textContent.trim(), d.querySelector('.v').textContent.trim(), d.querySelector('.hint').textContent.replace(/\s+/g, ' ').trim()]), id);
+    const tip = () => pa.evaluate(() => { const e = document.getElementById('vzTip'); return e && e.style.display === 'block' ? [...e.children].map((c) => [...c.children].length ? [...c.children].map((x) => x.textContent).filter(Boolean).join(' | ') : c.textContent) : null; });
+    const igual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+    const sobre = async (sel, p) => { const l = (p || pa).locator(sel); await l.scrollIntoViewIfNeeded(); await esperar(80); await l.hover(); };      // el tooltip se quita al deslizar: primero se trae a la vista
+
+    const cal = await pa.evaluate(() => ['2025-05-15', '2025-12-24', '2025-12-25', '2026-10-28', '2026-10-29', '2026-11-11', '2026-12-24'].map((f) => { const i = pbIndice(parseDate(f)); return pbNombre(i) + ' ' + pbRango(i); }));
+    ok(igual(cal, ['2025-PB11 15-28 may', '2025-PB26 11-24 dic', '2026-PB01 25 dic-7 ene', '2026-PB22 15-28 oct', '2026-PB23 29 oct-11 nov', '2026-PB23 29 oct-11 nov', '2027-PB01 24 dic-6 ene']), 'el calendario de períodos (14 días desde el 25/12/2025) da el período de cada fecha', cal);
+
+    // resumen: tres formas de compra, sobre los entregados
+    ok((await t('#mix_sub')) === '11 pedidos entregados', 'autocompras: cuenta solo los entregados', await t('#mix_sub'));
+    let f = await fichas('mix_tiles');
+    ok(igual(f, [['Autocompra (precio de asesor)', '36%', '4 pedidos · S/6,377 (28% del monto)'], ['Compra propia a precio regular', '9%', '1 pedido · S/600 (2% del monto)'], ['Venta a terceros', '55%', '6 pedidos · S/16,000 (70% del monto)']]),
+      'separa autocompra, compra propia a precio regular (el asesor es su propio cliente, aunque el nombre venga en mayúsculas) y venta a terceros; los % suman 100', f);
+    ok(igual(await pa.evaluate(() => [...document.querySelectorAll('#mix_seg i')].map((e) => getComputedStyle(e).flexGrow + ' ' + getComputedStyle(e).backgroundColor)), ['4 rgb(244, 114, 48)', '1 rgb(0, 184, 148)', '6 rgb(37, 125, 224)']), 'la barra partida va en proporción a los pedidos y con el color de cada forma de compra');
+    ok(/Autocompra \(precio de asesor\) 36% · Compra propia a precio regular 9% · Venta a terceros 55%/.test(await pa.getAttribute('#mix_seg', 'aria-label')), 'la barra partida se describe con texto');
+    ok((await t('#mix_ases')) === 'De 4 asesores con pedidos entregados, 3 vendieron a terceros y 1 solo compró para sí.', 'dice cuántos asesores vendieron a terceros y cuántos solo se compraron a sí mismos', await t('#mix_ases'));
+    ok(igual(await lista('#mix_leg span'), ['Autocompra (precio de asesor)', 'Compra propia a precio regular', 'Venta a terceros']), 'el gráfico por período lleva leyenda');
+
+    // por período (el del reporte): % de pedidos, cantidad y monto
+    ok(await n('#chart_mix .vz-hit') === 3 && igual(await lista('#chart_mix .vz-sc text:not(.rot)'), ['PB21', '01-14 oct', 'PB22', '15-28 oct', 'PB23', '29 oct-11 nov']), 'por período: una columna por período con entregados', await lista('#chart_mix .vz-sc text'));
+    ok(igual(await lista('#chart_mix .vz-wrap > svg text'), ['0%', '25%', '50%', '75%', '100%']), 'por defecto mide el % de los pedidos del período');
+    const marcas = () => pa.evaluate(() => [...document.querySelectorAll('#chart_mix .vz-sc svg > path, #chart_mix .vz-sc svg > rect:not(.vz-hit)')].map((e) => { const b = e.getBBox(); return getComputedStyle(e).fill + ' ' + Math.round(b.height); }));
+    let m = await marcas();
+    ok(igual(m, ['rgb(244, 114, 48) 53', 'rgb(37, 125, 224) 105', 'rgb(244, 114, 48) 40', 'rgb(0, 184, 148) 38', 'rgb(37, 125, 224) 78', 'rgb(244, 114, 48) 80', 'rgb(37, 125, 224) 78']),
+      'apila autocompra abajo y terceros arriba, con 2 px de aire entre tramos; el pedido que comisionó en el PB23 cuenta en el PB23', m);
+    await sobre('#chart_mix .vz-hit >> nth=1');
+    ok(igual(await tip(), ['2026-PB22 (15-28 oct)', 'Autocompra (precio de asesor) | 1 · 25%', 'Compra propia a precio regular | 1 · 25%', 'Venta a terceros | 2 · 50%', '4 pedidos entregados · S/9,300']), 'al pasar por una columna sale el detalle de las tres formas de compra', await tip());
+    await pa.mouse.move(5, 5); ok((await tip()) === null, 'y se quita al salir');
+    await pa.focus('#chart_mix .vz-hit >> nth=2');
+    ok(((await tip()) || [])[0] === '2026-PB23 (29 oct-11 nov)' && /Autocompra \(precio de asesor\) 2 · 50%/.test(await pa.getAttribute('#chart_mix .vz-hit >> nth=2', 'aria-label')), 'con el teclado sale lo mismo y la columna se describe con texto', await tip());
+    await pa.evaluate(() => document.activeElement.blur());
+    await pa.click('#mix_modo button[data-m="n"]');
+    ok(igual(await lista('#chart_mix .vz-wrap > svg text'), ['0', '1', '2', '3', '4']) && (await pa.getAttribute('#mix_modo button[data-m="n"]', 'aria-pressed')) === 'true', '«Pedidos» pone el eje en cantidad de pedidos', await lista('#chart_mix .vz-wrap > svg text'));
+    await pa.click('#mix_modo button[data-m="monto"]');
+    ok(igual(await lista('#chart_mix .vz-wrap > svg text'), ['0', 'S/5K', 'S/10K']), '«Monto S/» pone el eje en soles', await lista('#chart_mix .vz-wrap > svg text'));
+    await pa.click('#mix_modo button[data-m="pct"]');
+    ok(!(await pa.isVisible('#mix_tabla')), 'la tabla del gráfico empieza oculta');
+    await pa.click('#card_mix button:has-text("Ver tabla")');
+    ok(await pa.isVisible('#mix_tabla') && igual(await lista('#mix_tabla tbody tr:first-child td'), ['2026-PB23 (29 oct-11 nov)', '4', '2', '50%', '0', '0%', '2', '50%', 'S/3,826', 'S/9,826']) && await n('#mix_tabla tbody tr') === 3,
+      '«Ver tabla» muestra los mismos números, del período más reciente al más antiguo', await lista('#mix_tabla tbody tr:first-child td'));
+    await pa.locator('#card_mix').scrollIntoViewIfNeeded(); await foto('analisis-autocompras', pa);
+
+    // por vendedor: barra partida y orden
+    const vend = () => pa.evaluate(() => [...document.querySelectorAll('#chart_vendedor .bar-row')].map((r) => r.querySelector('.bar-label').textContent + ' ' + r.querySelectorAll('.tres i').length + ' ' + r.querySelector('.bar-val').textContent));
+    ok(igual(await vend(), ['Marta Salas Quiroz 2 S/8,551 · 4', 'Olga Paredes Ticona 2 S/6,126 · 3', 'Nestor Lider Oficina 1 S/6,000 · 2', 'Rita Solo Compra 2 S/2,300 · 2']), 'ventas por vendedor: la barra se parte en las formas de compra', await vend());
+    await pa.selectOption('#vendOrden', 'prop');
+    ok(igual((await vend()).map((x) => x.split(' ')[0]), ['Marta', 'Rita', 'Olga', 'Nestor']), 'se puede ordenar por compras propias', await vend());
+    await pa.selectOption('#vendOrden', 'ter');
+    ok(igual((await vend()).map((x) => x.split(' ')[0]), ['Marta', 'Nestor', 'Olga', 'Rita']), 'y por ventas a terceros', await vend());
+    await sobre('#chart_vendedor .bar-row >> nth=3');
+    ok(igual(await tip(), ['Rita Solo Compra', 'Autocompra (precio de asesor) | 1 pedido · S/1,700', 'Compra propia a precio regular | 1 pedido · S/600', 'Venta a terceros | —', '2 pedidos entregados · S/2,300']), 'el detalle del vendedor sale al pasar por su fila', await tip());
+    await pa.mouse.move(5, 5);
+
+    // ingreso por día: por la fecha en que se ordenó, todos los estados
+    f = await fichas('dia_tiles');
+    ok(igual(f, [['Pedidos ingresados', '14', 'S/26,377 · 6 períodos · 2.3 por período'], ['Entran el día de cierre', '64%', '9 pedidos el día 14 del período (miércoles)'], ['Entran en los últimos 3 días', '71%', '10 pedidos entre los días 12 y 14'], ['Día con más pedidos', '3', 'mié 11 nov 2026 · día 14 de PB23']]),
+      'ingreso por día: cuenta todos los pedidos (también rechazados y cancelados) de los últimos 6 períodos', f);
+    ok(await n('#chart_dia .vz-hit') === 84 && await n('#chart_dia .vz-sc svg > path') === 8, 'una columna por día (6 períodos × 14) y barra solo donde hubo pedidos', [await n('#chart_dia .vz-hit'), await n('#chart_dia .vz-sc svg > path')]);
+    ok(igual(await lista('#chart_dia .vz-sc text:not(.rot)'), ['2026-PB18', '20 ago-2 set', 'PB19', '3-16 set', 'PB20', '17-30 set', 'PB21', '1-14 oct', 'PB22', '15-28 oct', 'PB23', '29 oct-11 nov']), 'marca cada período con su nombre y sus fechas', await lista('#chart_dia .vz-sc text:not(.rot)'));
+    ok(igual(await lista('#chart_dia .vz-sc text.rot'), ['1', '3', '3', '3']), 'rotula solo el día más alto de cada período', await lista('#chart_dia .vz-sc text.rot'));
+    ok(igual(await lista('#chart_dper .vz-sc text.rot'), ['14%', '14%', '64%']) && await n('#chart_dper .vz-hit') === 14, 'por día del período: el 64 % entra el día 14', await lista('#chart_dper .vz-sc text.rot'));
+    ok(igual(await lista('#chart_dsem .vz-sc text.rot'), ['79%', '14%']) && igual(await lista('#chart_dsem .vz-sc text:not(.rot)'), ['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom']), 'por día de la semana: el 79 % entra un miércoles', await lista('#chart_dsem .vz-sc text.rot'));
+    await pa.selectOption('#diaRango', '2');
+    f = await fichas('dia_tiles');
+    ok(await n('#chart_dia .vz-hit') === 28 && igual(f.map((x) => x[1] + ' ' + x[2]), ['9 S/20,026 · 2 períodos · 4.5 por período', '67% 6 pedidos el día 14 del período (miércoles)', '78% 7 pedidos entre los días 12 y 14', '3 mié 11 nov 2026 · día 14 de PB23']), 'el rango cambia el gráfico y las cifras a la vez', f);
+    await sobre('#chart_dia .vz-hit[data-i="13"]');
+    ok(igual(await tip(), ['mié 28 oct 2026 · día 14 de PB22', 'Pedidos ingresados | 3', 'Monto | S/3,300', 'Entregados | 3', 'Rechazados o cancelados | 0', 'Autocompras | 1']), 'el día sale por la fecha en que se ordenó: el pedido del 28/10 cuenta en el PB22 aunque comisionó en el PB23', await tip());
+    await sobre('#chart_dia .vz-hit[data-i="0"]');
+    ok(igual(await tip(), ['jue 15 oct 2026 · día 1 de PB22', 'Pedidos ingresados | 0']), 'un día sin pedidos lo dice', await tip());
+    await pa.mouse.move(5, 5);
+    await pa.click('#card_dia button:has-text("Ver tabla")');
+    ok(await n('#dia_tabla table') === 3 && igual(await lista('#dia_tabla .prev:last-child tbody tr:first-child td'), ['11/11/2026', 'mié', '2026-PB23', '14', '3', '33%', 'S/4,726', '2', '1', '2']) && await n('#dia_tabla .prev:last-child tbody tr') === 5,
+      'la tabla del ingreso trae el día del período, el día de la semana y cada día con pedidos', await lista('#dia_tabla .prev:last-child tbody tr:first-child td'));
+    ok(igual(await lista('#dia_tabla .vz-cap:first-child + .prev tbody tr:last-child td'), ['14', 'mié', '6', '67%', 'S/8,026', '5', '1', '3']), 'y el día 14 con sus entregados, rechazados y autocompras', await lista('#dia_tabla .vz-cap:first-child + .prev tbody tr:last-child td'));
+    await pa.selectOption('#diaRango', '0');
+    ok(await n('#chart_dia .vz-hit') === 84 && (await fichas('dia_tiles'))[0][1] === '14', '«Todo» va desde el primer pedido');
+    const sinDesborde = (p) => p.evaluate(() => ({ doc: document.documentElement.scrollWidth, vp: window.innerWidth }));
+    let w = await sinDesborde(pa); ok(w.doc <= w.vp + 1, 'Análisis no se desborda a lo ancho', w);
+    await pa.selectOption('#diaRango', '6'); await pa.click('#card_dia button:has-text("Ocultar tabla")');
+    await pa.locator('#card_dia').scrollIntoViewIfNeeded(); await foto('analisis-ingreso', pa);
+    await ctxA.close();
+
+    // celular: entra en la pantalla y el día por día se desliza, empezando por lo más reciente
+    const { ctx: ctxB, page: pb } = await entrar({ width: 390, height: 844 });
+    w = await sinDesborde(pb); ok(w.doc <= w.vp + 1, 'celular: Análisis no se desborda a lo ancho', w);
+    const sc = await pb.evaluate(() => { const e = document.querySelector('#chart_dia .vz-sc'); return { ancho: e.clientWidth, total: e.scrollWidth, pos: Math.round(e.scrollLeft) }; });
+    ok(sc.total > sc.ancho && sc.pos >= sc.total - sc.ancho - 1, 'celular: el día por día se desliza y arranca en lo más reciente', sc);
+    ok(igual(await pb.evaluate(() => [...document.querySelectorAll('#chart_dper .vz-sc text.t2')].map((e) => e.textContent).join(' ')), 'ju vi sá do lu ma mi ju vi sá do lu ma mi'), 'celular: caben los 14 días del período con su día de la semana');
+    await pb.locator('#chart_dia .vz-hit[data-i="83"]').tap().catch(async () => { await pb.locator('#chart_dia .vz-hit[data-i="83"]').click(); });
+    const tipB = await pb.evaluate(() => { const e = document.getElementById('vzTip'), r = e.getBoundingClientRect(); return { ver: e.style.display === 'block', txt: e.textContent, izq: r.left, der: r.right, ancho: window.innerWidth }; });
+    ok(tipB.ver && /mié 11 nov 2026/.test(tipB.txt) && tipB.izq >= 0 && tipB.der <= tipB.ancho, 'celular: al tocar un día sale su detalle dentro de la pantalla', tipB);
+    await pb.locator('#card_mix').scrollIntoViewIfNeeded(); await foto('analisis-autocompras-celular', pb);
+    await pb.locator('#card_dia').scrollIntoViewIfNeeded(); await foto('analisis-ingreso-celular', pb);
+    await ctxB.close();
+  }
+
   return terminar();
 
   /* ---- con la foto de la base real: que todo pinte sin errores y capturas ---- */
   async function conDatosReales() {
     console.log('Datos reales: ' + db.pedidos.length + ' pedidos, ' + db.ciclos.length + ' ciclos');
+    if (!db.ciclos.length) return analisisReal();
     await page.click('.tab[data-tab="tab-filtros"]'); await esperar(150);
     console.log('  tarjetas', JSON.stringify(await kpi()));
     ok(+(await kpi()).agua > 50, 'pinta los clientes con filtro'); await foto('real-filtros');
@@ -615,6 +747,7 @@ async function main() {
       await page.click('.tab[data-tab="tab-filtros"]'); await page.selectOption('#filtroGestion', ''); await page.click('#tab-filtros button:has-text("Excel")'); await esperar(300);
       console.log('  Excel filtros:', await page.evaluate(() => window.__wb.SheetNames.map((n) => n + ' ' + XLSX.utils.sheet_to_json(window.__wb.Sheets[n]).length).join(' · '))); }
     for (const t of ['tab-table', 'tab-cuotas', 'tab-analytics', 'tab-reglas']) { await page.click('.tab[data-tab="' + t + '"]'); await esperar(120); }
+    await analisisReal();
     const { ctx: ctxM, page: movil } = await abrir({ width: 390, height: 844 });
     await ctxM.addInitScript((s) => { localStorage.setItem('sb-kiexpdaaoegbtesqmaff-auth-token', JSON.stringify(s)); localStorage.setItem('rw_ped_tab', 'tab-filtros'); }, sesionFalsa());
     await movil.goto(URL0); await movil.waitForFunction(() => document.querySelectorAll('#filtrosBody tr.fila').length > 0, null, { timeout: 20000 });
@@ -622,6 +755,33 @@ async function main() {
     await foto('real-filtros-celular', movil);
     await movil.locator('#filtrosBody tr.fila').nth(1).click(); await esperar(150); await foto('real-ficha-celular', movil);
     await ctxM.close();
+  }
+  async function analisisReal() {
+    const ver = async (p, pref) => {
+      const tx = (sel) => p.evaluate((s) => [...document.querySelectorAll(s)].map((e) => e.textContent.replace(/\s+/g, ' ').trim()), sel);
+      console.log('  ' + pref + ' autocompras:', (await tx('#mix_sub'))[0], '|', (await tx('#mix_tiles > div')).join(' | '));
+      console.log('  ' + pref + ' asesores:', (await tx('#mix_ases'))[0]);
+      for (const r of ['2', '6', '26', '0']) { await p.selectOption('#diaRango', r); await esperar(80); console.log('  ' + pref + ' ingreso (' + r + '):', (await tx('#dia_tiles > div')).join(' | ')); }
+      await p.selectOption('#diaRango', '6'); await esperar(80);
+      if (process.env.CAPTURAS) { for (const id of ['card_mix', 'card_dia']) await p.locator('#' + id).screenshot({ path: path.join(process.env.CAPTURAS, 'real-' + id + '-' + pref + '.png') });
+        for (const [id, nombre] of [['chart_vendedor', 'vendedores'], ['chart_distrito', 'distritos'], ['chart_tipopago', 'pago'], ['chart_productos', 'productos']]) await p.locator('.analytics-card:has(#' + id + ')').screenshot({ path: path.join(process.env.CAPTURAS, 'real-' + nombre + '-' + pref + '.png') }); }
+      const w = await p.evaluate(() => ({ doc: document.documentElement.scrollWidth, vp: window.innerWidth })); ok(w.doc <= w.vp + 1, pref + ': Análisis no se desborda con datos reales', w);
+    };
+    await page.click('.tab[data-tab="tab-analytics"]'); await esperar(200);
+    ok(await cuenta('#chart_mix .vz-hit') === 14 && await cuenta('#chart_dia .vz-hit') === 84, 'Análisis pinta 14 períodos y 6 períodos de días', [await cuenta('#chart_mix .vz-hit'), await cuenta('#chart_dia .vz-hit')]);
+    await ver(page, 'escritorio');
+    if (process.env.CAPTURAS) { await page.click('#mix_modo button[data-m="n"]'); await page.locator('#card_mix').screenshot({ path: path.join(process.env.CAPTURAS, 'real-card_mix-pedidos.png') });
+      await page.click('#mix_modo button[data-m="monto"]'); await page.locator('#card_mix').screenshot({ path: path.join(process.env.CAPTURAS, 'real-card_mix-monto.png') }); await page.click('#mix_modo button[data-m="pct"]');
+      await page.selectOption('#diaRango', '0'); await esperar(100); await page.locator('#card_dia').screenshot({ path: path.join(process.env.CAPTURAS, 'real-card_dia-todo.png') }); await page.selectOption('#diaRango', '6');
+      for (const [sel, nombre] of [['#chart_mix .vz-hit >> nth=12', 'real-tooltip-periodo'], ['#chart_dia .vz-hit >> nth=55', 'real-tooltip-dia'], ['#chart_vendedor .bar-row >> nth=2', 'real-tooltip-vendedor']]) {
+        await page.locator(sel).scrollIntoViewIfNeeded(); await esperar(120); await page.hover(sel); await esperar(60); await page.screenshot({ path: path.join(process.env.CAPTURAS, nombre + '.png') }); }
+      await page.mouse.move(5, 5); }
+    const o = await abrir({ width: 390, height: 844 });
+    await o.ctx.addInitScript((s) => { localStorage.setItem('sb-kiexpdaaoegbtesqmaff-auth-token', JSON.stringify(s)); localStorage.setItem('rw_ped_tab', 'tab-analytics'); }, sesionFalsa());
+    await o.page.goto(URL0); await o.page.waitForFunction(() => document.querySelectorAll('#chart_dia .vz-hit').length > 0, null, { timeout: 20000 });
+    await ver(o.page, 'celular');
+    if (process.env.CAPTURAS) { const l = o.page.locator('#chart_dia .vz-hit >> nth=83'); await l.scrollIntoViewIfNeeded(); await esperar(120); await l.click(); await esperar(60); await o.page.screenshot({ path: path.join(process.env.CAPTURAS, 'real-tooltip-celular.png') }); }
+    await o.ctx.close();
   }
   async function terminar() {
     ok(db.directas.length === 0, 'la página no escribe directo en tablas que deben entrar por función', db.directas);

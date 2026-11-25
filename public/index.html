@@ -140,7 +140,7 @@
   .analytics-card h3 .mini { font-size: 10px; color:#bbb; font-weight:600; }
   .scroll-list { max-height: 340px; overflow-y: auto; padding-right: 4px; }
   .bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-  .bar-label { font-size: 11px; width: 160px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #333; flex: none; }
+  .bar-label { font-size: 11px; width: 160px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #333; flex: none; } .bar-label.ancha { width: 320px; max-width: 45%; }
   .bar-track { flex: 1; background: #f0f0f0; border-radius: 4px; height: 14px; overflow: hidden; min-width: 40px; }
   .bar-fill { height: 100%; border-radius: 4px; background: #c0392b; } .bar-fill.blue { background: #2980b9; } .bar-fill.green { background: #27ae60; } .bar-fill.purple { background:#8e44ad; }
   .bar-val { font-size: 11px; color: #666; min-width: 110px; text-align: right; white-space:nowrap; }
@@ -166,6 +166,27 @@
   .cmp .k { font-size: 10px; color: #888; text-transform: uppercase; }
   .cmp .v { font-size: 20px; font-weight: 700; }
   .cmp .d { font-size: 11px; font-weight: 600; } .cmp .d.up { color: #1e8449; } .cmp .d.down { color: #922b21; }
+  /* gráficos de Análisis: azul · naranja · verde agua para las tres formas de compra (se distinguen con daltonismo) y el rojo de la casa para totales */
+  :root { --v-1:#257de0; --v-2:#f47230; --v-3:#00b894; --v-t:#c0392b; }
+  .vz-seg { display: flex; gap: 2px; height: 8px; margin: 2px 0 12px; } .vz-seg i { display: block; border-radius: 4px; min-width: 3px; }
+  .vz-sw { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+  .vz-leg { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 11px; color: #666; margin-bottom: 8px; } .vz-leg span { white-space: nowrap; }
+  .vz-nota { font-size: 12px; color: #555; margin-top: 12px; line-height: 1.45; }
+  .vz-head { display: flex; justify-content: space-between; align-items: center; gap: 6px 12px; flex-wrap: wrap; margin: 18px 0 8px; font-size: 12px; color: #333; }
+  .vz-head .sub { font-size: 10.5px; color: #888; font-weight: 400; }
+  .seg.chico { gap: 4px; flex-wrap: nowrap; } .seg.chico button { flex: none; padding: 4px 10px; font-size: 11px; border-radius: 6px; }
+  .vz-wrap { display: flex; } .vz-wrap svg { display: block; flex: none; } .vz-sc { flex: 1; min-width: 0; overflow-x: auto; overflow-y: hidden; }
+  .vz-wrap text { font-size: 10px; fill: #666; } .vz-wrap text.t2 { font-size: 9px; } .vz-wrap text.rot { fill: #333; font-weight: 600; }
+  .vz-g { stroke: #e7e7e7; } .vz-b { stroke: #c2c2c2; }
+  .vz-hit { fill: transparent; outline: none; } .vz-hit:hover, .vz-hit:focus { fill: rgba(0,0,0,.06); }
+  .vz-dos { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 0 24px; }
+  .vz-pie { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-top: 8px; } .vz-pie .mini-btn { flex: none; }
+  .vz-cap { font-size: 11px; font-weight: 700; color: #555; margin: 12px 0 4px; }
+  .vz-tip { position: fixed; z-index: 90; display: none; pointer-events: none; background: #fff; border: 1px solid rgba(0,0,0,.1); border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,.16); padding: 8px 10px; font-size: 11.5px; color: #333; max-width: min(340px, calc(100vw - 16px)); }
+  .vz-tip .tt { font-weight: 700; margin-bottom: 4px; } .vz-tip .tf { display: flex; align-items: center; gap: 6px; line-height: 1.55; }
+  .vz-tip .tf i { width: 10px; height: 3px; border-radius: 2px; flex: none; } .vz-tip .tf span { color: #666; flex: 1; } .vz-tip .tf b { color: #111; white-space: nowrap; }
+  .vz-tip .tp { color: #888; font-size: 10.5px; margin-top: 4px; }
+  .bar-track .tres { display: flex; gap: 2px; height: 100%; } .bar-track .tres i { display: block; min-width: 2px; } .bar-track .tres i:last-child { border-radius: 0 4px 4px 0; }
   .toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%) translateY(20px); background: #222; color: #fff; padding: 9px 16px; border-radius: 20px; font-size: 12.5px; opacity: 0; transition: .2s; z-index: 200; pointer-events: none; max-width: 92vw; }
   .toast.on { opacity: 1; transform: translateX(-50%); } .toast.mal { background: #922b21; }
   .hint { color: #888; font-size: 11.5px; }
@@ -217,6 +238,9 @@
     .filters { padding: 10px 12px; } .filter-row input[type=text], .filter-row input[type=search] { width: 100%; } .filter-row select { min-width: 0; flex: 1 1 45%; }
     .result-count { flex-basis: 100%; margin-left: 0; }
     .analytics { grid-template-columns: 1fr; }
+    .vz-dos { grid-template-columns: minmax(0, 1fr); } .vz-pie { flex-direction: column; gap: 4px; }
+    /* listas de barras: en pantalla angosta la barra baja a su propia línea, a todo el ancho */
+    .bar-row { flex-wrap: wrap; row-gap: 3px; margin-bottom: 9px; } .bar-label, .bar-label.ancha { width: auto; max-width: none; flex: 1 1 0; min-width: 0; } .bar-val { min-width: 0; } .bar-track { order: 3; flex: 1 1 100%; height: 10px; }
     .tab { padding: 8px 10px; font-size: 11.5px; flex: 1 1 auto; text-align: center; }
     .table-scroll { max-height: none; }
     /* tablas como tarjetas */
@@ -376,7 +400,34 @@
   <div class="analytics">
     <div class="analytics-card full"><h3>📈 Tendencia por período <span class="mini" id="trend_sub"></span></h3><div id="chart_trend"></div></div>
     <div class="analytics-card full"><h3>⚖️ Último período cerrado vs. el anterior <span class="mini" id="cmp_sub"></span></h3><div class="cmp" id="chart_cmp"></div></div>
-    <div class="analytics-card"><h3>📊 Ventas por vendedor <span class="mini" id="vend_count"></span></h3><div class="scroll-list" id="chart_vendedor"></div></div>
+    <div class="analytics-card full" id="card_mix"><h3>🛒 Autocompras vs. ventas a terceros <span class="mini" id="mix_sub"></span></h3>
+      <div class="vz-seg" id="mix_seg" role="img"></div>
+      <div class="cmp" id="mix_tiles"></div>
+      <p class="vz-nota" id="mix_ases"></p>
+      <div class="vz-head"><b>Por período <span class="sub">· últimos 14</span></b>
+        <div class="seg chico" id="mix_modo" role="group" aria-label="Qué mide el gráfico"><button class="on" data-m="pct" aria-pressed="true" onclick="setMixModo('pct')">% de pedidos</button><button data-m="n" aria-pressed="false" onclick="setMixModo('n')">Pedidos</button><button data-m="monto" aria-pressed="false" onclick="setMixModo('monto')">Monto S/</button></div></div>
+      <div class="vz-leg" id="mix_leg"></div>
+      <div id="chart_mix"></div>
+      <div class="vz-pie"><span class="hint">Autocompra: el asesor compra a precio de asesor (la marca «auto» de la pestaña Pedidos). Compra propia: figura como su propio cliente, pero a precio regular.</span>
+        <button class="mini-btn link" aria-expanded="false" onclick="vzVerTabla(this,'mix_tabla')">Ver tabla</button></div>
+      <div class="prev" id="mix_tabla" hidden></div>
+    </div>
+    <div class="analytics-card full" id="card_dia"><h3>📆 Ingreso de pedidos por día
+      <span><select class="mini-input" id="diaRango" onchange="renderIngreso()" aria-label="Cuántos períodos mirar"><option value="2">Últimos 2 períodos</option><option value="6" selected>Últimos 6 períodos</option><option value="13">Últimos 13 (medio año)</option><option value="26">Últimos 26 (un año)</option><option value="0">Todo</option></select></span></h3>
+      <div class="cmp" id="dia_tiles"></div>
+      <div class="vz-head"><b>Día por día</b><span class="sub">por la fecha en que se ordenó · cuentan todos los pedidos, también los rechazados</span></div>
+      <div id="chart_dia"></div>
+      <div class="vz-dos">
+        <div><div class="vz-head"><b>Por día del período</b><span class="sub">% de los pedidos · 1 = jueves, 14 = miércoles de cierre</span></div><div id="chart_dper"></div></div>
+        <div><div class="vz-head"><b>Por día de la semana</b><span class="sub">% de los pedidos</span></div><div id="chart_dsem"></div></div>
+      </div>
+      <div class="vz-pie"><span class="hint">Cada período va de jueves a miércoles (14 días). Un pedido puede comisionar en el período siguiente al de su fecha: por eso estas cuentas no siempre calzan con «Pedidos por período».</span>
+        <button class="mini-btn link" aria-expanded="false" onclick="vzVerTabla(this,'dia_tabla')">Ver tabla</button></div>
+      <div id="dia_tabla" hidden></div>
+    </div>
+    <div class="analytics-card"><h3><span>📊 Ventas por vendedor <span class="mini" id="vend_count"></span></span>
+      <select class="mini-input" id="vendOrden" onchange="renderVendedores()" aria-label="Ordenar vendedores"><option value="rev">Por ventas totales</option><option value="ter">Por ventas a terceros</option><option value="prop">Por compras propias</option></select></h3>
+      <div class="vz-leg" id="vend_leg"></div><div class="scroll-list" id="chart_vendedor"></div></div>
     <div class="analytics-card"><h3>📍 Ventas por distrito <span class="mini" id="dist_count"></span></h3><div class="scroll-list" id="chart_distrito"></div></div>
     <div class="analytics-card"><h3>📅 Pedidos por período</h3><div class="scroll-list" id="chart_periodo"></div></div>
     <div class="analytics-card"><h3>💰 Crédito vs contado</h3><div id="chart_tipopago"></div></div>
@@ -1112,11 +1163,7 @@ function renderAnalytics(){
   a_rech.textContent=rech.length; a_rechv.textContent=money0(rech.reduce((a,p)=>a+(parseFloat(p['Total'])||0),0))+' (no concretado)';
   a_canc.textContent=canc.length; a_cancv.textContent=money0(canc.reduce((a,p)=>a+(parseFloat(p['Total'])||0),0))+' (no concretado)';
   let units=0; deliv.forEach(p=>orderProducts(p).forEach(x=>units+=x.qty)); a_units.textContent=units.toLocaleString('es-PE');
-  renderTrend(deliv);
-  const byV={}; deliv.forEach(p=>{ const k=p['Vendedor']||'—'; byV[k]=byV[k]||{n:0,rev:0}; byV[k].n++; byV[k].rev+=parseFloat(p['Total'])||0; });
-  const sv=Object.entries(byV).sort((a,b)=>b[1].rev-a[1].rev); const maxV=sv[0]?sv[0][1].rev:1;
-  vend_count.textContent=sv.length+' vendedores';
-  chart_vendedor.innerHTML=sv.map(([k,o])=>`<div class="bar-row"><div class="bar-label" title="${esc(k)}">${esc(k)}</div><div class="bar-track"><div class="bar-fill" style="width:${(o.rev/maxV*100).toFixed(1)}%"></div></div><div class="bar-val">${money0(o.rev)} · ${o.n}</div></div>`).join('');
+  renderTrend(deliv); renderMix(deliv); renderIngreso(); renderVendedores();
   const byD={}; deliv.forEach(p=>{ const k=district(p); byD[k]=byD[k]||{n:0,rev:0}; byD[k].n++; byD[k].rev+=parseFloat(p['Total'])||0; });
   const sd=Object.entries(byD).sort((a,b)=>b[1].n-a[1].n); const maxD=sd[0]?sd[0][1].n:1;
   dist_count.textContent=sd.length+' distritos';
@@ -1139,8 +1186,169 @@ function renderProductos(){
   if(sort==='rev') arr.sort((a,b)=>b[1].ord-a[1].ord); else if(sort==='az') arr.sort((a,b)=>a[0].localeCompare(b[0])); else arr.sort((a,b)=>b[1].qty-a[1].qty);
   const maxQ=Math.max(1,...arr.map(x=>x[1].qty)); const totalU=arr.reduce((s,x)=>s+x[1].qty,0);
   chart_productos.innerHTML = `<div style="font-size:10px;color:#aaa;margin-bottom:8px">${arr.length} productos distintos · ${totalU} unidades · se excluye la línea de conjunto/combo y se unifican nombres con o sin código</div>` +
-    arr.map(([n,o])=>`<div class="bar-row"><div class="bar-label" style="width:320px;max-width:45%" title="${esc(n)}">${esc(n)}</div><div class="bar-track"><div class="bar-fill green" style="width:${(o.qty/maxQ*100).toFixed(1)}%"></div></div><div class="bar-val">${o.qty} u · ${o.ord} ord</div></div>`).join('') || '<div class="no-results">Sin productos.</div>';
+    arr.map(([n,o])=>`<div class="bar-row"><div class="bar-label ancha" title="${esc(n)}">${esc(n)}</div><div class="bar-track"><div class="bar-fill green" style="width:${(o.qty/maxQ*100).toFixed(1)}%"></div></div><div class="bar-val">${o.qty} u · ${o.ord} ord</div></div>`).join('') || '<div class="no-results">Sin productos.</div>';
 }
+
+/* ============ ANÁLISIS: autocompras vs. terceros e ingreso de pedidos por día ============ */
+// Tres formas de compra, siempre en este orden y con el mismo color en todos los gráficos
+// (azul · naranja · verde agua: se distinguen también con daltonismo).
+const GRUPOS = [
+  { k: 'auto', n: 'Autocompra (precio de asesor)', c: 'var(--v-2)' },     // la marca «auto» de la base: precio con decimales
+  { k: 'prop', n: 'Compra propia a precio regular', c: 'var(--v-3)' },    // el asesor figura como su propio cliente
+  { k: 'ter', n: 'Venta a terceros', c: 'var(--v-1)' } ];
+function mismoNombre(a,b){ const n=s=>plano(s).replace(/\s+/g,' ').trim(), x=n(a); return !!x&&x===n(b); }
+function grupoCompra(p){ return p['Autocompra']?'auto':(mismoNombre(p['Cliente'],p['Vendedor'])?'prop':'ter'); }
+function sumaGrupos(lista){ const o={n:0,s:0}; GRUPOS.forEach(g=>{ o[g.k]={n:0,s:0}; }); lista.forEach(p=>{ const t=parseFloat(p['Total'])||0, g=o[grupoCompra(p)]; g.n++; g.s+=t; o.n++; o.s+=t; }); return o; }
+function pctDe(a,b){ return b?Math.round(a/b*100):0; }
+function reparto(vals){        // porcentajes enteros que suman 100
+  const tot=vals.reduce((a,b)=>a+b,0); if(!(tot>0)) return vals.map(()=>0);
+  const ex=vals.map(v=>v/tot*100), r=ex.map(Math.floor); let falta=100-r.reduce((a,b)=>a+b,0);
+  ex.map((e,i)=>[e-r[i],i]).sort((a,b)=>b[0]-a[0]).forEach(([,i])=>{ if(falta>0){ r[i]++; falta--; } }); return r; }
+function nPed(n){ return n+(n===1?' pedido':' pedidos'); }
+function leyendaGrupos(){ return GRUPOS.map(g=>`<span><i class="vz-sw" style="background:${g.c}"></i>${esc(g.n)}</span>`).join(''); }
+
+/* ---- un solo dibujante de columnas (simples o apiladas) en SVG, con tooltip y eje fijo ---- */
+function vzEscala(max, entero){        // tope y marcas «redondas» del eje
+  if(!(max>0)) return {tope:1, marcas:[0,1]};
+  const bruto=max/4, pot=Math.pow(10,Math.floor(Math.log10(bruto))), f=bruto/pot;
+  let paso=(f<=1?1:f<=2?2:f<=5?5:10)*pot; if(entero) paso=Math.max(1,Math.round(paso));
+  const tope=Math.ceil(max/paso-1e-9)*paso, marcas=[]; for(let v=0; v<=tope+paso/2; v+=paso) marcas.push(v);
+  return {tope, marcas};
+}
+function vzMiles(v){ return v?'S/'+(v>=1000?(v/1000).toLocaleString('es-PE',{maximumFractionDigits:1})+'K':Math.round(v)):'0'; }
+function vzTexto(tip){ return tip?tip.t+': '+(tip.f||[]).map(f=>f[1]+' '+f[2]).join(', '):''; }
+function vzTip(){ let t=document.getElementById('vzTip'); if(!t){ t=document.createElement('div'); t.id='vzTip'; t.className='vz-tip'; t.setAttribute('role','status'); document.body.appendChild(t); } return t; }
+function vzOcultar(){ const t=document.getElementById('vzTip'); if(t) t.style.display='none'; }
+function vzMostrar(tip, x, y){
+  const t=vzTip(), nodo=(tag,cls,txt)=>{ const e=document.createElement(tag); if(cls) e.className=cls; if(txt!=null) e.textContent=txt; return e; };
+  t.textContent=''; t.appendChild(nodo('div','tt',tip.t));
+  (tip.f||[]).forEach(([c,nom,val])=>{ const f=nodo('div','tf'), k=nodo('i'); if(c) k.style.background=c; f.appendChild(k); f.appendChild(nodo('span','',nom)); f.appendChild(nodo('b','',val)); t.appendChild(f); });
+  if(tip.p) t.appendChild(nodo('div','tp',tip.p));
+  t.style.display='block'; const r=t.getBoundingClientRect(); let izq=x+14, arr=y+14;
+  if(izq+r.width>innerWidth-8) izq=Math.max(8,x-r.width-14); if(arr+r.height>innerHeight-8) arr=Math.max(8,y-r.height-14);
+  t.style.left=izq+'px'; t.style.top=arr+'px';
+}
+function vzEscuchar(el, sel, dar){     // tooltip al pasar el cursor, tocar o enfocar; se engancha una sola vez por contenedor
+  const ya=!!el._vz; el._vz=dar; if(ya) return;
+  const ver=(e,foco)=>{ const m=e.target.closest?e.target.closest(sel):null, tip=m&&el.contains(m)?el._vz(m):null; if(!tip){ vzOcultar(); return; }
+    if(foco){ const r=m.getBoundingClientRect(); vzMostrar(tip, r.left+r.width/2, r.top+Math.min(r.height,48)); } else vzMostrar(tip, e.clientX, e.clientY); };
+  el.addEventListener('pointermove', e=>ver(e)); el.addEventListener('pointerdown', e=>ver(e));
+  el.addEventListener('pointerleave', e=>{ if(e.pointerType!=='touch') vzOcultar(); });
+  el.addEventListener('focusin', e=>ver(e,true)); el.addEventListener('focusout', vzOcultar);
+}
+document.addEventListener('pointerdown', e=>{ if(!(e.target.closest&&e.target.closest('.vz-hit, #chart_vendedor .bar-row'))) vzOcultar(); }, true);
+window.addEventListener('scroll', vzOcultar, true);
+function vzTabla(cab, filas){ return '<table><thead><tr>'+cab.map(c=>'<th>'+esc(c)+'</th>').join('')+'</tr></thead><tbody>'+filas.map(f=>'<tr>'+f.map(c=>'<td>'+esc(c)+'</td>').join('')+'</tr>').join('')+'</tbody></table>'; }
+function vzVerTabla(btn, id){ const e=document.getElementById(id), ver=e.hidden; e.hidden=!ver; btn.textContent=ver?'Ocultar tabla':'Ver tabla'; btn.setAttribute('aria-expanded', ver?'true':'false'); }
+// o: { cols:[{t1,t2,v:[…],tip}], series:[{n,c}], pct, entero, fmt, alto, minCol, grupos:[{i0,i1,t1,t2}], rotulo(i,total), alFinal, aria }
+function vzColumnas(el, o){
+  const n=o.cols.length; if(!n){ el.innerHTML='<div class="hint">Todavía no hay datos.</div>'; return; }
+  const tot=o.cols.map(c=>c.v.reduce((a,b)=>a+b,0)), fmt=o.fmt||(v=>v.toLocaleString('es-PE'));
+  const E=o.pct?{tope:100,marcas:[0,25,50,75,100]}:vzEscala(Math.max(...tot), o.entero);
+  const L=40, T=16, h=o.alto||150, B=(o.grupos||o.cols.some(c=>c.t2))?30:18, H=T+h+B;
+  const W0=Math.max(280, el.clientWidth||720), bw=Math.max(o.minCol||0, (W0-L)/n), w=Math.round(bw*n), b=Math.max(2, Math.min(24, bw-2, bw*.72));
+  const y=v=>T+h-(v/E.tope)*h, f1=v=>v.toFixed(1);
+  const enX=(xc,txt,px)=>{ const m=String(txt).length*px/2; return xc-m<0?'x="0" text-anchor="start"':xc+m>w?`x="${w}" text-anchor="end"`:`x="${f1(xc)}" text-anchor="middle"`; };      // un rótulo en el borde no se corta
+  let eje=`<svg width="${L}" height="${H}" aria-hidden="true">`+E.marcas.map(m=>`<text x="${L-6}" y="${f1(y(m)+3)}" text-anchor="end">${esc(o.pct?m+'%':fmt(m))}</text>`).join('')+'</svg>';
+  let s=`<svg width="${w}" height="${H}" role="group" aria-label="${esc(o.aria||'')}">`;
+  E.marcas.forEach(m=>{ s+=`<line class="${m?'vz-g':'vz-b'}" x1="0" x2="${w}" y1="${f1(y(m))}" y2="${f1(y(m))}"/>`; });
+  if(o.grupos) o.grupos.forEach((g,j)=>{ if(j) s+=`<line class="vz-g" x1="${f1(g.i0*bw)}" x2="${f1(g.i0*bw)}" y1="${T-8}" y2="${H-3}"/>`; });
+  o.cols.forEach((c,i)=>{
+    const x=i*bw+(bw-b)/2, den=o.pct?(tot[i]||1)/100:1; let base=T+h, ult=-1, primero=true; c.v.forEach((v,k)=>{ if(v>0) ult=k; });
+    c.v.forEach((v,k)=>{ if(!(v>0)) return; const alto=Math.max(1.5, v/den/E.tope*h); let yb=base; const yt=base-alto; base=yt; if(!primero&&alto>4) yb-=2; primero=false;   // 2 px de aire entre tramos
+      const r=k===ult?Math.min(4, b/2, yb-yt):0, col=o.series[k].c;
+      s+=r>0?`<path d="M${f1(x)},${f1(yb)}V${f1(yt+r)}Q${f1(x)},${f1(yt)} ${f1(x+r)},${f1(yt)}H${f1(x+b-r)}Q${f1(x+b)},${f1(yt)} ${f1(x+b)},${f1(yt+r)}V${f1(yb)}Z" style="fill:${col}"/>`
+            :`<rect x="${f1(x)}" y="${f1(yt)}" width="${f1(b)}" height="${f1(Math.max(.5,yb-yt))}" style="fill:${col}"/>`; });
+    const rot=o.rotulo?o.rotulo(i,tot[i]):''; if(rot) s+=`<text class="rot" ${enX(i*bw+bw/2,rot,6)} y="${f1(base-4)}">${esc(rot)}</text>`;
+  });
+  if(o.grupos) o.grupos.forEach(g=>{ const xc=(g.i0+g.i1+1)/2*bw; s+=`<text ${enX(xc,g.t1,5.8)} y="${T+h+13}">${esc(g.t1)}</text>`+(g.t2?`<text class="t2" ${enX(xc,g.t2,5)} y="${T+h+25}">${esc(g.t2)}</text>`:''); });
+  else { const largo=k=>Math.max(...o.cols.map(c=>String(c[k]||'').length)), paso=Math.max(1, Math.ceil((largo('t1')*6+6)/bw)), ver2=bw>=largo('t2')*5+6;
+    o.cols.forEach((c,i)=>{ if((n-1-i)%paso) return; const xc=i*bw+bw/2; s+=`<text ${enX(xc,c.t1||'',5.8)} y="${T+h+13}">${esc(c.t1||'')}</text>`+(c.t2&&ver2?`<text class="t2" ${enX(xc,c.t2,5)} y="${T+h+25}">${esc(c.t2)}</text>`:''); }); }
+  const foco=n<=40?' tabindex="0"':'';
+  o.cols.forEach((c,i)=>{ s+=`<rect class="vz-hit" x="${f1(i*bw)}" y="0" width="${f1(bw)}" height="${T+h}" data-i="${i}" role="img"${foco} aria-label="${esc(vzTexto(c.tip))}"/>`; });
+  el.innerHTML='<div class="vz-wrap">'+eje+'<div class="vz-sc">'+s+'</svg></div></div>';
+  el._tips=o.cols.map(c=>c.tip); vzEscuchar(el, '.vz-hit', m=>el._tips[+m.dataset.i]);
+  if(o.alFinal){ const sc=el.querySelector('.vz-sc'); sc.scrollLeft=sc.scrollWidth; }
+}
+
+/* ---- autocompras vs. ventas a terceros (pedidos entregados) ---- */
+function renderMix(deliv){
+  const t=sumaGrupos(deliv), pn=reparto(GRUPOS.map(g=>t[g.k].n)), ps=reparto(GRUPOS.map(g=>t[g.k].s));
+  mix_sub.textContent=nPed(t.n)+' entregados';
+  mix_seg.innerHTML=GRUPOS.map((g,i)=>t[g.k].n?`<i style="flex:${t[g.k].n} 1 0;background:${g.c}" title="${esc(g.n)}: ${pn[i]}%"></i>`:'').join('');
+  mix_seg.setAttribute('aria-label', GRUPOS.map((g,i)=>g.n+' '+pn[i]+'%').join(' · '));
+  mix_tiles.innerHTML=GRUPOS.map((g,i)=>`<div><div class="k"><i class="vz-sw" style="background:${g.c}"></i>${esc(g.n)}</div><div class="v">${pn[i]}%</div><div class="hint">${nPed(t[g.k].n)} · ${money0(t[g.k].s)} (${ps[i]}% del monto)</div></div>`).join('');
+  const porV={}; deliv.forEach(p=>{ const k=p['Vendedor']||'—', o=porV[k]=porV[k]||{n:0,ter:0}; o.n++; if(grupoCompra(p)==='ter') o.ter++; });
+  const vs=Object.values(porV), conTer=vs.filter(o=>o.ter).length, solo=vs.length-conTer, solo1=vs.filter(o=>!o.ter&&o.n===1).length;
+  mix_ases.innerHTML=vs.length?`De <b>${vs.length}</b> asesores con pedidos entregados, <b>${conTer}</b> ${conTer===1?'vendió':'vendieron'} a terceros y <b>${solo}</b> solo ${solo===1?'compró':'compraron'} para sí${solo1?` (${solo1} con un único pedido)`:''}.`:'';
+  mix_leg.innerHTML=leyendaGrupos();
+  renderMixPeriodo(deliv);
+}
+let MIX_MODO='pct';      // pct = % de los pedidos del período · n = cantidad · monto = soles
+function setMixModo(m){ MIX_MODO=m; mix_modo.querySelectorAll('button').forEach(b=>{ const on=b.dataset.m===m; b.classList.toggle('on',on); b.setAttribute('aria-pressed',on?'true':'false'); }); renderMixPeriodo(PEDIDOS.filter(isDelivered)); }
+function renderMixPeriodo(deliv){
+  const byP={}; deliv.forEach(p=>{ const k=p['Período']; if(k) (byP[k]=byP[k]||[]).push(p); });
+  const filas=Object.keys(byP).sort((a,b)=>periodoKey(a).localeCompare(periodoKey(b))).map(k=>{ const t=sumaGrupos(byP[k]); return {k, t, pn:reparto(GRUPOS.map(g=>t[g.k].n))}; });
+  const monto=MIX_MODO==='monto';
+  vzColumnas(chart_mix, { series:GRUPOS, pct:MIX_MODO==='pct', entero:!monto, fmt:monto?vzMiles:null, alto:160, aria:'Pedidos entregados por período: autocompras, compras propias y ventas a terceros',
+    cols:filas.slice(-14).map(f=>({ t1:f.k.slice(5,9), t2:(f.k.match(/\(([^)]*)\)/)||[])[1]||'', v:GRUPOS.map(g=>monto?f.t[g.k].s:f.t[g.k].n),
+      tip:{ t:f.k, f:GRUPOS.map((g,i)=>[g.c, g.n, f.t[g.k].n+' · '+f.pn[i]+'%'+(monto?' · '+money0(f.t[g.k].s):'')]), p:nPed(f.t.n)+' entregados · '+money0(f.t.s) } })) });
+  mix_tabla.innerHTML=vzTabla(['Período','Entregados'].concat(...GRUPOS.map(g=>[g.n,'%']), ['S/ autocompra','S/ total']),
+    filas.slice().reverse().map(f=>[f.k, f.t.n].concat(...GRUPOS.map((g,i)=>[f.t[g.k].n, f.pn[i]+'%']), [money0(f.t.auto.s), money0(f.t.s)])));
+}
+function renderVendedores(){
+  const byV={}; PEDIDOS.filter(isDelivered).forEach(p=>{ const k=p['Vendedor']||'—'; (byV[k]=byV[k]||[]).push(p); });
+  const orden=vendOrden.value, val=t=>orden==='ter'?t.ter.s:orden==='prop'?t.auto.s+t.prop.s:t.s;
+  const sv=Object.entries(byV).map(([k,l])=>[k,sumaGrupos(l)]).sort((a,b)=>(val(b[1])-val(a[1]))||(b[1].s-a[1].s)), maxV=Math.max(1,...sv.map(x=>x[1].s));
+  vend_count.textContent=sv.length+' vendedores'; vend_leg.innerHTML=leyendaGrupos();
+  chart_vendedor.innerHTML=sv.map(([k,t],i)=>`<div class="bar-row" data-i="${i}"><div class="bar-label" title="${esc(k)}">${esc(k)}</div><div class="bar-track"><div class="tres" style="width:${(t.s/maxV*100).toFixed(1)}%">${GRUPOS.map(g=>t[g.k].s>0?`<i style="flex:${Math.round(t[g.k].s)} 1 0;background:${g.c}"></i>`:'').join('')}</div></div><div class="bar-val">${money0(t.s)} · ${t.n}</div></div>`).join('');
+  chart_vendedor._tips=sv.map(([k,t])=>({ t:k, f:GRUPOS.map(g=>[g.c, g.n, t[g.k].n?nPed(t[g.k].n)+' · '+money0(t[g.k].s):'—']), p:nPed(t.n)+' entregados · '+money0(t.s) }));
+  chart_vendedor.querySelectorAll('.bar-row').forEach((r,i)=>r.setAttribute('aria-label', vzTexto(chart_vendedor._tips[i])));
+  vzEscuchar(chart_vendedor, '.bar-row', m=>chart_vendedor._tips[+m.dataset.i]);
+}
+
+/* ---- ingreso de pedidos por día (todos los estados, por la fecha en que se ordenó) ---- */
+// Calendario de períodos: 14 días desde el jueves 25/12/2025 (= 2026-PB01), 26 por año. Es la misma cuenta que periodo_indice() en la base.
+const PB_DIA0=Date.UTC(2025,11,25)/864e5;
+const DIAS_SEM=['dom','lun','mar','mié','jue','vie','sáb'];
+function diaAbs(d){ return Math.round(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5); }       // días enteros, sin depender de la zona horaria
+function fechaAbs(a){ const u=new Date(a*864e5); return new Date(u.getUTCFullYear(),u.getUTCMonth(),u.getUTCDate()); }
+function pbIndice(d){ return Math.floor((diaAbs(d)-PB_DIA0)/14); }
+function pbNombre(i){ return (2026+Math.floor(i/26))+'-PB'+String(((i%26)+26)%26+1).padStart(2,'0'); }
+function pbRango(i){ const a=fechaAbs(PB_DIA0+i*14), b=fechaAbs(PB_DIA0+i*14+13); return a.getDate()+(a.getMonth()!==b.getMonth()?' '+MESES_C[a.getMonth()]:'')+'-'+b.getDate()+' '+MESES_C[b.getMonth()]; }
+function fechaLarga(d){ return DIAS_SEM[d.getDay()]+' '+d.getDate()+' '+MESES_C[d.getMonth()]+' '+d.getFullYear(); }
+function renderIngreso(){
+  const fs=PEDIDOS.map(p=>({p, d:parseDate(p['Fecha Ordenado'])})).filter(x=>x.d&&!isNaN(x.d)).map(x=>Object.assign(x,{a:diaAbs(x.d)}));
+  if(!fs.length){ dia_tiles.innerHTML=chart_dper.innerHTML=chart_dsem.innerHTML=dia_tabla.innerHTML=''; chart_dia.innerHTML='<div class="hint">Todavía no hay pedidos.</div>'; return; }
+  const ind=fs.map(x=>Math.floor((x.a-PB_DIA0)/14)), iMax=Math.max(...ind), iMin=Math.min(...ind), nPer=+diaRango.value||0, i0=nPer?Math.max(iMin,iMax-nPer+1):iMin, per=iMax-i0+1, a0=PB_DIA0+i0*14;
+  const cero=()=>({n:0,s:0,ent:0,no:0,auto:0}), dias=Array.from({length:per*14},cero), dper=Array.from({length:14},cero), dsem=Array.from({length:7},cero), tot=cero();
+  fs.forEach(x=>{ const j=x.a-a0; if(j<0) return; const t=parseFloat(x.p['Total'])||0, e=isDelivered(x.p), no=isRejected(x.p)||isCancelled(x.p);
+    [dias[j], dper[j%14], dsem[(x.d.getDay()+6)%7], tot].forEach(o=>{ o.n++; o.s+=t; if(e) o.ent++; if(no) o.no++; if(x.p['Autocompra']) o.auto++; }); });
+  let pico=0; dias.forEach((o,j)=>{ if(o.n>=dias[pico].n) pico=j; });       // el día con más pedidos; si empatan, el más reciente
+  const c3=dper[11].n+dper[12].n+dper[13].n, nomPb=j=>pbNombre(i0+Math.floor(j/14));
+  dia_tiles.innerHTML=`<div><div class="k">Pedidos ingresados</div><div class="v">${tot.n}</div><div class="hint">${money0(tot.s)} · ${per} ${per===1?'período':'períodos'} · ${(tot.n/per).toFixed(1)} por período</div></div>
+    <div><div class="k">Entran el día de cierre</div><div class="v">${pctDe(dper[13].n,tot.n)}%</div><div class="hint">${nPed(dper[13].n)} el día 14 del período (miércoles)</div></div>
+    <div><div class="k">Entran en los últimos 3 días</div><div class="v">${pctDe(c3,tot.n)}%</div><div class="hint">${nPed(c3)} entre los días 12 y 14</div></div>
+    <div><div class="k">Día con más pedidos</div><div class="v">${dias[pico].n}</div><div class="hint">${esc(fechaLarga(fechaAbs(a0+pico)))} · día ${pico%14+1} de ${esc(nomPb(pico).slice(5))}</div></div>`;
+  const C='var(--v-t)', detalle=o=>o.n?[[null,'Monto',money0(o.s)],[null,'Entregados',String(o.ent)],[null,'Rechazados o cancelados',String(o.no)],[null,'Autocompras',String(o.auto)]]:[];
+  const picoDe=Array.from({length:per},(_,g)=>{ let m=g*14; for(let j=g*14+1;j<g*14+14;j++) if(dias[j].n>=dias[m].n) m=j; return m; });
+  vzColumnas(chart_dia, { series:[{n:'Pedidos ingresados',c:C}], entero:true, alto:150, minCol:6, alFinal:true, aria:'Pedidos ingresados por día',
+    grupos:Array.from({length:per},(_,g)=>({ i0:g*14, i1:g*14+13, t1:(g===0||pbNombre(i0+g).endsWith('PB01'))?pbNombre(i0+g):pbNombre(i0+g).slice(5), t2:pbRango(i0+g) })),
+    rotulo:(j,v)=>v&&(per<=8?picoDe[Math.floor(j/14)]===j:j===pico)?String(v):'',
+    cols:dias.map((o,j)=>({ v:[o.n], tip:{ t:fechaLarga(fechaAbs(a0+j))+' · día '+(j%14+1)+' de '+nomPb(j).slice(5), f:[[C,'Pedidos ingresados',String(o.n)]].concat(detalle(o)) } })) });
+  const parte=o=>tot.n?o.n/tot.n*100:0, rotP=(i,v)=>v>=10?Math.round(v)+'%':'', DIA_PB=['ju','vi','sá','do','lu','ma','mi'], SEM=['lun','mar','mié','jue','vie','sáb','dom'], SEM_L=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+  const tipP=(tit,o)=>({ t:tit, f:[[C,'de los pedidos',Math.round(parte(o))+'%'],[null,'Pedidos',String(o.n)]].concat(detalle(o)) });
+  vzColumnas(chart_dper, { series:[{n:'% de los pedidos',c:C}], alto:120, fmt:v=>v+'%', rotulo:rotP, aria:'Porcentaje de los pedidos por día del período',
+    cols:dper.map((o,k)=>({ t1:String(k+1), t2:DIA_PB[k%7], v:[parte(o)], tip:tipP('Día '+(k+1)+' del período ('+DIAS_SEM[(k+4)%7]+(k===13?', cierre':'')+')', o) })) });
+  vzColumnas(chart_dsem, { series:[{n:'% de los pedidos',c:C}], alto:120, fmt:v=>v+'%', rotulo:rotP, aria:'Porcentaje de los pedidos por día de la semana',
+    cols:dsem.map((o,k)=>({ t1:SEM[k], v:[parte(o)], tip:tipP(SEM_L[k], o) })) });
+  const cab=['Pedidos','%','Monto','Entregados','Rechazados o cancelados','Autocompras'], fila=o=>[o.n, pctDe(o.n,tot.n)+'%', money0(o.s), o.ent, o.no, o.auto];
+  dia_tabla.innerHTML='<div class="vz-cap">Por día del período</div><div class="prev">'+vzTabla(['Día del período','Día'].concat(cab), dper.map((o,k)=>[k+1, DIAS_SEM[(k+4)%7]].concat(fila(o))))+'</div>'
+    +'<div class="vz-cap">Por día de la semana</div><div class="prev">'+vzTabla(['Día'].concat(cab), dsem.map((o,k)=>[SEM_L[k]].concat(fila(o))))+'</div>'
+    +'<div class="vz-cap">Día por día (solo los días con pedidos, del más reciente al más antiguo)</div><div class="prev">'+vzTabla(['Fecha','Día','Período','Día del período'].concat(cab),
+      dias.map((o,j)=>({o,j})).filter(x=>x.o.n).reverse().map(({o,j})=>[fmtDate(fechaAbs(a0+j)), DIAS_SEM[fechaAbs(a0+j).getDay()], nomPb(j), j%14+1].concat(fila(o))))+'</div>';
+}
+function pintarGraficos(){ if(!PEDIDOS.length) return; const deliv=PEDIDOS.filter(isDelivered); renderTrend(deliv); renderMixPeriodo(deliv); renderIngreso(); }     // los que dependen del ancho real
 
 /* ============ CUOTAS ============ */
 let CUOTAS_ROWS=[];
@@ -1321,7 +1529,7 @@ function showTab(id, el){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById(id).classList.add('active'); (el||document.querySelector('.tab[data-tab="'+id+'"]')).classList.add('active');
   try{ localStorage.setItem('rw_ped_tab', id); }catch(e){}
-  if(id==='tab-analytics'&&PEDIDOS.length) renderTrend(PEDIDOS.filter(isDelivered));   // ya con el ancho real
+  if(id==='tab-analytics') pintarGraficos();   // ya con el ancho real
 }
 function abrirDesdeEnlace(){
   const h=String(location.hash||'').replace(/^#/,''); if(!h) return; const o={}; h.split('&').forEach(par=>{ const i=par.indexOf('='); if(i>0) o[decodeURIComponent(par.slice(0,i))]=decodeURIComponent(par.slice(i+1)); });
@@ -1329,7 +1537,8 @@ function abrirDesdeEnlace(){
   if(o.tab&&document.getElementById(o.tab)) showTab(o.tab);
   if(o.cliente){ showTab('tab-clientes'); openFicha(o.cliente); } else if(o.orden) openDetail(o.orden);
 }
-let _rz=null; window.addEventListener('resize',()=>{ clearTimeout(_rz); _rz=setTimeout(()=>{ if(PEDIDOS.length) renderTrend(PEDIDOS.filter(isDelivered)); },200); });
+let _rz=null, _rzW=window.innerWidth;      // solo si cambia el ancho: en el celular, la barra del navegador dispara «resize» al deslizar
+window.addEventListener('resize',()=>{ clearTimeout(_rz); _rz=setTimeout(()=>{ if(window.innerWidth===_rzW) return; _rzW=window.innerWidth; pintarGraficos(); },200); });
 function boot(){
   armarClientes();
   if(!window.__initDone){ window.__initDone=true; initFilters(); let t=null; try{ t=localStorage.getItem('rw_ped_tab'); }catch(e){} if(t&&document.getElementById(t)) showTab(t); }
