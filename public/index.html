@@ -167,7 +167,7 @@
   .cmp .v { font-size: 20px; font-weight: 700; }
   .cmp .d { font-size: 11px; font-weight: 600; } .cmp .d.up { color: #1e8449; } .cmp .d.down { color: #922b21; }
   /* gráficos de Análisis: azul · naranja · verde agua para las tres formas de compra (se distinguen con daltonismo) y el rojo de la casa para totales */
-  :root { --v-1:#257de0; --v-2:#f47230; --v-3:#00b894; --v-t:#c0392b; }
+  :root { --v-1:#257de0; --v-2:#f47230; --v-3:#00b894; --v-t:#c0392b; --v-2c:#fe9465; --v-2o:#a24105; }      /* 2c y 2o: naranja claro y oscuro, para «una vez» y «recurrentes» */
   .vz-seg { display: flex; gap: 2px; height: 8px; margin: 2px 0 12px; } .vz-seg i { display: block; border-radius: 4px; min-width: 3px; }
   .vz-sw { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
   .vz-leg { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 11px; color: #666; margin-bottom: 8px; } .vz-leg span { white-space: nowrap; }
@@ -175,6 +175,8 @@
   .vz-head { display: flex; justify-content: space-between; align-items: center; gap: 6px 12px; flex-wrap: wrap; margin: 18px 0 8px; font-size: 12px; color: #333; }
   .vz-head .sub { font-size: 10.5px; color: #888; font-weight: 400; }
   .vz-ctl { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .vz-fila { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; margin: 0 0 12px; } .vz-fila .sub { font-size: 11px; color: #666; }
+  .chip.rec { background: #fdebe0; color: #8a3a08; } .lista .der { flex: none; text-align: right; }
   .seg.chico { gap: 4px; flex-wrap: nowrap; } .seg.chico button { flex: none; padding: 4px 10px; font-size: 11px; border-radius: 6px; }
   .vz-wrap { display: flex; } .vz-wrap svg { display: block; flex: none; } .vz-sc { flex: 1; min-width: 0; overflow-x: auto; overflow-y: hidden; }
   .vz-wrap text { font-size: 10px; fill: #666; } .vz-wrap text.t2 { font-size: 9px; } .vz-wrap text.rot { fill: #333; font-weight: 600; }
@@ -402,17 +404,25 @@
     <div class="analytics-card full"><h3>📈 Tendencia por período <span class="mini" id="trend_sub"></span></h3><div id="chart_trend"></div></div>
     <div class="analytics-card full"><h3>⚖️ Último período cerrado vs. el anterior <span class="mini" id="cmp_sub"></span></h3><div class="cmp" id="chart_cmp"></div></div>
     <div class="analytics-card full" id="card_mix"><h3><span>🛒 Autocompras vs. ventas a terceros <span class="mini" id="mix_sub"></span></span>
-      <span class="seg chico" id="mix_medida" role="group" aria-label="Medir por monto o por cantidad de pedidos"><button data-v="monto" onclick="setAn('medida','monto')">Por monto</button><button data-v="n" onclick="setAn('medida','n')">Por pedidos</button></span></h3>
+      <span class="vz-ctl"><select class="mini-input" id="mixRango" onchange="setAn('rango',this.value)" aria-label="Qué períodos mirar"><option value="todo">Todo el historial</option></select>
+        <span class="seg chico" id="mix_medida" role="group" aria-label="Medir por monto o por cantidad de pedidos"><button data-v="monto" onclick="setAn('medida','monto')">Por monto</button><button data-v="n" onclick="setAn('medida','n')">Por pedidos</button></span></span></h3>
+      <div class="vz-fila"><span class="sub">Ver las autocompras:</span>
+        <span class="seg chico" id="mix_separa" role="group" aria-label="Cómo separar las autocompras"><button data-v="juntas" onclick="setAn('separa','juntas')">Juntas</button><button data-v="precio" onclick="setAn('separa','precio')">Por precio</button><button data-v="veces" onclick="setAn('separa','veces')">Una vez o recurrentes</button></span></div>
       <div class="vz-seg" id="mix_seg" role="img"></div>
       <div class="cmp" id="mix_tiles"></div>
+      <p class="vz-nota" id="mix_total"></p>
       <p class="vz-nota" id="mix_ases"></p>
-      <div class="vz-head"><b>Por período <span class="sub">· últimos 14</span></b>
-        <div class="seg chico" id="mix_vista" role="group" aria-label="Ver en porcentaje o en total"><button data-v="pct" onclick="setAn('vista','pct')">% del monto</button><button data-v="abs" onclick="setAn('vista','abs')">Soles</button></div></div>
+      <div class="vz-head"><b>Evolución por período <span class="sub" id="mix_evo_sub"></span></b>
+        <span class="seg chico" id="mix_vista" role="group" aria-label="Ver en porcentaje o en total"><button data-v="pct" onclick="setAn('vista','pct')">% del monto</button><button data-v="abs" onclick="setAn('vista','abs')">Soles</button></span></div>
       <div class="vz-leg" id="mix_leg"></div>
       <div id="chart_mix"></div>
-      <div class="vz-pie"><span class="hint">Solo cuentan los pedidos <b>entregados</b>: no entran los rechazados, los cancelados ni los que siguen en proceso. El monto es el total del pedido. Autocompra: el asesor compra a precio de asesor (la marca «auto» de la pestaña Pedidos). Compra propia: figura como su propio cliente, pero a precio regular.</span>
+      <div class="vz-pie"><span class="hint">Solo cuentan los pedidos <b>entregados</b>: no entran los rechazados, los cancelados ni los que siguen en proceso. El monto es el total del pedido. Autocompra: el asesor compra a precio de asesor (la marca «auto» de la pestaña Pedidos). Compra propia: figura como su propio cliente, pero a precio regular. Recurrente: el asesor tiene 2 o más autocompras entregadas en todo el historial.</span>
         <button class="mini-btn link" aria-expanded="false" onclick="vzVerTabla(this,'mix_tabla')">Ver tabla</button></div>
       <div class="prev" id="mix_tabla" hidden></div>
+      <div class="vz-head"><b>Asesores que se autocompran <span class="sub" id="mix_quien_sub"></span></b>
+        <span class="vz-ctl"><select class="mini-input" id="mixQuien" onchange="setAn('quien',this.value)" aria-label="A quiénes mostrar"><option value="todos">Todos</option><option value="rec">Recurrentes (2 o más)</option><option value="una">Una sola vez</option></select>
+          <select class="mini-input" id="mixOrden" onchange="setAn('orden',this.value)" aria-label="En qué orden"><option value="monto">Mayor monto</option><option value="n">Más autocompras</option><option value="fecha">Más reciente</option></select></span></div>
+      <ul class="lista scroll-list" id="mix_lista"></ul>
     </div>
     <div class="analytics-card full" id="card_dia"><h3><span>📆 Ingreso de pedidos por día</span>
       <span class="vz-ctl"><select class="mini-input" id="diaRango" onchange="setAn('diaRango',this.value)" aria-label="Cuántos períodos mirar"><option value="2">Últimos 2 períodos</option><option value="6" selected>Últimos 6 períodos</option><option value="13">Últimos 13 (medio año)</option><option value="26">Últimos 26 (un año)</option><option value="0">Todo</option></select>
@@ -1194,22 +1204,30 @@ function renderProductos(){
 }
 
 /* ============ ANÁLISIS: autocompras vs. terceros e ingreso de pedidos por día ============ */
-// Tres formas de compra, siempre en este orden y con el mismo color en todos los gráficos
-// (azul · naranja · verde agua: se distinguen también con daltonismo).
-const GRUPOS = [
-  { k: 'auto', n: 'Autocompra (precio de asesor)', c: 'var(--v-2)' },     // la marca «auto» de la base: precio con decimales
-  { k: 'prop', n: 'Compra propia a precio regular', c: 'var(--v-3)' },    // el asesor figura como su propio cliente
-  { k: 'ter', n: 'Venta a terceros', c: 'var(--v-1)' } ];
-function mismoNombre(a,b){ const n=s=>plano(s).replace(/\s+/g,' ').trim(), x=n(a); return !!x&&x===n(b); }
+// Formas de compra. Las autocompras se pueden ver juntas, separadas por precio o por repetición; cada grupo conserva su color en
+// todos los gráficos: azul = terceros, familia naranja = autocompras, verde agua = precio regular (se distinguen con daltonismo).
+const G_TER = { k: 'ter', n: 'Venta a terceros', c: 'var(--v-1)' };
+const GRUPOS_DE = {
+  precio: [ { k: 'auto', n: 'Autocompra (precio de asesor)', c: 'var(--v-2)' },          // la marca «auto» de la base: precio con decimales
+            { k: 'prop', n: 'Compra propia a precio regular', c: 'var(--v-3)' }, G_TER ],  // el asesor figura como su propio cliente
+  juntas: [ { k: 'mias', n: 'Autocompras totales', c: 'var(--v-2)' }, G_TER ],            // las dos anteriores sumadas
+  veces:  [ { k: 'una', n: 'Autocompras de una sola vez', c: 'var(--v-2c)' },             // del asesor que se compró una sola vez…
+            { k: 'rec', n: 'Autocompras recurrentes (2 o más)', c: 'var(--v-2o)' }, G_TER ] };   // …o dos o más veces, contando todo el historial
+const GRUPOS = GRUPOS_DE.precio;
+let VECES = {};        // autocompras entregadas de cada asesor en todo el historial: dice quién es recurrente
+function claveAsesor(n){ return plano(n).replace(/\s+/g,' ').trim(); }
+function mismoNombre(a,b){ const x=claveAsesor(a); return !!x&&x===claveAsesor(b); }
 function grupoCompra(p){ return p['Autocompra']?'auto':(mismoNombre(p['Cliente'],p['Vendedor'])?'prop':'ter'); }
-function sumaGrupos(lista){ const o={n:0,s:0}; GRUPOS.forEach(g=>{ o[g.k]={n:0,s:0}; }); lista.forEach(p=>{ const t=parseFloat(p['Total'])||0, g=o[grupoCompra(p)]; g.n++; g.s+=t; o.n++; o.s+=t; }); return o; }
+function contarVeces(deliv){ VECES={}; deliv.forEach(p=>{ if(grupoCompra(p)!=='ter'){ const k=claveAsesor(p['Vendedor']); VECES[k]=(VECES[k]||0)+1; } }); }
+function claseCompra(p, modo){ const g=grupoCompra(p); if(g==='ter'||!modo||modo==='precio') return g; return modo==='juntas'?'mias':((VECES[claveAsesor(p['Vendedor'])]||0)>1?'rec':'una'); }
+function sumaGrupos(lista, modo){ const o={n:0,s:0}; GRUPOS_DE[modo||'precio'].forEach(g=>{ o[g.k]={n:0,s:0}; }); lista.forEach(p=>{ const t=parseFloat(p['Total'])||0, g=o[claseCompra(p,modo)]; g.n++; g.s+=t; o.n++; o.s+=t; }); return o; }
 function pctDe(a,b){ return b?Math.round(a/b*100):0; }
-function reparto(vals){        // porcentajes enteros que suman 100
-  const tot=vals.reduce((a,b)=>a+b,0); if(!(tot>0)) return vals.map(()=>0);
-  const ex=vals.map(v=>v/tot*100), r=ex.map(Math.floor); let falta=100-r.reduce((a,b)=>a+b,0);
-  ex.map((e,i)=>[e-r[i],i]).sort((a,b)=>b[0]-a[0]).forEach(([,i])=>{ if(falta>0){ r[i]++; falta--; } }); return r; }
+function reparto(vals, dec, total){        // porcentajes que suman exactamente `total` (100 si no se dice), con `dec` decimales
+  const e10=Math.pow(10,dec||0), meta=Math.round((total==null?100:total)*e10), tot=vals.reduce((a,b)=>a+b,0); if(!(tot>0)) return vals.map(()=>0);
+  const ex=vals.map(v=>v/tot*meta), r=ex.map(Math.floor); let falta=meta-r.reduce((a,b)=>a+b,0);
+  ex.map((e,i)=>[e-r[i],i]).sort((a,b)=>b[0]-a[0]).forEach(([,i])=>{ if(falta>0){ r[i]++; falta--; } }); return r.map(x=>x/e10); }
 function nPed(n){ return n+(n===1?' pedido':' pedidos'); }
-function leyendaGrupos(){ return GRUPOS.map(g=>`<span><i class="vz-sw" style="background:${g.c}"></i>${esc(g.n)}</span>`).join(''); }
+function leyendaGrupos(G){ return (G||GRUPOS).map(g=>`<span><i class="vz-sw" style="background:${g.c}"></i>${esc(g.n)}</span>`).join(''); }
 
 /* ---- un solo dibujante de columnas (simples o apiladas) en SVG, con tooltip y eje fijo ---- */
 function vzEscala(max, entero){        // tope y marcas «redondas» del eje
@@ -1244,7 +1262,7 @@ document.addEventListener('pointerdown', e=>{ if(!(e.target.closest&&e.target.cl
 window.addEventListener('scroll', vzOcultar, true);
 function vzTabla(cab, filas){ return '<table><thead><tr>'+cab.map(c=>'<th>'+esc(c)+'</th>').join('')+'</tr></thead><tbody>'+filas.map(f=>'<tr>'+f.map(c=>'<td>'+esc(c)+'</td>').join('')+'</tr>').join('')+'</tbody></table>'; }
 function vzVerTabla(btn, id){ const e=document.getElementById(id), ver=e.hidden; e.hidden=!ver; btn.textContent=ver?'Ocultar tabla':'Ver tabla'; btn.setAttribute('aria-expanded', ver?'true':'false'); }
-// o: { cols:[{t1,t2,v:[…],tip}], series:[{n,c}], pct, entero, fmt, alto, minCol, grupos:[{i0,i1,t1,t2}], rotulo(i,total), alFinal, aria }
+// o: { cols:[{t1,t2,v:[…],tip}], series:[{n,c}], pct, entero, fmt, alto, minCol, grupos:[{i0,i1,t1,t2}], rotulo(i,total), tenue(i), alFinal, aria }
 function vzColumnas(el, o){
   const n=o.cols.length; if(!n){ el.innerHTML='<div class="hint">Todavía no hay datos.</div>'; return; }
   const tot=o.cols.map(c=>c.v.reduce((a,b)=>a+b,0)), fmt=o.fmt||(v=>v.toLocaleString('es-PE'));
@@ -1258,16 +1276,18 @@ function vzColumnas(el, o){
   E.marcas.forEach(m=>{ s+=`<line class="${m?'vz-g':'vz-b'}" x1="0" x2="${w}" y1="${f1(y(m))}" y2="${f1(y(m))}"/>`; });
   if(o.grupos) o.grupos.forEach((g,j)=>{ if(j) s+=`<line class="vz-g" x1="${f1(g.i0*bw)}" x2="${f1(g.i0*bw)}" y1="${T-8}" y2="${H-3}"/>`; });
   o.cols.forEach((c,i)=>{
-    const x=i*bw+(bw-b)/2, den=o.pct?(tot[i]||1)/100:1; let base=T+h, ult=-1, primero=true; c.v.forEach((v,k)=>{ if(v>0) ult=k; });
+    const x=i*bw+(bw-b)/2, den=o.pct?(tot[i]||1)/100:1, op=o.tenue&&o.tenue(i)?' opacity=".35"':''; let base=T+h, ult=-1, primero=true; c.v.forEach((v,k)=>{ if(v>0) ult=k; });
     c.v.forEach((v,k)=>{ if(!(v>0)) return; const alto=Math.max(uno?1.5:0, v/den/E.tope*h); let yb=base; const yt=base-alto; base=yt; if(!primero&&alto>4) yb-=2; primero=false;   // 2 px de aire entre tramos
       const r=k===ult?Math.min(4, b/2, yb-yt):0, col=o.series[k].c;
-      s+=r>0?`<path d="M${f1(x)},${f1(yb)}V${f1(yt+r)}Q${f1(x)},${f1(yt)} ${f1(x+r)},${f1(yt)}H${f1(x+b-r)}Q${f1(x+b)},${f1(yt)} ${f1(x+b)},${f1(yt+r)}V${f1(yb)}Z" style="fill:${col}"/>`
-            :`<rect x="${f1(x)}" y="${f1(yt)}" width="${f1(b)}" height="${f1(Math.max(.5,yb-yt))}" style="fill:${col}"/>`; });
+      s+=r>0?`<path d="M${f1(x)},${f1(yb)}V${f1(yt+r)}Q${f1(x)},${f1(yt)} ${f1(x+r)},${f1(yt)}H${f1(x+b-r)}Q${f1(x+b)},${f1(yt)} ${f1(x+b)},${f1(yt+r)}V${f1(yb)}Z" style="fill:${col}"${op}/>`
+            :`<rect x="${f1(x)}" y="${f1(yt)}" width="${f1(b)}" height="${f1(Math.max(.5,yb-yt))}" style="fill:${col}"${op}/>`; });
     const rot=o.rotulo?o.rotulo(i,tot[i]):''; if(rot) s+=`<text class="rot" ${enX(i*bw+bw/2,rot,6)} y="${f1(base-4)}">${esc(rot)}</text>`;
   });
-  if(o.grupos) o.grupos.forEach(g=>{ const xc=(g.i0+g.i1+1)/2*bw; s+=`<text ${enX(xc,g.t1,5.8)} y="${T+h+13}">${esc(g.t1)}</text>`+(g.t2?`<text class="t2" ${enX(xc,g.t2,5)} y="${T+h+25}">${esc(g.t2)}</text>`:''); });
-  else { const largo=k=>Math.max(...o.cols.map(c=>String(c[k]||'').length)), paso=Math.max(1, Math.ceil((largo('t1')*6+6)/bw)), ver2=bw>=largo('t2')*5+6;
-    o.cols.forEach((c,i)=>{ if((n-1-i)%paso) return; const xc=i*bw+bw/2; s+=`<text ${enX(xc,c.t1||'',5.8)} y="${T+h+13}">${esc(c.t1||'')}</text>`+(c.t2&&ver2?`<text class="t2" ${enX(xc,c.t2,5)} y="${T+h+25}">${esc(c.t2)}</text>`:''); }); }
+  const conT1=o.cols.some(c=>c.t1);        // rótulos de abajo: los de cada columna y, si hay grupos, el del grupo en la segunda línea
+  if(o.grupos&&!conT1) o.grupos.forEach(g=>{ const xc=(g.i0+g.i1+1)/2*bw; s+=`<text ${enX(xc,g.t1,5.8)} y="${T+h+13}">${esc(g.t1)}</text>`+(g.t2?`<text class="t2" ${enX(xc,g.t2,5)} y="${T+h+25}">${esc(g.t2)}</text>`:''); });
+  else { const largo=k=>Math.max(...o.cols.map(c=>String(c[k]||'').length)), paso=Math.max(1, Math.ceil((largo('t1')*6+6)/bw)), ver2=!o.grupos&&bw>=largo('t2')*5+6;
+    o.cols.forEach((c,i)=>{ if((n-1-i)%paso) return; const xc=i*bw+bw/2; s+=`<text ${enX(xc,c.t1||'',5.8)} y="${T+h+13}">${esc(c.t1||'')}</text>`+(c.t2&&ver2?`<text class="t2" ${enX(xc,c.t2,5)} y="${T+h+25}">${esc(c.t2)}</text>`:''); });
+    if(o.grupos) o.grupos.forEach(g=>{ s+=`<text class="t2" x="${f1((g.i1+1)*bw-4)}" y="${T+h+25}" text-anchor="end">${esc(g.t1)}</text>`; }); }      // al final del grupo: es lo que queda a la vista al deslizar
   const foco=n<=40?' tabindex="0"':'';
   o.cols.forEach((c,i)=>{ s+=`<rect class="vz-hit" x="${f1(i*bw)}" y="0" width="${f1(bw)}" height="${T+h}" data-i="${i}" role="img"${foco} aria-label="${esc(vzTexto(c.tip))}"/>`; });
   el.innerHTML='<div class="vz-wrap">'+eje+'<div class="vz-sc">'+s+'</svg></div></div>';
@@ -1276,37 +1296,86 @@ function vzColumnas(el, o){
 }
 
 /* ---- preferencias de Análisis: lo que se elige se recuerda en este dispositivo ---- */
-const AN={ medida:'monto', vista:'pct', diaRango:'6', diaQue:'ent', diaMedida:'n' };      // medida: monto | n · vista: pct | abs · diaQue: ent | todos
-const AN_OK={ medida:['monto','n'], vista:['pct','abs'], diaRango:['2','6','13','26','0'], diaQue:['ent','todos'], diaMedida:['n','monto'] };
-try{ const g=JSON.parse(localStorage.getItem('rw_ped_an')||'{}'); Object.keys(AN_OK).forEach(k=>{ if(AN_OK[k].includes(g[k])) AN[k]=g[k]; }); }catch(e){}
-function setAn(k,v){ if(!AN_OK[k]||!AN_OK[k].includes(String(v))) return; AN[k]=String(v); try{ localStorage.setItem('rw_ped_an', JSON.stringify(AN)); }catch(e){}
-  if(k==='medida'||k==='vista') renderMix(PEDIDOS.filter(isDelivered)); else renderIngreso(); }
+// medida: monto | n · vista: pct | abs · separa: juntas | precio | veces · rango: todo | u2…u26 | p:<período> · quien: todos | rec | una · orden: monto | n | fecha
+const AN={ medida:'monto', vista:'pct', separa:'precio', rango:'todo', quien:'todos', orden:'monto', diaRango:'6', diaQue:'ent', diaMedida:'n' };
+const AN_OK={ medida:['monto','n'], vista:['pct','abs'], separa:['juntas','precio','veces'], rango:/^(todo|u(2|6|13|26)|p:.{1,80})$/, quien:['todos','rec','una'], orden:['monto','n','fecha'],
+  diaRango:['2','6','13','26','0'], diaQue:['ent','todos'], diaMedida:['n','monto'] };
+function anVale(k,v){ const r=AN_OK[k]; return !!r&&typeof v==='string'&&(r instanceof RegExp?r.test(v):r.includes(v)); }
+try{ const g=JSON.parse(localStorage.getItem('rw_ped_an')||'{}'); Object.keys(AN_OK).forEach(k=>{ if(anVale(k,g[k])) AN[k]=g[k]; }); }catch(e){}
+function setAn(k,v){ v=String(v); if(!anVale(k,v)) return; AN[k]=v; try{ localStorage.setItem('rw_ped_an', JSON.stringify(AN)); }catch(e){}
+  if(k.startsWith('dia')) renderIngreso(); else renderMix(PEDIDOS.filter(isDelivered)); }
 function marcarSeg(el,v){ el.querySelectorAll('button').forEach(b=>{ const on=b.dataset.v===v; b.classList.toggle('on',on); b.setAttribute('aria-pressed',on?'true':'false'); }); }
 
-/* ---- autocompras vs. ventas a terceros: solo pedidos entregados, por monto o por cantidad ---- */
+/* ---- autocompras vs. ventas a terceros: solo entregados; por monto o por pedidos; juntas, por precio o por repetición ---- */
+function pc1(v){ return v.toFixed(1)+'%'; }
+// Porcentajes de un total ya sumado por grupos: primero autocompras contra terceros y, dentro, cada tipo de autocompra.
+// Así el total de autocompras y el de terceros dan lo mismo se separen como se separen, y las partes suman el total.
+function pctGrupos(t, G, val){ const mias=G.filter(g=>g.k!=='ter'), [pm,pt]=reparto([mias.reduce((a,g)=>a+val(t[g.k]),0), val(t.ter)], 1), sub=reparto(mias.map(g=>val(t[g.k])), 1, pm);
+  return G.map(g=>g.k==='ter'?pt:sub[mias.indexOf(g)]); }
+let MIX_ETQ=null;       // períodos ya puestos en el selector de rango
+function rangoMix(deliv){        // períodos (los del reporte) con entregados y cuáles entran en el rango elegido (sel = null: todo el historial)
+  const todas=[...new Set(deliv.map(p=>p['Período']).filter(Boolean))].sort((a,b)=>periodoKey(a).localeCompare(periodoKey(b))), u=/^u(\d+)$/.exec(AN.rango); let sel=null;
+  if(u) sel=todas.slice(-(+u[1])); else if(AN.rango.startsWith('p:')&&todas.includes(AN.rango.slice(2))) sel=[AN.rango.slice(2)]; else AN.rango='todo';
+  return { todas, sel: sel?new Set(sel):null };
+}
 function renderMix(deliv){
-  const t=sumaGrupos(deliv), pn=reparto(GRUPOS.map(g=>t[g.k].n)), ps=reparto(GRUPOS.map(g=>t[g.k].s)), m=AN.medida==='monto', pp=m?ps:pn;
-  marcarSeg(mix_medida, AN.medida); marcarSeg(mix_vista, AN.vista);
+  contarVeces(deliv);
+  const {todas, sel}=rangoMix(deliv), R=sel?deliv.filter(p=>sel.has(p['Período'])):deliv, m=AN.medida==='monto', G=GRUPOS_DE[AN.separa], val=o=>m?o.s:o.n;
+  if(MIX_ETQ!==todas.join('|')){ MIX_ETQ=todas.join('|');
+    mixRango.innerHTML='<option value="todo">Todo el historial</option><option value="u2">Últimos 2 períodos (1 mes)</option><option value="u6">Últimos 6 períodos (3 meses)</option><option value="u13">Últimos 13 períodos (6 meses)</option><option value="u26">Últimos 26 períodos (1 año)</option>'
+      +'<optgroup label="Un solo período">'+todas.slice().reverse().map(k=>`<option value="p:${esc(k)}">${esc(k)}</option>`).join('')+'</optgroup>'; }
+  mixRango.value=AN.rango; mixQuien.value=AN.quien; mixOrden.value=AN.orden;
+  marcarSeg(mix_medida, AN.medida); marcarSeg(mix_separa, AN.separa); marcarSeg(mix_vista, AN.vista);
   const bv=mix_vista.querySelectorAll('button'); bv[0].textContent=m?'% del monto':'% de pedidos'; bv[1].textContent=m?'Soles':'Pedidos';
+  const t=sumaGrupos(R, AN.separa), pn=pctGrupos(t, G, o=>o.n), ps=pctGrupos(t, G, o=>o.s), pp=m?ps:pn;
   mix_sub.textContent='solo entregados: '+nPed(t.n)+' · '+money0(t.s);
-  mix_seg.innerHTML=GRUPOS.map((g,i)=>{ const v=m?t[g.k].s:t[g.k].n; return v>0?`<i style="flex:${Math.round(v)} 1 0;background:${g.c}" title="${esc(g.n)}: ${pp[i]}%"></i>`:''; }).join('');
-  mix_seg.setAttribute('aria-label', GRUPOS.map((g,i)=>g.n+' '+pp[i]+'%').join(' · '));
-  mix_tiles.innerHTML=GRUPOS.map((g,i)=>`<div><div class="k"><i class="vz-sw" style="background:${g.c}"></i>${esc(g.n)}</div><div class="v">${pp[i]}%</div><div class="hint">${m?money0(t[g.k].s)+' · '+nPed(t[g.k].n)+' ('+pn[i]+'% de los pedidos)':nPed(t[g.k].n)+' · '+money0(t[g.k].s)+' ('+ps[i]+'% del monto)'}</div></div>`).join('');
-  const porV={}; deliv.forEach(p=>{ const k=p['Vendedor']||'—', o=porV[k]=porV[k]||{n:0,ter:0}; o.n++; if(grupoCompra(p)==='ter') o.ter++; });
+  mix_seg.innerHTML=G.map((g,i)=>{ const v=val(t[g.k]); return v>0?`<i style="flex:${Math.round(v)} 1 0;background:${g.c}" title="${esc(g.n)}: ${pc1(pp[i])}"></i>`:''; }).join('');
+  mix_seg.setAttribute('aria-label', G.map((g,i)=>g.n+' '+pc1(pp[i])).join(' · '));
+  mix_tiles.innerHTML=G.map((g,i)=>`<div><div class="k"><i class="vz-sw" style="background:${g.c}"></i>${esc(g.n)}</div><div class="v">${pc1(pp[i])}</div><div class="hint">${m?money0(t[g.k].s)+' · '+nPed(t[g.k].n)+' ('+pc1(pn[i])+' de los pedidos)':nPed(t[g.k].n)+' · '+money0(t[g.k].s)+' ('+pc1(ps[i])+' del monto)'}</div></div>`).join('');
+  // el total de autocompras y sus dos separaciones, siempre a la vista
+  const tp=sumaGrupos(R,'precio'), tv=sumaGrupos(R,'veces'), mias={n:t.n-t.ter.n, s:t.s-t.ter.s}, pm=reparto([val(mias), val(t.ter)], 1)[0], dos=(a,b)=>reparto([val(a),val(b)]);
+  const [pa,pr]=dos(tp.auto,tp.prop), [pu,pc]=dos(tv.una,tv.rec);
+  mix_total.innerHTML=!mias.n?'No hay autocompras en este rango.':(AN.separa==='juntas'?'':`<b>Autocompras totales: ${pc1(pm)}</b> ${m?'del monto':'de los pedidos'} (${money0(mias.s)} en ${nPed(mias.n)}). `)
+    +`De las autocompras, el <b>${pa}%</b> es a precio de asesor y el <b>${pr}%</b> a precio regular; el <b>${pu}%</b> es de asesores que se compraron una sola vez y el <b>${pc}%</b> de recurrentes.`;
+  const porV={}; R.forEach(p=>{ const k=p['Vendedor']||'—', o=porV[k]=porV[k]||{n:0,ter:0}; o.n++; if(grupoCompra(p)==='ter') o.ter++; });
   const vs=Object.values(porV), conTer=vs.filter(o=>o.ter).length, solo=vs.length-conTer, solo1=vs.filter(o=>!o.ter&&o.n===1).length;
   mix_ases.innerHTML=vs.length?`De <b>${vs.length}</b> asesores con pedidos entregados, <b>${conTer}</b> ${conTer===1?'vendió':'vendieron'} a terceros y <b>${solo}</b> solo ${solo===1?'compró':'compraron'} para sí${solo1?` (${solo1} con un único pedido)`:''}.`:'';
-  mix_leg.innerHTML=leyendaGrupos();
-  renderMixPeriodo(deliv);
+  mix_leg.innerHTML=leyendaGrupos(G);
+  renderMixPeriodo(deliv); renderMixLista(R);
 }
 function renderMixPeriodo(deliv){
-  const m=AN.medida==='monto', val=(t,g)=>m?t[g.k].s:t[g.k].n, txt=(t,g)=>m?money0(t[g.k].s):String(t[g.k].n);
+  contarVeces(deliv);
+  const {sel}=rangoMix(deliv), m=AN.medida==='monto', G=GRUPOS_DE[AN.separa], val=o=>m?o.s:o.n, txt=o=>m?money0(o.s):String(o.n);
   const byP={}; deliv.forEach(p=>{ const k=p['Período']; if(k) (byP[k]=byP[k]||[]).push(p); });
-  const filas=Object.keys(byP).sort((a,b)=>periodoKey(a).localeCompare(periodoKey(b))).map(k=>{ const t=sumaGrupos(byP[k]); return {k, t, pp:reparto(GRUPOS.map(g=>val(t,g)))}; });
-  vzColumnas(chart_mix, { series:GRUPOS, pct:AN.vista==='pct', entero:!m, fmt:m?vzMiles:null, alto:160, aria:'Pedidos entregados por período: autocompras, compras propias y ventas a terceros, '+(m?'por monto':'por cantidad de pedidos'),
-    cols:filas.slice(-14).map(f=>({ t1:f.k.slice(5,9), t2:(f.k.match(/\(([^)]*)\)/)||[])[1]||'', v:GRUPOS.map(g=>val(f.t,g)),
-      tip:{ t:f.k, f:GRUPOS.map((g,i)=>[g.c, g.n, txt(f.t,g)+' · '+f.pp[i]+'%']), p:nPed(f.t.n)+' entregados · '+money0(f.t.s) } })) });
-  mix_tabla.innerHTML=vzTabla(['Período'].concat(...GRUPOS.map(g=>[g.n,'%']), ['Monto entregado','Pedidos entregados']),
-    filas.slice().reverse().map(f=>[f.k].concat(...GRUPOS.map((g,i)=>[txt(f.t,g), f.pp[i]+'%']), [money0(f.t.s), f.t.n])));
+  const filas=Object.keys(byP).sort((a,b)=>periodoKey(a).localeCompare(periodoKey(b))).map(k=>{ const t=sumaGrupos(byP[k], AN.separa); return {k, t, pp:pctGrupos(t, G, val), mias:{n:t.n-t.ter.n, s:t.s-t.ter.s}}; });
+  filas.forEach(f=>{ f.pm=reparto([val(f.mias), val(f.t.ter)], 1)[0]; });
+  const anios=[]; filas.forEach((f,i)=>{ const a=f.k.slice(0,4), u=anios[anios.length-1]; if(u&&u.t1===a) u.i1=i; else anios.push({i0:i, i1:i, t1:a}); });
+  mix_evo_sub.textContent=sel?'· lo atenuado queda fuera del rango elegido':'· todos los períodos';
+  vzColumnas(chart_mix, { series:G, pct:AN.vista==='pct', entero:!m, fmt:m?vzMiles:null, alto:160, minCol:26, alFinal:true, grupos:anios, tenue:sel?i=>!sel.has(filas[i].k):null,
+    aria:'Pedidos entregados por período: autocompras y ventas a terceros, '+(m?'por monto':'por cantidad de pedidos'),
+    cols:filas.map(f=>({ t1:f.k.slice(5,9), v:G.map(g=>val(f.t[g.k])), tip:{ t:f.k, f:G.map((g,i)=>[g.c, g.n, txt(f.t[g.k])+' · '+pc1(f.pp[i])]), p:nPed(f.t.n)+' entregados · '+money0(f.t.s) } })) });
+  const junta=AN.separa==='juntas';
+  mix_tabla.innerHTML=vzTabla(['Período'].concat(...G.map(g=>[g.n,'%']), junta?[]:['Autocompras totales','%'], ['Monto entregado','Pedidos entregados']),
+    filas.slice().reverse().map(f=>[f.k].concat(...G.map((g,i)=>[txt(f.t[g.k]), pc1(f.pp[i])]), junta?[]:[txt(f.mias), pc1(f.pm)], [money0(f.t.s), f.t.n])));
+}
+// quiénes se autocompran en el rango: cuántas veces, cuánto, a qué precio, si además venden a terceros y cuándo fue la última
+function renderMixLista(R){
+  const m=AN.medida==='monto', por={};
+  R.forEach(p=>{ const g=grupoCompra(p), k=claveAsesor(p['Vendedor']); if(!k) return; const o=por[k]=por[k]||{nombre:p['Vendedor'], n:0, s:0, auto:0, prop:0, tn:0, ts:0, ult:null}, t=parseFloat(p['Total'])||0;
+    if(g==='ter'){ o.tn++; o.ts+=t; return; } o.n++; o.s+=t; o[g]++; const d=parseDate(p['Fecha Ordenado']); if(d&&!isNaN(d)&&(!o.ult||d>o.ult)) o.ult=d; });
+  const todos=Object.keys(por).map(k=>Object.assign(por[k],{veces:VECES[k]||0})).filter(o=>o.n), rec=todos.filter(o=>o.veces>1).length;
+  mix_quien_sub.textContent=todos.length?'· '+todos.length+(todos.length===1?' asesor: ':' asesores: ')+rec+(rec===1?' recurrente':' recurrentes')+' y '+(todos.length-rec)+' de una sola vez':'';
+  const orden={ monto:(a,b)=>(b.s-a.s)||(b.n-a.n), n:(a,b)=>(b.n-a.n)||(b.s-a.s), fecha:(a,b)=>((b.ult||0)-(a.ult||0))||(b.s-a.s) }[AN.orden];
+  const lista=todos.filter(o=>AN.quien==='todos'||(AN.quien==='rec')===(o.veces>1)).sort((a,b)=>orden(a,b)||a.nombre.localeCompare(b.nombre)), nAut=n=>n+(n===1?' autocompra':' autocompras');
+  mix_lista.innerHTML=lista.map(o=>`<li class="clic" tabindex="0" role="button" data-n="${esc(o.nombre)}" onclick="verPedidosDe(this.dataset.n)" onkeydown="if(event.key==='Enter')verPedidosDe(this.dataset.n)">
+      <span><b>${esc(o.nombre)}</b> <span class="chip${o.veces>1?' rec':''}">${o.veces>1?'recurrente: '+o.veces+' en total':'una sola vez'}</span>
+        <span class="meta">${[o.auto?o.auto+' a precio de asesor':'', o.prop?o.prop+' a precio regular':''].filter(Boolean).join(' y ')} · a terceros: ${o.tn?nPed(o.tn)+' ('+money0(o.ts)+')':'ninguno'}${o.ult?' · última: '+fmtDate(o.ult):''}</span></span>
+      <span class="der"><b>${m?money0(o.s):nAut(o.n)}</b> <span class="meta">${m?nAut(o.n):money0(o.s)}</span></span></li>`).join('')
+    ||'<li><span class="hint">'+(todos.length?'Ninguno con ese filtro.':'Nadie se autocompró en este rango.')+'</span></li>';
+}
+function verPedidosDe(nombre){        // de la lista de asesores a sus pedidos entregados, en la pestaña Pedidos
+  searchInput.value=nombre; filterVendedor.value=''; filterPeriodo.value=''; filterDistrito.value=''; filterTipoPago.value=''; filterEstatus.value='ENTREGADA';
+  applyFilters(); showTab('tab-table'); window.scrollTo(0,0);
 }
 function renderVendedores(){
   const byV={}; PEDIDOS.filter(isDelivered).forEach(p=>{ const k=p['Vendedor']||'—'; (byV[k]=byV[k]||[]).push(p); });

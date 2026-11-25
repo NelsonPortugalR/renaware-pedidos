@@ -39,13 +39,25 @@ con cada uno y qué sigue.
   período, último período contra el anterior, distritos, crédito y contado,
   productos y:
   - **Autocompras vs. ventas a terceros**: qué parte del **monto entregado** (o
-    de los pedidos: se elige arriba de la tarjeta) es *autocompra* (precio de
-    asesor: la marca `autocompra` de la base), *compra propia a precio regular*
-    (el asesor figura como su propio cliente) y *venta a terceros*. Solo cuentan
-    los pedidos entregados: no entran rechazados, cancelados ni los que siguen
-    en proceso. En total, por período (el del reporte; en % o en total) y por
-    vendedor. Dice además cuántos asesores vendieron a terceros y cuántos solo
-    se compraron a sí mismos.
+    de los pedidos: se elige arriba de la tarjeta) son autocompras y qué parte
+    ventas a terceros. Solo cuentan los pedidos entregados: no entran
+    rechazados, cancelados ni los que siguen en proceso. Las autocompras se
+    pueden ver de tres formas, y el total de autocompras siempre queda a la
+    vista:
+    - **Juntas**: *autocompras totales* contra ventas a terceros.
+    - **Por precio**: *autocompra* (precio de asesor: la marca `autocompra` de
+      la base) y *compra propia a precio regular* (el asesor figura como su
+      propio cliente).
+    - **Una vez o recurrentes**: según cuántas autocompras entregadas tiene el
+      asesor en todo el historial (una sola, o dos o más).
+
+    Se mira todo el historial, los últimos 2, 6, 13 o 26 períodos, o un solo
+    período (el del reporte). La evolución muestra todos los períodos (en % o
+    en total) y atenúa los que quedan fuera del rango. Abajo, la lista de
+    **asesores que se autocompran** con nombre, cuántas veces, a qué precio,
+    cuánto vendieron a terceros y la última fecha; se filtra (todos,
+    recurrentes, una sola vez), se ordena y al tocar a uno se abren sus
+    pedidos. «Ventas por vendedor» parte cada barra por forma de compra.
   - **Ingreso de pedidos por día**, por la fecha en que se ordenaron: día por
     día con los períodos marcados, por día del período (1 = jueves, 14 =
     miércoles de cierre) y por día de la semana. Por defecto, solo entregados y
